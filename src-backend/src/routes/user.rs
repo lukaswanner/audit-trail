@@ -5,14 +5,22 @@ use axum::{
     response::{IntoResponse, Response},
     Json,
 };
+use sqlx::prelude::FromRow;
 
 use crate::AppState;
 use serde::{Deserialize, Serialize};
 
+#[derive(Debug, FromRow, Serialize, Deserialize)]
+pub struct User {
+    id: i32,
+    name: String,
+    properties: String,
+}
+
 pub async fn read_user(state: State<Arc<AppState>>) -> Response {
     let pool = &state.pool;
-    let result = sqlx::query("SELECT * FROM event_user;")
-        .execute(pool)
+    let result = sqlx::query_as::<_, User>("SELECT * FROM event_user;")
+        .fetch_all(pool)
         .await
         .unwrap();
 

@@ -5,14 +5,22 @@ use axum::{
     response::{IntoResponse, Response},
     Json,
 };
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
+use sqlx::prelude::FromRow;
 
 use crate::AppState;
 
+#[derive(Debug, FromRow, Serialize, Deserialize)]
+pub struct Channel {
+    id: i32,
+    title: String,
+    project_id: i32,
+}
+
 pub async fn read_channel(state: State<Arc<AppState>>) -> Response {
     let pool = &state.pool;
-    let result = sqlx::query("SELECT * FROM channel;")
-        .execute(pool)
+    let result = sqlx::query_as::<_, Channel>("SELECT * FROM channel;")
+        .fetch_all(pool)
         .await
         .unwrap();
 
