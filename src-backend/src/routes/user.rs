@@ -1,4 +1,4 @@
-use std::sync::Arc;
+use std::{collections::HashMap, sync::Arc};
 
 use axum::{
     extract::State,
@@ -14,7 +14,7 @@ use serde::{Deserialize, Serialize};
 pub struct User {
     id: i32,
     name: String,
-    properties: String,
+    properties: sqlx::types::Json<HashMap<String, String>>,
 }
 
 pub async fn read_user(state: State<Arc<AppState>>) -> Response {
