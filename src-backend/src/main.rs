@@ -49,3 +49,12 @@ async fn main() {
 * post channel/
 * curl -v -X POST -H "Content-Type: application/json" -d '{"title":"test", "project_id": 1}' 0.0.0.0/project:3000
 */
+
+/*
+* post user/
+* curl -v -X POST -H "Content-Type: application/json" -d '{"name":"test"}'
+*/
+
+/* post event/
+* curl -v -X POST -H "Content-Type: application/json" -d '{"icon":"😎", "title":"test", "channelId": 1, "userId": 1}' 0.0.0.0:3000/event
+*/

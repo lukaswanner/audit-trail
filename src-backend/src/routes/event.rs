@@ -1,21 +1,20 @@
 use std::sync::Arc;
 
-use axum::{extract::State, Json};
-
+use axum::{extract::State, Json, response::{Response, IntoResponse}};
+use serde::Deserialize;
 use crate::AppState;
 
-pub async fn read_event(state: State<Arc<AppState>>) -> &'static str {
+pub async fn read_event(state: State<Arc<AppState>>) -> Response{
     let pool = &state.pool;
     let result = sqlx::query("SELECT * FROM event;")
         .execute(pool)
         .await
         .unwrap();
 
-    println!("result: {:?}", result);
-    "Hello, World!"
+    format!("result: {:?}", result).into_response()
 }
 
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 pub struct CreateEvent {
     icon: String,
     title: String,
@@ -40,5 +39,6 @@ pub async fn create_event(
         .unwrap();
 
     println!("result: {:?}", result);
-    "Hello, World!"
+    "Created event"
 }
+
