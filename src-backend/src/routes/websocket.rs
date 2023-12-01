@@ -1,5 +1,5 @@
 use futures::{
-    stream::{SplitSink, StreamExt},
+    stream::{SplitSink, SplitStream, StreamExt},
     SinkExt,
 };
 use tokio::time::interval;
@@ -54,6 +54,21 @@ async fn write(mut sender: SplitSink<WebSocket, Message>, state: State<Arc<AppSt
     }
 }
 
+async fn read(mut receiver: SplitStream<WebSocket>) {
+    while let Some(message) = receiver.next().await {
+        let message = match message {
+            Ok(message) => message,
+            Err(_) => return,
+        };
+
+        match message {
+            Message::Text(text) => println!("Received: {}", text),
+            Message::Close(_) => return,
+            _ => (),
+        }
+    }
+}
+
 async fn handle_socket(mut socket: WebSocket, state: State<Arc<AppState>>) {
     if socket.send(Message::Ping(vec![1, 2, 3])).await.is_ok() {
         println!("Pinged...")
@@ -61,7 +76,13 @@ async fn handle_socket(mut socket: WebSocket, state: State<Arc<AppState>>) {
         println!("Could not send ping!")
     }
 
-    let (sender, _) = socket.split();
+    let (sender, receiver) = socket.split();
 
-    tokio::spawn(write(sender, state));
+    let mut write_task = tokio::spawn(write(sender, state));
+    let mut read_task = tokio::spawn(read(receiver));
+
+    tokio::select! {
+        _ = &mut write_task => read_task.abort(),
+        _ = &mut read_task => write_task.abort(),
+    }
 }
