@@ -5,10 +5,11 @@ use std::sync::Arc;
 
 use axum::{
     extract::Request,
+    http::{HeaderMap, StatusCode},
     middleware::{self, Next},
     response::Response,
     routing::{get, post},
-    Router, http::HeaderMap,
+    Router,
 };
 use routes::{channel, event, project, user};
 
@@ -18,11 +19,28 @@ pub struct AppState {
     pub pool: PgPool,
 }
 
-async fn auth(_headers: HeaderMap, request: Request, next: Next) -> Response {
-    println!("Got a request: {:?}", request);
+fn extract_api_token(headers: &HeaderMap) -> Option<&str> {
+    match headers.get("api-key") {
+        Some(token) => Some(token.to_str().unwrap()),
+        None => None,
+    }
+}
 
-    let response = next.run(request).await;
-    response
+// placeholder for now until i implement proper auth
+fn token_is_valid(_token: &str) -> bool {
+    return true;
+}
+
+async fn auth(headers: HeaderMap, request: Request, next: Next) -> Result<Response, StatusCode> {
+    println!("Got a request with headers: {:?}", headers);
+
+    match extract_api_token(&headers) {
+        Some(token) if token_is_valid(token) => {
+            let response = next.run(request).await;
+            Ok(response)
+        }
+        _ => Err(StatusCode::UNAUTHORIZED),
+    }
 }
 
 #[tokio::main]
@@ -50,26 +68,7 @@ async fn main() {
     let port = "3000";
     let addr = format!("{}:{}", host, port);
     println!("address on: {}", addr);
+
     let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
     axum::serve(listener, app).await.unwrap();
 }
-//curl requests
-
-/*
-* post project/
-* curl -v -X POST -H "Content-Type: application/json" -d '{"title":"test"}' 0.0.0.0/project:3000
-*/
-
-/*
-* post channel/
-* curl -v -X POST -H "Content-Type: application/json" -d '{"title":"test", "project_id": 1}' 0.0.0.0/project:3000
-*/
-
-/*
-* post user/
-* curl -v -X POST -H "Content-Type: application/json" -d '{"name":"test"}'
-*/
-
-/* post event/
-* curl -v -X POST -H "Content-Type: application/json" -d '{"icon":"😎", "title":"test", "channelId": 1, "userId": 1}' 0.0.0.0:3000/event
-*/
