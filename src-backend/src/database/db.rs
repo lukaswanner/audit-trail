@@ -33,8 +33,7 @@ impl DatabaseSettings {
             .database(&self.database_name)
             .ssl_mode(ssl_mode);
 
-        let pool = PgPool::connect_lazy_with(options);
-        return pool;
+        PgPool::connect_lazy_with(options)
     }
 }
 
@@ -49,10 +48,10 @@ impl Database {
             require_ssl: false,
         };
         let pool = settings.create_pool();
-        return Database { pool };
+        Database { pool }
     }
 
-    pub fn generate_api_token(&self) -> String {
-        return String::from("token");
+    pub fn _generate_api_token(&self) -> String {
+        String::from("token")
     }
 }

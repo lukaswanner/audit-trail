@@ -12,8 +12,6 @@ use axum::{
     Router,
 };
 
-use axum::extract::ws::{WebSocket, WebSocketUpgrade};
-
 use routes::{channel, event, project, user, websocket};
 
 use sqlx::PgPool;
@@ -31,7 +29,7 @@ fn extract_api_token(headers: &HeaderMap) -> Option<&str> {
 
 // placeholder for now until i implement proper auth
 fn token_is_valid(_token: &str) -> bool {
-    return true;
+    true
 }
 
 async fn auth(headers: HeaderMap, request: Request, next: Next) -> Result<Response, StatusCode> {

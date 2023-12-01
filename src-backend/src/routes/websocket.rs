@@ -1,9 +1,10 @@
 use futures::{
-    stream::{SplitSink, SplitStream, StreamExt},
+    stream::{SplitSink, StreamExt},
     SinkExt,
 };
+use tokio::time::interval;
 
-use std::sync::Arc;
+use std::{sync::Arc, time::Duration};
 
 use axum::{
     extract::{
@@ -15,6 +16,8 @@ use axum::{
 use axum_extra::{headers::UserAgent, TypedHeader};
 
 use crate::AppState;
+
+use super::event::Event;
 
 pub async fn handler(
     ws: WebSocketUpgrade,
@@ -31,38 +34,34 @@ pub async fn handler(
     ws.on_upgrade(move |socket| handle_socket(socket, state))
 }
 
-async fn write(mut sender: SplitSink<WebSocket, Message>) {
-    let n_msg = 20;
-    for i in 0..n_msg {
+async fn write(mut sender: SplitSink<WebSocket, Message>, state: State<Arc<AppState>>) {
+    let mut interval = interval(Duration::from_secs(5));
+    let query = "SELECT * FROM event;";
+    loop {
+        interval.tick().await;
+        let events = sqlx::query_as::<_, Event>(query)
+            .fetch_all(&state.pool)
+            .await
+            .unwrap();
+
         if sender
-            .send(Message::Text(format!("Server message {i} ...")))
+            .send(Message::Text(serde_json::to_string(&events).unwrap()))
             .await
             .is_err()
         {
             return;
         }
-        tokio::time::sleep(std::time::Duration::from_millis(300)).await
     }
 }
 
-async fn keep_alive(mut receiver: SplitStream<WebSocket>) {
-    while let Some(Ok(_msg)) = receiver.next().await {}
-}
-
-async fn handle_socket(mut socket: WebSocket, _state: State<Arc<AppState>>) {
+async fn handle_socket(mut socket: WebSocket, state: State<Arc<AppState>>) {
     if socket.send(Message::Ping(vec![1, 2, 3])).await.is_ok() {
         println!("Pinged...")
     } else {
         println!("Could not send ping!")
     }
 
-    let (sender, receiver) = socket.split();
+    let (sender, _) = socket.split();
 
-    let send_task = tokio::spawn(write(sender));
-    let mut recv_task = tokio::spawn(keep_alive(receiver));
-
-    // for later if i have a second task that checks db
-    tokio::select! {
-        _ = (&mut recv_task) => send_task.abort()
-    }
+    tokio::spawn(write(sender, state));
 }
