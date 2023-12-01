@@ -11,7 +11,10 @@ use axum::{
     routing::{get, post},
     Router,
 };
-use routes::{channel, event, project, user};
+
+use axum::extract::ws::{WebSocket, WebSocketUpgrade};
+
+use routes::{channel, event, project, user, websocket};
 
 use sqlx::PgPool;
 
@@ -32,8 +35,6 @@ fn token_is_valid(_token: &str) -> bool {
 }
 
 async fn auth(headers: HeaderMap, request: Request, next: Next) -> Result<Response, StatusCode> {
-    println!("Got a request with headers: {:?}", headers);
-
     match extract_api_token(&headers) {
         Some(token) if token_is_valid(token) => {
             let response = next.run(request).await;
@@ -60,6 +61,8 @@ async fn main() {
         .route("/project", post(project::create_project))
         .route("/user", post(user::create_user))
         .route("/event", post(event::create_event))
+        // websocket routes
+        .route("/ws", get(websocket::handler))
         // data
         .with_state(shared_state)
         .route_layer(middleware::from_fn(auth));
