@@ -1,12 +1,11 @@
-#GOALS:
+# GOALS:
 
-1) Create DB Container - [x]
-2) Create Server - [x]
-3) Create Endpoints - [x]
-3.1) Create Project - [x]
-3.2) Create Channel - [x]
-3.3) Create User - [x]
-3.4) Send Event - [x]
-4) Create authentication work flow - [x]
-5) Create websockets - [ ]
-
+1. - [x] Create DB Container
+2. - [x] Create Server
+3. - [x] Create Endpoints
+   - - [x] Create Project
+   - - [x] Create Channel
+   - - [x] Create User
+   - - [x] Send Event
+4. - [x] Create authentication work flow
+5. - [ ] Create websockets
