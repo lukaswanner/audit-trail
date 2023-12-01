@@ -4,8 +4,11 @@ mod routes;
 use std::sync::Arc;
 
 use axum::{
+    extract::Request,
+    middleware::{self, Next},
+    response::Response,
     routing::{get, post},
-    Router,
+    Router, http::HeaderMap,
 };
 use routes::{channel, event, project, user};
 
@@ -13,6 +16,13 @@ use sqlx::PgPool;
 
 pub struct AppState {
     pub pool: PgPool,
+}
+
+async fn auth(_headers: HeaderMap, request: Request, next: Next) -> Response {
+    println!("Got a request: {:?}", request);
+
+    let response = next.run(request).await;
+    response
 }
 
 #[tokio::main]
@@ -33,9 +43,14 @@ async fn main() {
         .route("/user", post(user::create_user))
         .route("/event", post(event::create_event))
         // data
-        .with_state(shared_state);
+        .with_state(shared_state)
+        .route_layer(middleware::from_fn(auth));
 
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
+    let host = "localhost";
+    let port = "3000";
+    let addr = format!("{}:{}", host, port);
+    println!("address on: {}", addr);
+    let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
     axum::serve(listener, app).await.unwrap();
 }
 //curl requests

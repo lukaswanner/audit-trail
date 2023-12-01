@@ -1,11 +1,7 @@
 use std::sync::Arc;
 
 use crate::AppState;
-use axum::{
-    extract::State,
-    response::{IntoResponse, Response},
-    Json,
-};
+use axum::{extract::State, Json};
 use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
 
@@ -18,14 +14,14 @@ pub struct Event {
     user_id: i32,
 }
 
-pub async fn read_event(state: State<Arc<AppState>>) -> Response {
+pub async fn read_event(state: State<Arc<AppState>>) -> Json<Vec<Event>> {
     let pool = &state.pool;
     let result = sqlx::query_as::<_, Event>("SELECT * FROM event;")
         .fetch_all(pool)
         .await
         .unwrap();
 
-    format!("result: {:?}", result).into_response()
+    Json(result)
 }
 
 #[derive(Deserialize)]
@@ -43,17 +39,14 @@ pub async fn create_event(
     Json(payload): Json<CreateEvent>,
 ) -> &'static str {
     let pool = &state.pool;
-    let result = sqlx::query(
-        "INSERT INTO event (icon, title, channel_id, user_id) VALUES ($1, $2, $3, $4);",
-    )
-    .bind(payload.icon)
-    .bind(payload.title)
-    .bind(payload.channel_id)
-    .bind(payload.user_id)
-    .execute(pool)
-    .await
-    .unwrap();
+    sqlx::query("INSERT INTO event (icon, title, channel_id, user_id) VALUES ($1, $2, $3, $4);")
+        .bind(payload.icon)
+        .bind(payload.title)
+        .bind(payload.channel_id)
+        .bind(payload.user_id)
+        .execute(pool)
+        .await
+        .unwrap();
 
-    println!("result: {:?}", result);
     "Created event"
 }
