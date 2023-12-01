@@ -8,4 +8,4 @@
    - - [x] Create User
    - - [x] Send Event
 4. - [x] Create authentication work flow
-5. - [ ] Create websockets
+5. - [x] Create websockets
