@@ -1,13 +1,11 @@
+mod auth;
 mod database;
 mod routes;
 
 use std::sync::Arc;
 
 use axum::{
-    extract::Request,
-    http::{HeaderMap, StatusCode},
-    middleware::{self, Next},
-    response::Response,
+    middleware::{self},
     routing::{get, post},
     Router,
 };
@@ -18,28 +16,6 @@ use sqlx::PgPool;
 
 pub struct AppState {
     pub pool: PgPool,
-}
-
-fn extract_api_token(headers: &HeaderMap) -> Option<&str> {
-    match headers.get("api-key") {
-        Some(token) => Some(token.to_str().unwrap()),
-        None => None,
-    }
-}
-
-// placeholder for now until i implement proper auth
-fn token_is_valid(_token: &str) -> bool {
-    true
-}
-
-async fn auth(headers: HeaderMap, request: Request, next: Next) -> Result<Response, StatusCode> {
-    match extract_api_token(&headers) {
-        Some(token) if token_is_valid(token) => {
-            let response = next.run(request).await;
-            Ok(response)
-        }
-        _ => Err(StatusCode::UNAUTHORIZED),
-    }
 }
 
 #[tokio::main]
@@ -63,7 +39,7 @@ async fn main() {
         .route("/ws", get(websocket::handler))
         // data
         .with_state(shared_state)
-        .route_layer(middleware::from_fn(auth));
+        .route_layer(middleware::from_fn(auth::check_request));
 
     let host = "localhost";
     let port = "3000";
