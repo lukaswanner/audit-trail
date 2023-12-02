@@ -4,7 +4,7 @@ use futures::{
 };
 use tokio::time::interval;
 
-use std::{sync::Arc, time::Duration};
+use std::time::Duration;
 
 use axum::{
     extract::{
@@ -22,7 +22,7 @@ use super::event::Event;
 pub async fn handler(
     ws: WebSocketUpgrade,
     user_agent: Option<TypedHeader<UserAgent>>,
-    state: State<Arc<AppState>>,
+    State(state): State<AppState>,
 ) -> Response {
     let user_agent = if let Some(TypedHeader(user_agent)) = user_agent {
         user_agent.to_string()
@@ -34,7 +34,7 @@ pub async fn handler(
     ws.on_upgrade(move |socket| handle_socket(socket, state))
 }
 
-async fn write(mut sender: SplitSink<WebSocket, Message>, state: State<Arc<AppState>>) {
+async fn write(mut sender: SplitSink<WebSocket, Message>, state: AppState) {
     let mut interval = interval(Duration::from_secs(5));
     let query = "SELECT * FROM event;";
     loop {
@@ -69,7 +69,7 @@ async fn read(mut receiver: SplitStream<WebSocket>) {
     }
 }
 
-async fn handle_socket(mut socket: WebSocket, state: State<Arc<AppState>>) {
+async fn handle_socket(mut socket: WebSocket, state: AppState) {
     if socket.send(Message::Ping(vec![1, 2, 3])).await.is_ok() {
         println!("Pinged...")
     } else {

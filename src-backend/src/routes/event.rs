@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use crate::AppState;
 use axum::{extract::State, Json};
 use serde::{Deserialize, Serialize};
@@ -14,7 +12,7 @@ pub struct Event {
     user_id: i32,
 }
 
-pub async fn read_event(state: State<Arc<AppState>>) -> Json<Vec<Event>> {
+pub async fn read_event(State(state): State<AppState>) -> Json<Vec<Event>> {
     let pool = &state.pool;
     let result = sqlx::query_as::<_, Event>("SELECT * FROM event;")
         .fetch_all(pool)
@@ -35,7 +33,7 @@ pub struct CreateEvent {
 }
 
 pub async fn create_event(
-    state: State<Arc<AppState>>,
+    State(state): State<AppState>,
     Json(payload): Json<CreateEvent>,
 ) -> &'static str {
     let pool = &state.pool;

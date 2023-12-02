@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use crate::AppState;
 use axum::{extract::State, Json};
 use serde::{Deserialize, Serialize};
@@ -11,7 +9,7 @@ pub struct Project {
     title: String,
 }
 
-pub async fn read_project(state: State<Arc<AppState>>) -> Json<Vec<Project>> {
+pub async fn read_project(State(state): State<AppState>) -> Json<Vec<Project>> {
     let pool = &state.pool;
     let result = sqlx::query_as::<_, Project>("SELECT * FROM project;")
         .fetch_all(pool)
@@ -27,7 +25,7 @@ pub struct CreateProject {
 }
 
 pub async fn create_project(
-    state: State<Arc<AppState>>,
+    State(state): State<AppState>,
     Json(payload): Json<CreateProject>,
 ) -> &'static str {
     let pool = &state.pool;

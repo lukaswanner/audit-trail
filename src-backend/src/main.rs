@@ -2,8 +2,6 @@ mod auth;
 mod database;
 mod routes;
 
-use std::sync::Arc;
-
 use axum::{
     middleware::{self},
     routing::{get, post},
@@ -14,6 +12,7 @@ use routes::{channel, event, project, user, websocket};
 
 use sqlx::PgPool;
 
+#[derive(Clone)]
 pub struct AppState {
     pub pool: PgPool,
 }
@@ -22,7 +21,7 @@ pub struct AppState {
 async fn main() {
     let db = database::db::Database::new_localhost();
 
-    let shared_state = Arc::new(AppState { pool: db.pool });
+    let shared_state = AppState { pool: db.pool };
 
     let app = Router::new()
         // get routes
@@ -38,8 +37,11 @@ async fn main() {
         // websocket routes
         .route("/ws", get(websocket::handler))
         // data
-        .with_state(shared_state)
-        .route_layer(middleware::from_fn(auth::check_request));
+        .route_layer(middleware::from_fn_with_state(
+            shared_state.clone(),
+            auth::check_request,
+        ))
+        .with_state(shared_state);
 
     let host = "localhost";
     let port = "3000";

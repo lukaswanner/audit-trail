@@ -1,4 +1,4 @@
-use std::{collections::HashMap, sync::Arc};
+use std::collections::HashMap;
 
 use axum::{extract::State, Json};
 use serde_json::{json, Value};
@@ -14,7 +14,7 @@ pub struct User {
     properties: sqlx::types::Json<HashMap<String, String>>,
 }
 
-pub async fn read_user(state: State<Arc<AppState>>) -> Json<Vec<User>> {
+pub async fn read_user(State(state): State<AppState>) -> Json<Vec<User>> {
     let pool = &state.pool;
     let result = sqlx::query_as::<_, User>("SELECT * FROM event_user;")
         .fetch_all(pool)
@@ -33,7 +33,7 @@ pub struct CreateUser {
 }
 
 pub async fn create_user(
-    state: State<Arc<AppState>>,
+    State(state): State<AppState>,
     Json(payload): Json<CreateUser>,
 ) -> &'static str {
     let pool = &state.pool;
