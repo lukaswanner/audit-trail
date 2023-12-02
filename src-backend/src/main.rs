@@ -24,6 +24,13 @@ async fn main() {
     let shared_state = AppState { pool: db.pool };
 
     let app = Router::new()
+        // websocket routes
+        .route("/ws", get(websocket::handler))
+        // middleware
+        .route_layer(middleware::from_fn_with_state(
+            shared_state.clone(),
+            auth::check_request,
+        ))
         // get routes
         .route("/channel", get(channel::read_channel))
         .route("/project", get(project::read_project))
@@ -34,13 +41,7 @@ async fn main() {
         .route("/project", post(project::create_project))
         .route("/user", post(user::create_user))
         .route("/event", post(event::create_event))
-        // websocket routes
-        .route("/ws", get(websocket::handler))
-        // data
-        .route_layer(middleware::from_fn_with_state(
-            shared_state.clone(),
-            auth::check_request,
-        ))
+        // state
         .with_state(shared_state);
 
     let host = "localhost";
