@@ -1,5 +1,5 @@
-mod auth;
 mod database;
+mod middlewares;
 mod routes;
 
 use axum::{
@@ -8,6 +8,7 @@ use axum::{
     Router,
 };
 
+use middlewares::auth;
 use routes::{channel, event, project, user, websocket};
 
 use sqlx::PgPool;
@@ -25,7 +26,7 @@ async fn main() {
 
     let app = Router::new()
         // websocket routes
-        .route("/ws", get(websocket::handler))
+        .route("/ws/events/:project_id", get(websocket::handler))
         // middleware
         .route_layer(middleware::from_fn_with_state(
             shared_state.clone(),

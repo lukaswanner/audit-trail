@@ -1,5 +1,5 @@
 use axum::{
-    extract::{Request, State},
+    extract::{Path, Request, State},
     http::{HeaderMap, StatusCode},
     middleware::Next,
     response::Response,
@@ -45,10 +45,12 @@ async fn token_is_valid(token: &str, state: AppState) -> bool {
 pub async fn check_request(
     State(state): State<AppState>,
     headers: HeaderMap,
+    Path(project_id): Path<i32>,
     request: Request,
     next: Next,
 ) -> Result<Response, StatusCode> {
     println!("headers: {:#?}", headers);
+    println!("project_id {:?}", project_id);
     match extract_api_token(&headers) {
         Some(token) if token_is_valid(token, state).await => {
             let response = next.run(request).await;
