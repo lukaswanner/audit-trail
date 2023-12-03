@@ -10,3 +10,4 @@
 4. - [x] Create authentication work flow
 5. - [x] Create websockets
 6. - [x] finalize auth middleware 
+7. - [ ] Create proper api token
