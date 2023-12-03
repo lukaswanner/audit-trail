@@ -24,8 +24,6 @@ struct ApiToken {
 // check if the token is in db
 // return true if we have a valid token that matches
 async fn token_is_valid(token: &str, project_id: i32, state: AppState) -> bool {
-    println!("token: {}", token);
-
     let query = "Select project_id from api_token where token = $1 and project_id = $2";
 
     let api_token = sqlx::query_as::<_, ApiToken>(query)

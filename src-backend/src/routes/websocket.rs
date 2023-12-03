@@ -39,7 +39,7 @@ async fn write(mut sender: SplitSink<WebSocket, Message>, project_id: i32, state
     let mut interval = interval(Duration::from_secs(5));
 
     let query_events =
-        "SELECT * FROM event e JOIN channel c ON e.channel_id = c.id WHERE c.project_id = $1";
+        "select e.id, e.icon, e.title, c.title as channel_title, ev.name as user_name from event e left join channel c on e.channel_id = c.id join event_user ev on e.user_id = ev.id where c.project_id = $1";
     loop {
         interval.tick().await;
         let events = sqlx::query_as::<_, Event>(query_events)
@@ -74,9 +74,7 @@ async fn read(mut receiver: SplitStream<WebSocket>) {
 }
 
 async fn handle_socket(mut socket: WebSocket, project_id: i32, state: AppState) {
-    if socket.send(Message::Ping(vec![1, 2, 3])).await.is_ok() {
-        println!("Pinged...")
-    } else {
+    if socket.send(Message::Ping(vec![1, 2, 3])).await.is_err() {
         println!("Could not send ping!")
     }
 
