@@ -4,7 +4,7 @@ mod routes;
 
 use axum::{
     middleware::{self},
-    routing::{get, post},
+    routing::{delete, get, post},
     Router,
 };
 
@@ -43,6 +43,8 @@ async fn main() {
         .route("/project", post(project::create_project))
         .route("/user", post(user::create_user))
         .route("/event", post(event::create_event))
+        // delete routes
+        .route("/api-token", delete(api_token::delete_api_token))
         // state
         .with_state(shared_state);
 
