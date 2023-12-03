@@ -23,18 +23,17 @@ struct ApiToken {
 
 // check if the token is in db
 // return true if we have a valid token that matches
-async fn token_is_valid(token: &str, state: AppState) -> bool {
+async fn token_is_valid(token: &str, project_id: i32, state: AppState) -> bool {
     println!("token: {}", token);
 
-    let query = "Select project_id from api_token where token = $1";
+    let query = "Select project_id from api_token where token = $1 and project_id = $2";
 
     let api_token = sqlx::query_as::<_, ApiToken>(query)
         .bind(token)
+        .bind(project_id)
         .fetch_optional(&state.pool)
         .await
         .unwrap();
-
-    println!("api_token: {:#?}", api_token);
 
     match api_token {
         Some(_) => return true,
@@ -49,10 +48,8 @@ pub async fn check_request(
     request: Request,
     next: Next,
 ) -> Result<Response, StatusCode> {
-    println!("headers: {:#?}", headers);
-    println!("project_id {:?}", project_id);
     match extract_api_token(&headers) {
-        Some(token) if token_is_valid(token, state).await => {
+        Some(token) if token_is_valid(token, project_id, state).await => {
             let response = next.run(request).await;
             return Ok(response);
         }

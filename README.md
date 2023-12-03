@@ -9,4 +9,4 @@
    - - [x] Send Event
 4. - [x] Create authentication work flow
 5. - [x] Create websockets
-6. - [ ] finalize auth middleware 
+6. - [x] finalize auth middleware 
