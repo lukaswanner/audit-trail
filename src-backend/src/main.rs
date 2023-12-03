@@ -9,7 +9,7 @@ use axum::{
 };
 
 use middlewares::auth;
-use routes::{channel, event, project, user, websocket};
+use routes::{api_token, channel, event, project, user, websocket};
 
 use sqlx::PgPool;
 
@@ -38,6 +38,7 @@ async fn main() {
         .route("/user", get(user::read_user))
         .route("/event", get(event::read_event))
         // post routes
+        .route("/api-token", post(api_token::create_api_token))
         .route("/channel", post(channel::create_channel))
         .route("/project", post(project::create_project))
         .route("/user", post(user::create_user))
