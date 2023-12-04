@@ -1,5 +1,10 @@
 <script lang="ts">
-	export let list: string[];
+	import { locale, locales, t } from '$lib/locale/i18n';
+	let list = [$t('navbar.register'), $t('navbar.login'), $t('navbar.account')];
+
+	function selectLanguage(language: string) {
+		locale.set(language);
+	}
 </script>
 
 <div class="navbar bg-base-100 mb-3">
@@ -24,14 +29,14 @@
 				tabindex="0"
 				class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
 			>
-				{#each list as item}
-					<li><a href="/register"> {item}</a></li>
-				{/each}
+				<li><a href="/register"> {$t('navbar.register')}</a></li>
+				<li><a href="/login"> {$t('navbar.login')} </a></li>
+				<li><a> {$t('navbar.account')} </a></li>
 			</ul>
 		</div>
 	</div>
 	<div class="navbar-center">
-		<a class="btn btn-ghost text-xl" href="/">Audit Trail</a>
+		<a class="btn btn-ghost text-xl" href="/"> Audit Trail</a>
 	</div>
 	<div class="navbar-end">
 		<label class="cursor-pointer grid place-items-center mr-3">
@@ -69,5 +74,13 @@
 				><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg
 			>
 		</label>
+		<div class="dropdown dropdown-bottom dropdown-end">
+			<div tabindex="0" role="button" class="btn m-1">{$locale}</div>
+			<ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+				{#each locales as language}
+					<li><button on:click={() => selectLanguage(language)}> {language}</button></li>
+				{/each}
+			</ul>
+		</div>
 	</div>
 </div>
