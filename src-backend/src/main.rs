@@ -9,7 +9,7 @@ use axum::{
 };
 
 use middlewares::auth;
-use routes::{api_token, channel, event, project, user, websocket};
+use routes::{api_token, authorize, channel, event, project, user, websocket};
 
 use sqlx::PgPool;
 
@@ -24,27 +24,43 @@ async fn main() {
 
     let shared_state = AppState { pool: db.pool };
 
-    let app = Router::new()
-        // websocket routes
-        .route("/ws/events/:project_id", get(websocket::handler))
-        // get routes
-        .route("/channel/:project_id", get(channel::read_channel))
-        .route("/user/:project_id", get(user::read_user))
-        .route("/event/:project_id", get(event::read_event))
-        // post routes
-        .route("/channel/:project_id", post(channel::create_channel))
-        .route("/user/:project_id", post(user::create_user))
-        .route("/event/:project_id", post(event::create_event))
-        // middleware
+    // we have 2 routes, one for our website, one for our api
+    // the api route gets checked via api-key and the website route gets checked via jwt
+    let authorize_routes = Router::new()
+        .route("/api-key/:project_title", post(authorize::authorize))
         .route_layer(middleware::from_fn_with_state(
             shared_state.clone(),
-            auth::check_request,
-        ))
-        .route("/project", get(project::read_project))
+            auth::check_request_with_api_token,
+        ));
+
+    let api_routes = Router::new()
+        // use jwt for the rest
+        .route("/channel", post(channel::create_channel))
+        .route("/user", post(user::create_user))
+        .route("/event", post(event::create_event))
+        .route_layer(middleware::from_fn_with_state(
+            shared_state.clone(),
+            auth::check_request_with_jwt_token,
+        ));
+
+    let app_routes = Router::new()
+        .route("/ws/events", get(websocket::handler))
+        .route("/channels", get(channel::read_channels))
+        .route("/users", get(user::read_users))
+        .route("/events", get(event::read_events))
+        .route("/projects", get(project::read_projects))
         .route("/project", post(project::create_project))
         .route("/api-token", post(api_token::create_api_token))
         .route("/api-token", delete(api_token::delete_api_token))
-        // state
+        .route_layer(middleware::from_fn_with_state(
+            shared_state.clone(),
+            auth::check_request_with_jwt_token,
+        ));
+
+    let app = Router::new()
+        .nest("/authorize", authorize_routes)
+        .nest("/api", api_routes)
+        .nest("/", app_routes)
         .with_state(shared_state);
 
     let host = "localhost";
