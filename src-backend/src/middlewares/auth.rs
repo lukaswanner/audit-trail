@@ -60,7 +60,6 @@ async fn token_is_valid(token: &str) -> bool {
         &DecodingKey::from_secret("secret".as_ref()),
         &Validation::default(),
     );
-    println!("{:?}", jwt_token);
     match jwt_token {
         Ok(_) => return true,
         _ => return false,

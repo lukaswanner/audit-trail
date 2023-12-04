@@ -1,5 +1,6 @@
 use crate::AppState;
 use axum::{extract::State, Json};
+use axum_extra::extract::CookieJar;
 use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
 
@@ -27,6 +28,7 @@ pub struct CreateProject {
 }
 
 pub async fn create_project(
+    cookie: CookieJar,
     State(state): State<AppState>,
     Json(payload): Json<CreateProject>,
 ) -> &'static str {

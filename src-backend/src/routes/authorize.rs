@@ -14,6 +14,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
 struct Claims {
+    account_id: i32,
     project_id: i32,
     exp: usize,
 }
@@ -21,22 +22,24 @@ struct Claims {
 #[derive(FromRow, Deserialize)]
 struct Project {
     id: i32,
+    account_id: i32,
 }
 
 // if thigs function gets called, we know that the api-key is valid
 pub async fn authorize(
-    State(_state): State<AppState>,
+    State(state): State<AppState>,
     Path(project_title): Path<String>,
 ) -> Response<Body> {
-    let query = "Select id from project where title = $1";
+    let query = "Select id,account_id from project where title = $1";
 
     let project = sqlx::query_as::<_, Project>(query)
         .bind(project_title)
-        .fetch_one(&_state.pool)
+        .fetch_one(&state.pool)
         .await
         .unwrap();
 
     let my_claims = Claims {
+        account_id: project.account_id,
         project_id: project.id,
         exp: (chrono::Utc::now() + Duration::days(1)).timestamp() as usize,
     };
