@@ -27,23 +27,22 @@ async fn main() {
     let app = Router::new()
         // websocket routes
         .route("/ws/events/:project_id", get(websocket::handler))
+        // get routes
+        .route("/channel/:project_id", get(channel::read_channel))
+        .route("/user/:project_id", get(user::read_user))
+        .route("/event/:project_id", get(event::read_event))
+        // post routes
+        .route("/channel/:project_id", post(channel::create_channel))
+        .route("/user/:project_id", post(user::create_user))
+        .route("/event/:project_id", post(event::create_event))
         // middleware
         .route_layer(middleware::from_fn_with_state(
             shared_state.clone(),
             auth::check_request,
         ))
-        // get routes
-        .route("/channel", get(channel::read_channel))
         .route("/project", get(project::read_project))
-        .route("/user", get(user::read_user))
-        .route("/event", get(event::read_event))
-        // post routes
-        .route("/api-token", post(api_token::create_api_token))
-        .route("/channel", post(channel::create_channel))
         .route("/project", post(project::create_project))
-        .route("/user", post(user::create_user))
-        .route("/event", post(event::create_event))
-        // delete routes
+        .route("/api-token", post(api_token::create_api_token))
         .route("/api-token", delete(api_token::delete_api_token))
         // state
         .with_state(shared_state);

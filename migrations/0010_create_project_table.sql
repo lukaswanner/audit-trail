@@ -6,4 +6,5 @@ CREATE TABLE project (
     title TEXT NOT NULL,
 
     FOREIGN KEY (account_id) REFERENCES account(id) ON DELETE CASCADE
+    UNIQUE (title, account_id)
 );
