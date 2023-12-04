@@ -5,6 +5,6 @@ CREATE TABLE project (
     account_id INTEGER NOT NULL,
     title TEXT NOT NULL,
 
-    FOREIGN KEY (account_id) REFERENCES account(id) ON DELETE CASCADE
+    FOREIGN KEY (account_id) REFERENCES account(id) ON DELETE CASCADE,
     UNIQUE (title, account_id)
 );
