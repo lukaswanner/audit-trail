@@ -1,6 +1,6 @@
 use axum::{
     extract::{Path, Request, State},
-    http::{header::COOKIE, HeaderMap, StatusCode},
+    http::{HeaderMap, StatusCode},
     middleware::Next,
     response::Response,
 };
@@ -13,6 +13,7 @@ use jsonwebtoken::{decode, DecodingKey, Validation};
 
 #[derive(Debug, Serialize, Deserialize)]
 struct Claims {
+    account_id: i32,
     project_id: i32,
     exp: usize,
 }
@@ -54,25 +55,57 @@ async fn key_is_valid(token: &str, project_title: String, state: AppState) -> bo
     }
 }
 
-async fn token_is_valid(token: &str) -> bool {
+#[derive(FromRow, Deserialize)]
+struct Project {
+    id: i32,
+    account_id: i32,
+}
+
+async fn token_is_valid(token: &str, project_title: String, state: AppState) -> bool {
     let jwt_token = decode::<Claims>(
         token,
         &DecodingKey::from_secret("secret".as_ref()),
         &Validation::default(),
     );
-    match jwt_token {
-        Ok(_) => return true,
+
+    let query = "Select id, account_id from project where title = $1";
+
+    let project = sqlx::query_as::<_, Project>(query)
+        .bind(project_title)
+        .fetch_optional(&state.pool)
+        .await;
+
+    // check if claims are valid
+    // check if project_title matches
+    // check if token is expired
+    match project {
+        Ok(Some(project)) => {
+            if let Ok(token) = jwt_token {
+                if token.claims.project_id == project.id
+                    && token.claims.exp > chrono::Utc::now().timestamp() as usize
+                    && token.claims.account_id == project.account_id
+                {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
         _ => return false,
     }
 }
 
 pub async fn check_request_with_jwt_token(
+    State(state): State<AppState>,
+    Path(project_title): Path<String>,
     cookie: CookieJar,
     request: Request,
     next: Next,
 ) -> Result<Response, StatusCode> {
     match extract_jwt_token(&cookie) {
-        Some(token) if token_is_valid(token).await => {
+        Some(token) if token_is_valid(token, project_title, state).await => {
             let response = next.run(request).await;
             return Ok(response);
         }

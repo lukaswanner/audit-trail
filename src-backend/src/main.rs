@@ -27,20 +27,13 @@ async fn main() {
     // we have 2 routes, one for our website, one for our api
     // the api route gets checked via api-key and the website route gets checked via jwt
     let authorize_routes = Router::new()
-        .route("/api-key/:project_title", post(authorize::authorize))
+        .route("/authorize/:project_title", post(authorize::authorize))
+        .route("/channel/:project_title", post(channel::create_channel))
+        .route("/user/:project_title", post(user::create_user))
+        .route("/event/:project_title", post(event::create_event))
         .route_layer(middleware::from_fn_with_state(
             shared_state.clone(),
             auth::check_request_with_api_token,
-        ));
-
-    let api_routes = Router::new()
-        // use jwt for the rest
-        .route("/channel", post(channel::create_channel))
-        .route("/user", post(user::create_user))
-        .route("/event", post(event::create_event))
-        .route_layer(middleware::from_fn_with_state(
-            shared_state.clone(),
-            auth::check_request_with_jwt_token,
         ));
 
     let app_routes = Router::new()
@@ -58,9 +51,8 @@ async fn main() {
         ));
 
     let app = Router::new()
-        .nest("/authorize", authorize_routes)
-        .nest("/api", api_routes)
-        .nest("/", app_routes)
+        .nest("/api", authorize_routes)
+        .nest("/:project_title", app_routes)
         .with_state(shared_state);
 
     let host = "localhost";
