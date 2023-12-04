@@ -1,6 +1,8 @@
 <script lang="ts">
 	let passwordType = 'password';
 	let email = '';
+	let firstName = '';
+	let lastName = '';
 
 	function switchType() {
 		passwordType = passwordType === 'text' ? 'password' : 'text';
@@ -12,13 +14,23 @@
 		<div class="label">
 			<span class="label-text">First Name</span>
 		</div>
-		<input type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs" />
+		<input
+			bind:value={firstName}
+			type="text"
+			placeholder="Type here"
+			class="input input-bordered w-full max-w-xs"
+		/>
 	</label>
 	<label class="form-control w-full max-w-xs">
 		<div class="label">
 			<span class="label-text">Last Name</span>
 		</div>
-		<input type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs" />
+		<input
+			bind:value={lastName}
+			type="text"
+			placeholder="Type here"
+			class="input input-bordered w-full max-w-xs"
+		/>
 	</label>
 	<label class="form-control w-full max-w-xs">
 		<div class="label">
