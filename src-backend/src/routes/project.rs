@@ -10,7 +10,7 @@ pub struct Project {
     title: String,
 }
 
-pub async fn read_project(State(state): State<AppState>) -> Json<Vec<Project>> {
+pub async fn read_projects(State(state): State<AppState>) -> Json<Vec<Project>> {
     let pool = &state.pool;
     let result = sqlx::query_as::<_, Project>("SELECT * FROM project;")
         .fetch_all(pool)

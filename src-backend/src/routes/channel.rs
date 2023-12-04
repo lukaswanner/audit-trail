@@ -11,7 +11,7 @@ pub struct Channel {
     project_id: i32,
 }
 
-pub async fn read_channel(State(state): State<AppState>) -> Json<Vec<Channel>> {
+pub async fn read_channels(State(state): State<AppState>) -> Json<Vec<Channel>> {
     let pool = &state.pool;
     let result = sqlx::query_as::<_, Channel>("SELECT * FROM channel;")
         .fetch_all(pool)
