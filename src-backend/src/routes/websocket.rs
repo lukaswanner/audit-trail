@@ -9,7 +9,7 @@ use std::time::Duration;
 use axum::{
     extract::{
         ws::{Message, WebSocket, WebSocketUpgrade},
-        Path, State,
+        State,
     },
     response::Response,
 };
@@ -22,7 +22,6 @@ use super::event::Event;
 pub async fn handler(
     ws: WebSocketUpgrade,
     user_agent: Option<TypedHeader<UserAgent>>,
-    Path(project_id): Path<i32>,
     State(state): State<AppState>,
 ) -> Response {
     let user_agent = if let Some(TypedHeader(user_agent)) = user_agent {
@@ -32,7 +31,7 @@ pub async fn handler(
     };
 
     println!("`{user_agent}`  connected.");
-    ws.on_upgrade(move |socket| handle_socket(socket, project_id, state))
+    ws.on_upgrade(move |socket| handle_socket(socket, state))
 }
 
 async fn write(mut sender: SplitSink<WebSocket, Message>, project_id: i32, state: AppState) {
@@ -73,14 +72,14 @@ async fn read(mut receiver: SplitStream<WebSocket>) {
     }
 }
 
-async fn handle_socket(mut socket: WebSocket, project_id: i32, state: AppState) {
+async fn handle_socket(mut socket: WebSocket, state: AppState) {
     if socket.send(Message::Ping(vec![1, 2, 3])).await.is_err() {
         println!("Could not send ping!")
     }
 
     let (sender, receiver) = socket.split();
 
-    let mut write_task = tokio::spawn(write(sender, project_id, state));
+    let mut write_task = tokio::spawn(write(sender, 1, state));
     let mut read_task = tokio::spawn(read(receiver));
 
     tokio::select! {

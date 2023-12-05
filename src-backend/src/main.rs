@@ -2,6 +2,7 @@ mod database;
 mod middlewares;
 mod routes;
 
+use argon2::password_hash::SaltString;
 use axum::{
     middleware::{self},
     routing::{delete, get, post},
@@ -9,6 +10,7 @@ use axum::{
 };
 
 use middlewares::auth;
+use rand::rngs::OsRng;
 use routes::{api_token, authorize, channel, event, project, user, websocket};
 
 use sqlx::PgPool;
@@ -16,18 +18,22 @@ use sqlx::PgPool;
 #[derive(Clone)]
 pub struct AppState {
     pub pool: PgPool,
+    pub salt: SaltString,
 }
 
 #[tokio::main]
 async fn main() {
     let db = database::db::Database::new_localhost();
+    let salt = SaltString::generate(&mut OsRng);
 
-    let shared_state = AppState { pool: db.pool };
+    let shared_state = AppState {
+        pool: db.pool,
+        salt,
+    };
 
     // we have 2 routes, one for our website, one for our api
     // the api route gets checked via api-key and the website route gets checked via jwt
-    let authorize_routes = Router::new()
-        .route("/authorize/:project_title", post(authorize::authorize))
+    let api_routes = Router::new()
         .route("/channel/:project_title", post(channel::create_channel))
         .route("/user/:project_title", post(user::create_user))
         .route("/event/:project_title", post(event::create_event))
@@ -37,7 +43,6 @@ async fn main() {
         ));
 
     let app_routes = Router::new()
-        .route("/ws/events", get(websocket::handler))
         .route("/channels", get(channel::read_channels))
         .route("/users", get(user::read_users))
         .route("/events", get(event::read_events))
@@ -50,9 +55,17 @@ async fn main() {
             auth::check_request_with_jwt_token,
         ));
 
+    let websocket_routes = Router::new().route("/ws/events", get(websocket::handler));
+
+    let login_routes = Router::new()
+        .route("/login", post(authorize::login))
+        .route("/register", post(authorize::register));
+
     let app = Router::new()
-        .nest("/api", authorize_routes)
+        .nest("/auth", login_routes)
+        .nest("/api", api_routes)
         .nest("/:project_title", app_routes)
+        .nest("/", websocket_routes)
         .with_state(shared_state);
 
     let host = "localhost";

@@ -14,7 +14,6 @@ use jsonwebtoken::{decode, DecodingKey, Validation};
 #[derive(Debug, Serialize, Deserialize)]
 struct Claims {
     account_id: i32,
-    project_id: i32,
     exp: usize,
 }
 
@@ -57,7 +56,6 @@ async fn key_is_valid(token: &str, project_title: String, state: AppState) -> bo
 
 #[derive(FromRow, Deserialize)]
 struct Project {
-    id: i32,
     account_id: i32,
 }
 
@@ -68,7 +66,7 @@ async fn token_is_valid(token: &str, project_title: String, state: AppState) -> 
         &Validation::default(),
     );
 
-    let query = "Select id, account_id from project where title = $1";
+    let query = "Select account_id from project where title = $1";
 
     let project = sqlx::query_as::<_, Project>(query)
         .bind(project_title)
@@ -81,8 +79,7 @@ async fn token_is_valid(token: &str, project_title: String, state: AppState) -> 
     match project {
         Ok(Some(project)) => {
             if let Ok(token) = jwt_token {
-                if token.claims.project_id == project.id
-                    && token.claims.exp > chrono::Utc::now().timestamp() as usize
+                if token.claims.exp > chrono::Utc::now().timestamp() as usize
                     && token.claims.account_id == project.account_id
                 {
                     return true;
