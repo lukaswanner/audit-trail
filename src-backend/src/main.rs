@@ -1,7 +1,7 @@
-mod session_state;
 mod database;
 mod middlewares;
 mod routes;
+mod session_state;
 
 use argon2::password_hash::SaltString;
 use axum::{
@@ -65,7 +65,7 @@ async fn main() {
     let app = Router::new()
         .nest("/auth", login_routes)
         .nest("/api", api_routes)
-        .nest("/:project_title", app_routes)
+        .nest("/app", app_routes)
         .nest("/", websocket_routes)
         .with_state(shared_state);
 
