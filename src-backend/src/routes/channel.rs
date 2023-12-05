@@ -1,22 +1,28 @@
-use axum::{extract::State, Json};
+use axum::{extract::State, Extension, Json};
 use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
 
-use crate::AppState;
+use crate::{session_state::UserSession, AppState};
 
 #[derive(Debug, FromRow, Serialize, Deserialize)]
 pub struct Channel {
     id: i32,
     title: String,
-    project_id: i32,
+    project_title: String,
 }
 
-pub async fn read_channels(State(state): State<AppState>) -> Json<Vec<Channel>> {
+pub async fn read_channels(
+    State(state): State<AppState>,
+    Extension(session): Extension<UserSession>,
+) -> Json<Vec<Channel>> {
     let pool = &state.pool;
-    let result = sqlx::query_as::<_, Channel>("SELECT * FROM channel;")
-        .fetch_all(pool)
-        .await
-        .unwrap();
+    let result = sqlx::query_as::<_, Channel>(
+        "SELECT c.id, c.title, p.title as project_title FROM channel c join project p on c.project_id = p.id WHERE p.account_id = $1;",
+    )
+    .bind(session.account_id)
+    .fetch_all(pool)
+    .await
+    .unwrap();
 
     Json(result)
 }

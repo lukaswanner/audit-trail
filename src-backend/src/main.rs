@@ -1,3 +1,4 @@
+mod session_state;
 mod database;
 mod middlewares;
 mod routes;

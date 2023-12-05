@@ -1,19 +1,22 @@
-use crate::AppState;
-use axum::{extract::State, Json};
+use crate::{session_state::UserSession, AppState};
+use axum::{extract::State, Extension, Json};
 use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
 
 #[derive(Debug, FromRow, Serialize, Deserialize)]
 pub struct Project {
     id: i32,
-    account_id: i32,
-    title: String,
+    project_title: String,
 }
 
-pub async fn read_projects(State(state): State<AppState>) -> Json<Vec<Project>> {
-    let pool = &state.pool;
-    let result = sqlx::query_as::<_, Project>("SELECT * FROM project;")
-        .fetch_all(pool)
+pub async fn read_projects(
+    State(state): State<AppState>,
+    Extension(session): Extension<UserSession>,
+) -> Json<Vec<Project>> {
+    let query = "SELECT id, title as project_title FROM project WHERE account_id = $1";
+    let result = sqlx::query_as::<_, Project>(query)
+        .bind(session.account_id)
+        .fetch_all(&state.pool)
         .await
         .unwrap();
 
@@ -23,17 +26,17 @@ pub async fn read_projects(State(state): State<AppState>) -> Json<Vec<Project>> 
 #[derive(Deserialize)]
 pub struct CreateProject {
     title: String,
-    account_id: i32,
 }
 
 pub async fn create_project(
     State(state): State<AppState>,
+    Extension(session): Extension<UserSession>,
     Json(payload): Json<CreateProject>,
 ) -> &'static str {
     let pool = &state.pool;
     sqlx::query("INSERT INTO project (title, account_id) VALUES ($1, $2);")
         .bind(payload.title)
-        .bind(payload.account_id)
+        .bind(session.account_id)
         .execute(pool)
         .await
         .unwrap();

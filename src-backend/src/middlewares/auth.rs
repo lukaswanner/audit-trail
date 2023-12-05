@@ -8,7 +8,7 @@ use axum_extra::extract::CookieJar;
 use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
 
-use crate::AppState;
+use crate::{session_state::UserSession, AppState};
 use jsonwebtoken::{decode, DecodingKey, Validation};
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -54,61 +54,47 @@ async fn key_is_valid(token: &str, project_title: String, state: AppState) -> bo
     }
 }
 
-#[derive(FromRow, Deserialize)]
-struct Project {
-    account_id: i32,
+#[derive(Debug, FromRow, Deserialize)]
+struct Account {
+    id: i32,
 }
 
-async fn token_is_valid(token: &str, project_title: String, state: AppState) -> bool {
+async fn token_is_valid(token: &str, state: AppState) -> Option<Account> {
     let jwt_token = decode::<Claims>(
         token,
         &DecodingKey::from_secret("secret".as_ref()),
         &Validation::default(),
     );
 
-    let query = "Select account_id from project where title = $1";
+    let query = "Select id from account where id = $1";
 
-    let project = sqlx::query_as::<_, Project>(query)
-        .bind(project_title)
-        .fetch_optional(&state.pool)
-        .await;
+    if let Ok(token) = jwt_token {
+        let account = sqlx::query_as::<_, Account>(query)
+            .bind(token.claims.account_id)
+            .fetch_optional(&state.pool)
+            .await;
 
-    // check if claims are valid
-    // check if project_title matches
-    // check if token is expired
-    match project {
-        Ok(Some(project)) => {
-            if let Ok(token) = jwt_token {
-                if token.claims.exp > chrono::Utc::now().timestamp() as usize
-                    && token.claims.account_id == project.account_id
-                {
-                    return true;
-                } else {
-                    return false;
-                }
-            } else {
-                return false;
-            }
+        if let Ok(Some(account)) = account {
+            return Some(account);
         }
-        _ => return false,
     }
+    return None;
 }
-
 pub async fn check_request_with_jwt_token(
     State(state): State<AppState>,
-    Path(project_title): Path<String>,
     cookie: CookieJar,
-    request: Request,
+    mut request: Request,
     next: Next,
 ) -> Result<Response, StatusCode> {
-    match extract_jwt_token(&cookie) {
-        Some(token) if token_is_valid(token, project_title, state).await => {
+    if let Some(token) = extract_jwt_token(&cookie) {
+        if let Some(acc) = token_is_valid(token, state).await {
+            request.extensions_mut().insert(UserSession::new(acc.id));
             let response = next.run(request).await;
             return Ok(response);
         }
-
-        _ => return Err(StatusCode::UNAUTHORIZED),
     }
+
+    Err(StatusCode::UNAUTHORIZED)
 }
 
 // todo check if i can just use the body
@@ -119,12 +105,11 @@ pub async fn check_request_with_api_token(
     request: Request,
     next: Next,
 ) -> Result<Response, StatusCode> {
-    match extract_api_token(&headers) {
-        Some(token) if key_is_valid(token, project_title, state).await => {
+    if let Some(token) = extract_api_token(&headers) {
+        if key_is_valid(token, project_title, state).await {
             let response = next.run(request).await;
             return Ok(response);
         }
-
-        _ => return Err(StatusCode::UNAUTHORIZED),
     }
+    Err(StatusCode::UNAUTHORIZED)
 }

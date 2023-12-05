@@ -67,6 +67,7 @@ pub async fn login(
         .await
         .unwrap();
 
+    println!("{:?}", account);
     // map account to a response, if acc is empty return unauthorized
     generate_token(account, &credentials)
 }
