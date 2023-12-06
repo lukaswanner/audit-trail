@@ -59,7 +59,7 @@ async fn main() {
             auth::check_request_with_jwt_token,
         ));
 
-    let websocket_routes = Router::new().route("/ws/events", get(websocket::handler));
+    let websocket_routes = Router::new().route("/events", get(websocket::handler));
 
     let login_routes = Router::new()
         .route("/login", post(authorize::login))
@@ -69,7 +69,7 @@ async fn main() {
         .nest("/auth", login_routes)
         .nest("/api", api_routes)
         .nest("/app", app_routes)
-        .nest("/", websocket_routes)
+        .nest("/ws", websocket_routes)
         .with_state(shared_state);
 
     let host = "localhost";
