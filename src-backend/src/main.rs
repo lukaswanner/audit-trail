@@ -44,12 +44,15 @@ async fn main() {
         ));
 
     let app_routes = Router::new()
+        // get
         .route("/channels", get(channel::read_channels))
         .route("/users", get(user::read_users))
         .route("/events", get(event::read_events))
         .route("/projects", get(project::read_projects))
+        // post
         .route("/project", post(project::create_project))
         .route("/api-token", post(api_token::create_api_token))
+        // delete
         .route("/api-token", delete(api_token::delete_api_token))
         .route_layer(middleware::from_fn_with_state(
             shared_state.clone(),

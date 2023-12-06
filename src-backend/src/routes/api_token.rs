@@ -1,9 +1,9 @@
-use crate::AppState;
+use crate::{session_state::UserSession, AppState};
 use axum::{
     extract::State,
     http::StatusCode,
     response::{IntoResponse, Response},
-    Json,
+    Extension, Json,
 };
 use rand::{distributions::Alphanumeric, Rng};
 use serde::{Deserialize, Serialize};
@@ -31,12 +31,14 @@ impl ApiToken {
 
 pub async fn create_api_token(
     State(state): State<AppState>,
+    Extension(session): Extension<UserSession>,
     Json(payload): Json<ApiTokenCreatePayload>,
 ) -> Response {
     let api_token = ApiToken::generate_new(32);
-    sqlx::query("INSERT INTO api_token (project_id, token) VALUES ($1, $2 );")
+    sqlx::query("INSERT INTO api_token (project_id, token) SELECT $1 AS project_id, $2 AS token WHERE EXISTS (SELECT 1 FROM project WHERE id = $1 and account_id = $3);")
         .bind(payload.project_id)
         .bind(&api_token.0)
+        .bind(session.account_id)
         .execute(&state.pool)
         .await
         .unwrap();
@@ -52,13 +54,19 @@ pub struct ApiTokenDeletePayload {
 
 pub async fn delete_api_token(
     State(state): State<AppState>,
+    Extension(session): Extension<UserSession>,
     Json(payload): Json<ApiTokenDeletePayload>,
 ) -> Response {
-    sqlx::query("DELETE FROM api_token WHERE token = $1")
+    let res = sqlx::query("DELETE FROM api_token WHERE EXISTS (SELECT 1 from project WHERE account_id = $2) AND token = $1;")
         .bind(payload.token)
+        .bind(session.account_id)
         .execute(&state.pool)
         .await
         .unwrap();
+
+    if res.rows_affected() == 0 {
+        return StatusCode::NOT_FOUND.into_response();
+    }
 
     StatusCode::NO_CONTENT.into_response()
 }
