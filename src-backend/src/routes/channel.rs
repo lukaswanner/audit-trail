@@ -2,7 +2,10 @@ use axum::{extract::State, Extension, Json};
 use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
 
-use crate::{session_state::UserSession, AppState};
+use crate::{
+    session_state::{ApiSession, UserSession},
+    AppState,
+};
 
 #[derive(Debug, FromRow, Serialize, Deserialize)]
 pub struct Channel {
@@ -36,12 +39,15 @@ pub struct CreateChannel {
 
 pub async fn create_channel(
     State(state): State<AppState>,
+    Extension(session): Extension<ApiSession>,
     Json(payload): Json<CreateChannel>,
 ) -> &'static str {
     let pool = &state.pool;
-    sqlx::query("INSERT INTO channel (title, project_id) VALUES ($1, $2);")
+    sqlx::query("INSERT INTO channel (title, project_id) SELECT $1 AS title, $2 AS project_id WHERE EXISTS (SELECT 1 FROM project WHERE account_id = $3 id = $4);")
         .bind(payload.title)
         .bind(payload.project_id)
+        .bind(session.account_id)
+        .bind(session.project_id)
         .execute(pool)
         .await
         .unwrap();

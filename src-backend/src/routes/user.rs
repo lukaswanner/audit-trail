@@ -4,7 +4,10 @@ use axum::{extract::State, Extension, Json};
 use serde_json::{json, Value};
 use sqlx::prelude::FromRow;
 
-use crate::{session_state::UserSession, AppState};
+use crate::{
+    session_state::{ApiSession, UserSession},
+    AppState,
+};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, FromRow, Serialize, Deserialize)]
@@ -38,18 +41,25 @@ pub struct CreateUser {
 
 pub async fn create_user(
     State(state): State<AppState>,
+    Extension(session): Extension<ApiSession>,
     Json(payload): Json<CreateUser>,
 ) -> &'static str {
     let pool = &state.pool;
 
     let props = json!(payload.properties);
-    sqlx::query("INSERT INTO event_user (name,project_id, properties) VALUES ($1,$2,$3);")
-        .bind(payload.name)
-        .bind(payload.project_id)
-        .bind(props)
-        .execute(pool)
-        .await
-        .unwrap();
+    sqlx::query(
+        "INSERT INTO event_user (name,project_id, properties) 
+SELECT $1 AS name, $2 AS project_id, $3 as properties
+WHERE EXISTS (SELECT 1 FROM project WHERE account_id = $4 and id = $5);",
+    )
+    .bind(payload.name)
+    .bind(payload.project_id)
+    .bind(props)
+    .bind(session.account_id)
+    .bind(session.project_id)
+    .execute(pool)
+    .await
+    .unwrap();
 
     "Created user"
 }
