@@ -1,5 +1,5 @@
 use crate::{session_state::UserSession, AppState};
-use axum::{extract::State, Extension, Json};
+use axum::{extract::State, http::StatusCode, Extension, Json};
 use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
 
@@ -32,14 +32,16 @@ pub async fn create_project(
     State(state): State<AppState>,
     Extension(session): Extension<UserSession>,
     Json(payload): Json<CreateProject>,
-) -> &'static str {
+) -> StatusCode {
     let pool = &state.pool;
-    sqlx::query("INSERT INTO project (title, account_id) VALUES ($1, $2);")
+    let res = sqlx::query("INSERT INTO project (title, account_id) VALUES ($1, $2);")
         .bind(payload.title)
         .bind(session.account_id)
         .execute(pool)
-        .await
-        .unwrap();
+        .await;
 
-    "Created project"
+    match res {
+        Ok(_) => return StatusCode::CREATED,
+        Err(_) => return StatusCode::CONFLICT,
+    }
 }
