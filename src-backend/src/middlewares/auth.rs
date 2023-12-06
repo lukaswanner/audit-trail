@@ -1,5 +1,5 @@
 use axum::{
-    extract::{Path, Request, State},
+    extract::{Request, State},
     http::{HeaderMap, StatusCode},
     middleware::Next,
     response::Response,
@@ -8,7 +8,10 @@ use axum_extra::extract::CookieJar;
 use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
 
-use crate::{session_state::UserSession, AppState};
+use crate::{
+    session_state::{ApiSession, UserSession},
+    AppState,
+};
 use jsonwebtoken::{decode, DecodingKey, Validation};
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -33,25 +36,22 @@ fn extract_api_token(headers: &HeaderMap) -> Option<&str> {
 
 #[derive(Debug, FromRow, Serialize, Deserialize)]
 struct ApiToken {
+    account_id: i32,
     project_id: i32,
 }
 
 // check if the token is in db
 // return true if we have a valid token that matches
-async fn key_is_valid(token: &str, project_title: String, state: AppState) -> bool {
-    let query = "Select project_id from api_token a join project p on a.project_id = p.id where a.token = $1 and p.title = $2";
+async fn key_is_valid(token: &str, state: AppState) -> Option<ApiToken> {
+    let query = "Select project_id, p.account_id from api_token a join project p on a.project_id = p.id where a.token = $1";
 
     let api_token = sqlx::query_as::<_, ApiToken>(query)
         .bind(token)
-        .bind(project_title)
         .fetch_optional(&state.pool)
         .await
         .unwrap();
 
-    match api_token {
-        Some(_) => return true,
-        _ => return false,
-    }
+    return api_token;
 }
 
 #[derive(Debug, FromRow, Deserialize)]
@@ -100,13 +100,16 @@ pub async fn check_request_with_jwt_token(
 // todo check if i can just use the body
 pub async fn check_request_with_api_token(
     State(state): State<AppState>,
-    Path(project_title): Path<String>,
     headers: HeaderMap,
-    request: Request,
+    mut request: Request,
     next: Next,
 ) -> Result<Response, StatusCode> {
     if let Some(token) = extract_api_token(&headers) {
-        if key_is_valid(token, project_title, state).await {
+        if let Some(acc) = key_is_valid(token, state).await {
+            println!("acc: {:?}", acc);
+            request
+                .extensions_mut()
+                .insert(ApiSession::new(acc.account_id, acc.project_id));
             let response = next.run(request).await;
             return Ok(response);
         }

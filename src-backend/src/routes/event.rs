@@ -1,4 +1,7 @@
-use crate::{session_state::UserSession, AppState};
+use crate::{
+    session_state::{ApiSession, UserSession},
+    AppState,
+};
 use axum::{extract::State, Extension, Json};
 use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
@@ -38,14 +41,20 @@ pub struct CreateEvent {
 
 pub async fn create_event(
     State(state): State<AppState>,
+    Extension(session): Extension<ApiSession>,
     Json(payload): Json<CreateEvent>,
 ) -> &'static str {
     let pool = &state.pool;
-    sqlx::query("INSERT INTO event (icon, title, channel_id, user_id) VALUES ($1, $2, $3, $4);")
+    let query = "INSERT INTO event (icon, title, channel_id, user_id)
+    SELECT $1 AS title, $2 AS icon, $3 as channel_id, $4 as user_id
+    WHERE EXISTS (SELECT 1 FROM project WHERE account_id = $5 and id = $6);";
+    sqlx::query(query)
         .bind(payload.icon)
         .bind(payload.title)
         .bind(payload.channel_id)
         .bind(payload.user_id)
+        .bind(session.account_id)
+        .bind(session.project_id)
         .execute(pool)
         .await
         .unwrap();
