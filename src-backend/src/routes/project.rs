@@ -44,8 +44,8 @@ pub async fn create_project(
         .await;
 
     match res {
-        Ok(_) => return StatusCode::CREATED,
-        Err(_) => return StatusCode::CONFLICT,
+        Ok(_) => StatusCode::CREATED,
+        Err(_) => StatusCode::CONFLICT,
     }
 }
 
@@ -62,7 +62,7 @@ pub async fn create_project_api(
         .await;
 
     match res {
-        Ok(_) => return StatusCode::CREATED,
-        Err(_) => return StatusCode::CONFLICT,
+        Ok(_) => StatusCode::CREATED,
+        Err(_) => StatusCode::CONFLICT,
     }
 }

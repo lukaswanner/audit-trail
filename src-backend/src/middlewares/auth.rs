@@ -45,13 +45,11 @@ struct ApiToken {
 async fn key_is_valid(token: &str, state: AppState) -> Option<ApiToken> {
     let query = "Select project_id, p.account_id from api_token a join project p on a.project_id = p.id where a.token = $1";
 
-    let api_token = sqlx::query_as::<_, ApiToken>(query)
+    sqlx::query_as::<_, ApiToken>(query)
         .bind(token)
         .fetch_optional(&state.pool)
         .await
-        .unwrap();
-
-    return api_token;
+        .unwrap()
 }
 
 #[derive(Debug, FromRow, Deserialize)]
@@ -78,7 +76,7 @@ async fn token_is_valid(token: &str, state: AppState) -> Option<Account> {
             return Some(account);
         }
     }
-    return None;
+    None
 }
 pub async fn check_request_with_jwt_token(
     State(state): State<AppState>,
