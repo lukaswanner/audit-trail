@@ -1,116 +1,76 @@
-<script>
+<script lang="ts">
 	import LoginCard from '$lib/components/LoginCard.svelte';
 
 	let successfulLogIn = true;
 	let closeToast = false;
+	let eyesLeft: HTMLDivElement;
+	let eyesRight: HTMLDivElement;
+	let eyeR: HTMLDivElement;
+	let eyeL: HTMLDivElement;
+	let blacknose: HTMLDivElement;
+	let eyesLeftRed: HTMLDivElement;
+	let eyesRightRed: HTMLDivElement;
+	let eyeRRed: HTMLDivElement;
+	let eyeLRed: HTMLDivElement;
+	let redMouth: HTMLDivElement;
 
-	function getMousePosition() {
-		if (typeof window !== 'undefined') {
-			window.addEventListener('mousemove', (event) => {
-				const eyesLeft = document.querySelector('.eyesLeft');
-				if (eyesLeft) {
-					const mouseX = event.clientX;
-					const mouseY = event.clientY;
-					const y = 5 + (mouseY * 2) / 100;
-					const x = 75 - (mouseX * 2) / 100;
-					eyesLeft.style.top = `${y}%`;
-					eyesLeft.style.right = `${x}%`;
-				}
-				const eyesRight = document.querySelector('.eyesRight');
-				if (eyesRight) {
-					const mouseX = event.clientX;
-					const mouseY = event.clientY;
-					const y = 5 + (mouseY * 2) / 100;
-					const x = 55 - (mouseX * 2) / 100;
-					eyesRight.style.top = `${y}%`;
-					eyesRight.style.right = `${x}%`;
-				}
+	function getMousePosition(mouseEvent: MouseEvent) {
+		const mouseX = mouseEvent.clientX;
+		const mouseY = mouseEvent.clientY;
 
-				const eyeR = document.querySelector('.eyeR');
-				if (eyeR) {
-					const mouseX = event.clientX;
-					const mouseY = event.clientY;
-					const y = 5 + (mouseY * 2) / 100;
-					const x = 55 - (mouseX * 4) / 100;
-					eyeR.style.top = `${y}%`;
-					eyeR.style.right = `${x}%`;
-				}
+		let y = 5 + (mouseY * 2) / 100;
+		let x = 75 - (mouseX * 2) / 100;
+		eyesLeft.style.top = `${y}%`;
+		eyesLeft.style.right = `${x}%`;
 
-				const eyeL = document.querySelector('.eyeL');
-				if (eyeL) {
-					const mouseX = event.clientX;
-					const mouseY = event.clientY;
-					const y = 5 + (mouseY * 2) / 100;
-					const x = 55 - (mouseX * 4) / 100;
-					eyeL.style.top = `${y}%`;
-					eyeL.style.right = `${x}%`;
-				}
+		y = 5 + (mouseY * 2) / 100;
+		x = 55 - (mouseX * 2) / 100;
+		eyesRight.style.top = `${y}%`;
+		eyesRight.style.right = `${x}%`;
 
-				const blacknose = document.querySelector('.nose');
-				if (blacknose) {
-					const mouseX = event.clientX;
-					const mouseY = event.clientY;
-					const y = 15 + (mouseY * 2) / 100;
-					const x = 75 - (mouseX * 2) / 100;
-					blacknose.style.top = `${y}%`;
-					blacknose.style.right = `${x}%`;
-				}
+		y = 5 + (mouseY * 2) / 100;
+		x = 55 - (mouseX * 4) / 100;
+		eyeR.style.top = `${y}%`;
+		eyeR.style.right = `${x}%`;
 
-				const eyesLeftRed = document.querySelector('.eyesLeftRed');
-				if (eyesLeft) {
-					const mouseX = event.clientX;
-					const mouseY = event.clientY;
-					const y = 5 + (mouseY * 2) / 100;
-					const x = 75 - (mouseX * 2) / 100;
-					eyesLeftRed.style.top = `${y}%`;
-					eyesLeftRed.style.right = `${x}%`;
-				}
-				const eyesRightRed = document.querySelector('.eyesRightRed');
-				if (eyesRight) {
-					const mouseX = event.clientX;
-					const mouseY = event.clientY;
-					const y = 5 + (mouseY * 2) / 100;
-					const x = 55 - (mouseX * 2) / 100;
-					eyesRightRed.style.top = `${y}%`;
-					eyesRightRed.style.right = `${x}%`;
-				}
+		y = 5 + (mouseY * 2) / 100;
+		x = 55 - (mouseX * 4) / 100;
+		eyeL.style.top = `${y}%`;
+		eyeL.style.right = `${x}%`;
 
-				const eyeRRed = document.querySelector('.eyeRRed');
-				if (eyeRRed) {
-					const mouseX = event.clientX;
-					const mouseY = event.clientY;
-					const y = 5 + (mouseY * 2) / 100;
-					const x = 55 - (mouseX * 4) / 100;
-					eyeRRed.style.top = `${y}%`;
-					eyeRRed.style.right = `${x}%`;
-				}
+		y = 15 + (mouseY * 2) / 100;
+		x = 75 - (mouseX * 2) / 100;
+		blacknose.style.top = `${y}%`;
+		blacknose.style.right = `${x}%`;
 
-				const eyeLRed = document.querySelector('.eyeLRed');
-				if (eyeLRed) {
-					const mouseX = event.clientX;
-					const mouseY = event.clientY;
-					const y = 5 + (mouseY * 2) / 100;
-					const x = 55 - (mouseX * 4) / 100;
-					eyeLRed.style.top = `${y}%`;
-					eyeLRed.style.right = `${x}%`;
-				}
+		y = 5 + (mouseY * 2) / 100;
+		x = 75 - (mouseX * 2) / 100;
+		eyesLeftRed.style.top = `${y}%`;
+		eyesLeftRed.style.right = `${x}%`;
 
-				const redMouth = document.querySelector('.redMouth');
-				if (redMouth) {
-					const mouseX = event.clientX;
-					const mouseY = event.clientY;
-					const y = 25 + (mouseY * 4) / 100;
-					const x = 75 - (mouseX * 4) / 100;
-					redMouth.style.top = `${y}%`;
-					redMouth.style.right = `${x}%`;
-				}
-			});
-		}
+		y = 5 + (mouseY * 2) / 100;
+		x = 55 - (mouseX * 2) / 100;
+		eyesRightRed.style.top = `${y}%`;
+		eyesRightRed.style.right = `${x}%`;
+
+		y = 5 + (mouseY * 2) / 100;
+		x = 55 - (mouseX * 4) / 100;
+		eyeRRed.style.top = `${y}%`;
+		eyeRRed.style.right = `${x}%`;
+
+		y = 5 + (mouseY * 2) / 100;
+		x = 55 - (mouseX * 4) / 100;
+		eyeLRed.style.top = `${y}%`;
+		eyeLRed.style.right = `${x}%`;
+
+		y = 25 + (mouseY * 4) / 100;
+		x = 75 - (mouseX * 4) / 100;
+		redMouth.style.top = `${y}%`;
+		redMouth.style.right = `${x}%`;
 	}
-
-	getMousePosition();
 </script>
 
+<svelte:window on:mousemove={getMousePosition} />
 {#if !successfulLogIn && !closeToast}
 	<div class="flex justify-center mb-4">
 		<div class="max-w-6xl alert alert-error flex justify-between">
@@ -140,30 +100,26 @@
 	</div>
 {/if}
 <div class="flex">
-	<LoginCard bind:successfulLogIn bind:closeToast />
+	<LoginCard {successfulLogIn} {closeToast} />
 	<div class="hero min-h-screen bg-base-200">
 		<div class="hero-content flex-col items-end gap-0 lg:flex-row">
 			<div class="figureBlack">
-				<div class="eyesLeft">
-					<div class="eyeL"></div>
+				<div bind:this={eyesLeft} class="eyesLeft">
+					<div bind:this={eyeL} class="eyeL"></div>
 				</div>
-				<div class="eyesRight">
-					<div class="eyeR"></div>
+				<div bind:this={eyesRight} class="eyesRight">
+					<div bind:this={eyeR} class="eyeR"></div>
 				</div>
-				<div class="nose">
-
-				</div>
+				<div bind:this={blacknose} class="nose"></div>
 			</div>
 			<div class="figureRed mr-4">
-				<div class="eyesLeftRed">
-					<div class="eyeLRed"></div>
+				<div bind:this={eyesLeftRed} class="eyesLeftRed">
+					<div bind:this={eyeLRed} class="eyeLRed"></div>
 				</div>
-				<div class="eyesRightRed">
-					<div class="eyeRRed"></div>
+				<div bind:this={eyesRightRed} class="eyesRightRed">
+					<div bind:this={eyeRRed} class="eyeRRed"></div>
 				</div>
-				<div class="redMouth">
-
-				</div>
+				<div bind:this={redMouth} class="redMouth"></div>
 			</div>
 			<div>
 				<h1 class="text-5xl font-bold">Audit Trail!</h1>
@@ -184,7 +140,7 @@
 		background-color: darkred;
 		position: relative;
 		border-top-right-radius: 5em;
-		border-top-left-radius: 5em
+		border-top-left-radius: 5em;
 	}
 
 	.eyesLeftRed {
