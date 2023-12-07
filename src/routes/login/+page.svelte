@@ -1,5 +1,5 @@
 <script lang="ts">
-	import LoginCard from '$lib/components/LoginCard.svelte';
+	import LoginCard from '$lib/components/auth/LoginCard.svelte';
 
 	let successfulLogIn = true;
 	let closeToast = false;

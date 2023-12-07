@@ -1,5 +1,5 @@
 <script>
-	import RegisterCard from '$lib/components/RegisterCard.svelte';
+	import RegisterCard from '$lib/components/auth/RegisterCard.svelte';
 </script>
 
 <h1 class="font-bold text-4xl self-center">Register</h1>
