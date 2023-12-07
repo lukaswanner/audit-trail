@@ -1,4 +1,4 @@
-use axum::{extract::State, Extension, Json};
+use axum::{extract::State, http::StatusCode, Extension, Json};
 use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
 
@@ -33,24 +33,23 @@ pub async fn read_channels(
 #[derive(Deserialize)]
 pub struct CreateChannel {
     title: String,
-    #[serde(rename = "projectId")]
-    project_id: i32,
 }
 
 pub async fn create_channel(
     State(state): State<AppState>,
     Extension(session): Extension<ApiSession>,
     Json(payload): Json<CreateChannel>,
-) -> &'static str {
+) -> StatusCode {
     let pool = &state.pool;
-    sqlx::query("INSERT INTO channel (title, project_id) SELECT $1 AS title, $2 AS project_id WHERE EXISTS (SELECT 1 FROM project WHERE account_id = $3 id = $4);")
+    let res = sqlx::query("INSERT INTO channel (title, project_id) SELECT $1 AS title, $2 AS project_id WHERE EXISTS (SELECT 1 FROM project WHERE account_id = $3 and id = $2);")
         .bind(payload.title)
-        .bind(payload.project_id)
-        .bind(session.account_id)
         .bind(session.project_id)
+        .bind(session.account_id)
         .execute(pool)
-        .await
-        .unwrap();
+        .await;
 
-    "Created channel"
+    match res {
+        Ok(_) => StatusCode::CREATED,
+        Err(_) => StatusCode::CONFLICT,
+    }
 }

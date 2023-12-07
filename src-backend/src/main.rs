@@ -38,6 +38,7 @@ async fn main() {
         .route("/channel", post(channel::create_channel))
         .route("/user", post(user::create_user))
         .route("/event", post(event::create_event))
+        .route("/project", post(project::create_project_api))
         .route_layer(middleware::from_fn_with_state(
             shared_state.clone(),
             auth::check_request_with_api_token,
