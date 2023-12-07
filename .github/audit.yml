@@ -19,6 +19,9 @@ jobs:
       - name: Install stable toolchain
         uses: dtolnay/rust-toolchain@stable
 
+      - name: Change directory to src-backend
+        run: cd src-backend
+
       - name: Check that code can compile
         run: cargo check
 
