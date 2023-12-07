@@ -46,6 +46,16 @@
 					eyeL.style.right = `${x}%`;
 				}
 
+				const blacknose = document.querySelector('.nose');
+				if (blacknose) {
+					const mouseX = event.clientX;
+					const mouseY = event.clientY;
+					const y = 15 + (mouseY * 2) / 100;
+					const x = 75 - (mouseX * 2) / 100;
+					blacknose.style.top = `${y}%`;
+					blacknose.style.right = `${x}%`;
+				}
+
 				const eyesLeftRed = document.querySelector('.eyesLeftRed');
 				if (eyesLeft) {
 					const mouseX = event.clientX;
@@ -83,6 +93,16 @@
 					const x = 55 - (mouseX * 4) / 100;
 					eyeLRed.style.top = `${y}%`;
 					eyeLRed.style.right = `${x}%`;
+				}
+
+				const redMouth = document.querySelector('.redMouth');
+				if (redMouth) {
+					const mouseX = event.clientX;
+					const mouseY = event.clientY;
+					const y = 25 + (mouseY * 4) / 100;
+					const x = 75 - (mouseX * 4) / 100;
+					redMouth.style.top = `${y}%`;
+					redMouth.style.right = `${x}%`;
 				}
 			});
 		}
@@ -130,6 +150,9 @@
 				<div class="eyesRight">
 					<div class="eyeR"></div>
 				</div>
+				<div class="nose">
+
+				</div>
 			</div>
 			<div class="figureRed mr-4">
 				<div class="eyesLeftRed">
@@ -137,6 +160,9 @@
 				</div>
 				<div class="eyesRightRed">
 					<div class="eyeRRed"></div>
+				</div>
+				<div class="redMouth">
+
 				</div>
 			</div>
 			<div>
@@ -202,11 +228,25 @@
 		position: absolute;
 	}
 
+	.redMouth {
+		position: absolute;
+		background-color: black;
+		height: 3px;
+		width: 30px;
+	}
+
 	.figureBlack {
 		width: 10vw;
 		height: 40vh;
 		background-color: black;
 		position: relative;
+	}
+
+	.nose {
+		position: absolute;
+		background-color: white;
+		height: 40px;
+		width: 3px;
 	}
 
 	.eyesLeft {
