@@ -11,7 +11,9 @@ on:
 jobs:
   check:
     runs-on: ubuntu-latest
-
+    defaults:
+      run:
+        working-directory: ./src-backend
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -19,9 +21,5 @@ jobs:
       - name: Install stable toolchain
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Change directory to src-backend
-        run: cd src-backend
-
       - name: Check that code can compile
         run: cargo check
-
