@@ -34,6 +34,7 @@
 		<a class="btn btn-ghost text-xl" href="/">Audit Trail</a>
 	</div>
 	<div class="navbar-end">
+		<a class="btn btn-outline btn-primary mr-3" href="/login">Log In</a>
 		<label class="cursor-pointer grid place-items-center mr-3">
 			<input
 				type="checkbox"

@@ -5,6 +5,7 @@ mod session_state;
 
 use argon2::password_hash::SaltString;
 use axum::{
+    http::{header::CONTENT_TYPE, Method},
     middleware::{self},
     routing::{delete, get, post},
     Router,
@@ -15,6 +16,7 @@ use rand::rngs::OsRng;
 use routes::{api_token, authorize, channel, event, project, user, websocket};
 
 use sqlx::PgPool;
+use tower_http::cors::{Any, CorsLayer};
 
 #[derive(Clone)]
 pub struct AppState {
@@ -62,6 +64,11 @@ async fn main() {
 
     let websocket_routes = Router::new().route("/events", get(websocket::handler));
 
+    let cors = CorsLayer::new()
+        .allow_methods([Method::GET, Method::POST, Method::DELETE])
+        .allow_origin(Any)
+        .allow_headers([CONTENT_TYPE]);
+
     let login_routes = Router::new()
         .route("/login", post(authorize::login))
         .route("/register", post(authorize::register));
@@ -71,6 +78,7 @@ async fn main() {
         .nest("/api", api_routes)
         .nest("/app", app_routes)
         .nest("/ws", websocket_routes)
+        .layer(cors)
         .with_state(shared_state);
 
     let host = "localhost";
