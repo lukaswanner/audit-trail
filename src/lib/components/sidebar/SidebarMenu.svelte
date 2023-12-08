@@ -12,20 +12,20 @@
 			{$project}
 		</h1>
 		<button class="btn btn-ghost h-12 w-12">
-			<svg xmlns="http://www.w3.org/2000/svg" class="fill-current h-8 w-8" viewBox="0 0 512 512"
+			<svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 fill-current" viewBox="0 0 512 512"
 				><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.--><path
 					d="M495.9 166.6c3.2 8.7 .5 18.4-6.4 24.6l-43.3 39.4c1.1 8.3 1.7 16.8 1.7 25.4s-.6 17.1-1.7 25.4l43.3 39.4c6.9 6.2 9.6 15.9 6.4 24.6c-4.4 11.9-9.7 23.3-15.8 34.3l-4.7 8.1c-6.6 11-14 21.4-22.1 31.2c-5.9 7.2-15.7 9.6-24.5 6.8l-55.7-17.7c-13.4 10.3-28.2 18.9-44 25.4l-12.5 57.1c-2 9.1-9 16.3-18.2 17.8c-13.8 2.3-28 3.5-42.5 3.5s-28.7-1.2-42.5-3.5c-9.2-1.5-16.2-8.7-18.2-17.8l-12.5-57.1c-15.8-6.5-30.6-15.1-44-25.4L83.1 425.9c-8.8 2.8-18.6 .3-24.5-6.8c-8.1-9.8-15.5-20.2-22.1-31.2l-4.7-8.1c-6.1-11-11.4-22.4-15.8-34.3c-3.2-8.7-.5-18.4 6.4-24.6l43.3-39.4C64.6 273.1 64 264.6 64 256s.6-17.1 1.7-25.4L22.4 191.2c-6.9-6.2-9.6-15.9-6.4-24.6c4.4-11.9 9.7-23.3 15.8-34.3l4.7-8.1c6.6-11 14-21.4 22.1-31.2c5.9-7.2 15.7-9.6 24.5-6.8l55.7 17.7c13.4-10.3 28.2-18.9 44-25.4l12.5-57.1c2-9.1 9-16.3 18.2-17.8C227.3 1.2 241.5 0 256 0s28.7 1.2 42.5 3.5c9.2 1.5 16.2 8.7 18.2 17.8l12.5 57.1c15.8 6.5 30.6 15.1 44 25.4l55.7-17.7c8.8-2.8 18.6-.3 24.5 6.8c8.1 9.8 15.5 20.2 22.1 31.2l4.7 8.1c6.1 11 11.4 22.4 15.8 34.3zM256 336a80 80 0 1 0 0-160 80 80 0 1 0 0 160z"
 				/></svg
 			>
 		</button>
 	</div>
-	<div class="flex flex-col gap-2 w-full max-w-[200px]">
+	<div class="flex w-full max-w-[200px] flex-col gap-2">
 		<a
 			data-active={$page.url.pathname === '/feed'}
 			href="/feed"
-			class="btn btn-ghost hover:text-secondary data-[active=true]:bg-base-content/20 flex justify-start flex-row items-center gap-2 data-[active=true]:text-primary transition-colors text-base-content"
+			class="btn btn-ghost flex flex-row items-center justify-start gap-2 text-base-content transition-colors hover:text-secondary data-[active=true]:bg-base-content/20 data-[active=true]:text-primary"
 		>
-			<svg xmlns="http://www.w3.org/2000/svg" class="fill-current w-4 h-4" viewBox="0 0 512 512"
+			<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 fill-current" viewBox="0 0 512 512"
 				><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.--><path
 					d="M121 32C91.6 32 66 52 58.9 80.5L1.9 308.4C.6 313.5 0 318.7 0 323.9V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V323.9c0-5.2-.6-10.4-1.9-15.5l-57-227.9C446 52 420.4 32 391 32H121zm0 64H391l48 192H387.8c-12.1 0-23.2 6.8-28.6 17.7l-14.3 28.6c-5.4 10.8-16.5 17.7-28.6 17.7H195.8c-12.1 0-23.2-6.8-28.6-17.7l-14.3-28.6c-5.4-10.8-16.5-17.7-28.6-17.7H73L121 96z"
 				/></svg
@@ -35,9 +35,9 @@
 		<a
 			href="/insights"
 			data-active={$page.url.pathname === '/charts'}
-			class="btn btn-ghost hover:text-secondary data-[active=true]:bg-base-content/20 flex justify-start flex-row items-center gap-2 data-[active=true]:text-primary transition-colors text-base-content"
+			class="btn btn-ghost flex flex-row items-center justify-start gap-2 text-base-content transition-colors hover:text-secondary data-[active=true]:bg-base-content/20 data-[active=true]:text-primary"
 		>
-			<svg xmlns="http://www.w3.org/2000/svg" class="fill-current w-4 h-4" viewBox="0 0 512 512"
+			<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 fill-current" viewBox="0 0 512 512"
 				><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.--><path
 					d="M3.9 54.9C10.5 40.9 24.5 32 40 32H472c15.5 0 29.5 8.9 36.1 22.9s4.6 30.5-5.2 42.5L320 320.9V448c0 12.1-6.8 23.2-17.7 28.6s-23.8 4.3-33.5-3l-64-48c-8.1-6-12.8-15.5-12.8-25.6V320.9L9 97.3C-.7 85.4-2.8 68.8 3.9 54.9z"
 				/></svg
@@ -47,9 +47,9 @@
 		<a
 			href="/insights"
 			data-active={$page.url.pathname === '/insights'}
-			class="btn btn-ghost hover:text-secondary data-[active=true]:bg-base-content/20 flex justify-start flex-row items-center gap-2 data-[active=true]:text-primary transition-colors text-base-content"
+			class="btn btn-ghost flex flex-row items-center justify-start gap-2 text-base-content transition-colors hover:text-secondary data-[active=true]:bg-base-content/20 data-[active=true]:text-primary"
 		>
-			<svg xmlns="http://www.w3.org/2000/svg" class="fill-current h-4 w-4" viewBox="0 0 384 512"
+			<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 fill-current" viewBox="0 0 384 512"
 				><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.--><path
 					d="M272 384c9.6-31.9 29.5-59.1 49.2-86.2l0 0c5.2-7.1 10.4-14.2 15.4-21.4c19.8-28.5 31.4-63 31.4-100.3C368 78.8 289.2 0 192 0S16 78.8 16 176c0 37.3 11.6 71.9 31.4 100.3c5 7.2 10.2 14.3 15.4 21.4l0 0c19.8 27.1 39.7 54.4 49.2 86.2H272zM192 512c44.2 0 80-35.8 80-80V416H112v16c0 44.2 35.8 80 80 80zM112 176c0 8.8-7.2 16-16 16s-16-7.2-16-16c0-61.9 50.1-112 112-112c8.8 0 16 7.2 16 16s-7.2 16-16 16c-44.2 0-80 35.8-80 80z"
 				/></svg
@@ -57,12 +57,12 @@
 			<p>insights</p>
 		</a>
 	</div>
-	<div class="flex flex-row justify-between items-center w-full">
+	<div class="flex w-full flex-row items-center justify-between">
 		<h2 class="text-xl font-bold">Channels</h2>
 		<button
-			class="btn btn-ghost rounded-full fill-base-content hover:fill-primary transition-colors"
+			class="btn btn-ghost rounded-full fill-base-content transition-colors hover:fill-primary"
 		>
-			<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 448 512"
+			<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 448 512"
 				><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.--><path
 					d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z"
 				/></svg
