@@ -1,6 +1,14 @@
 // type definitions for user
-export type UserCredentials = {
-	email: string;
-	password: string;
-	rememberMe: boolean;
+export type UserPayload = {
+	name: string;
+	project_title: string;
+	properties: Record<string, unknown>;
 };
+
+export type User = {
+	id: number;
+	name: string;
+	project_title: string;
+	properties: Record<string, unknown>;
+};
+

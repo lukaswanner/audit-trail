@@ -1,4 +1,4 @@
-import type { UserCredentials } from "$lib/types/user/UserTypes";
+import type { UserCredentials } from "$lib/types/account/AccountTypes";
 
 
 const authBase = 'http://localhost:3000/auth';
