@@ -6,14 +6,14 @@
 	let channels = ['signups', 'general', 'chat'];
 </script>
 
-<div class="grid h-screen grid-cols-[1fr_3fr_6fr]">
+<div class="grid h-screen grid-cols-[100px_250px_6fr]">
 	<div class="border-r border-r-base-content/10 p-4">
 		<Sidebar {menuItems} />
 	</div>
 	<div class="border-r border-r-base-content/10 p-4">
 		<SidebarMenu {channels} />
 	</div>
-	<div class="p-4">
+	<div>
 		<slot />
 	</div>
 </div>

@@ -21,8 +21,8 @@
 	</div>
 	<div class="flex w-full flex-col gap-2">
 		<a
-			data-active={$page.url.pathname === '/feed'}
-			href="/feed"
+			data-active={$page.url.pathname === '/'}
+			href="/"
 			class="btn btn-ghost flex flex-row items-center justify-start gap-2 text-base-content transition-colors data-[active=true]:bg-base-content/20 data-[active=true]:text-primary"
 		>
 			<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 fill-current" viewBox="0 0 512 512"
@@ -33,7 +33,7 @@
 			<p>feed</p>
 		</a>
 		<a
-			href="/insights"
+			href="/charts"
 			data-active={$page.url.pathname === '/charts'}
 			class="btn btn-ghost flex flex-row items-center justify-start gap-2 text-base-content transition-colors data-[active=true]:bg-base-content/20 data-[active=true]:text-primary"
 		>

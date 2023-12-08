@@ -12,4 +12,5 @@ export type Event = {
 	title: string;
 	channel_title: string;
 	user_name: string;
+	ts: string;
 };

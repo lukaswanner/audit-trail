@@ -9,13 +9,14 @@ use axum::{
 use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
 
-#[derive(Debug, FromRow, Serialize, Deserialize)]
+#[derive(FromRow, Serialize, Deserialize)]
 pub struct Event {
     id: i32,
     icon: String,
     title: String,
     channel_title: String,
     user_name: String,
+    ts: String,
 }
 
 pub async fn read_event(
