@@ -2,7 +2,11 @@ use crate::{
     session_state::{ApiSession, UserSession},
     AppState,
 };
-use axum::{extract::State, http::StatusCode, Extension, Json};
+use axum::{
+    extract::{Path, State},
+    http::StatusCode,
+    Extension, Json,
+};
 use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
 
@@ -10,6 +14,23 @@ use sqlx::prelude::FromRow;
 pub struct Project {
     id: i32,
     project_title: String,
+}
+
+pub async fn read_project(
+    State(state): State<AppState>,
+    Path(title): Path<String>,
+    Extension(session): Extension<UserSession>,
+) -> Json<Option<Project>> {
+    let query =
+        "SELECT id, title as project_title FROM project WHERE account_id = $1 and lower(title) = lower($2)";
+    let result = sqlx::query_as::<_, Project>(query)
+        .bind(session.account_id)
+        .bind(title)
+        .fetch_optional(&state.pool)
+        .await
+        .unwrap();
+
+    Json(result)
 }
 
 pub async fn read_projects(

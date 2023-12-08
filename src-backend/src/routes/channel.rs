@@ -1,4 +1,8 @@
-use axum::{extract::State, http::StatusCode, Extension, Json};
+use axum::{
+    extract::{Path, State},
+    http::StatusCode,
+    Extension, Json,
+};
 use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
 
@@ -14,13 +18,31 @@ pub struct Channel {
     project_title: String,
 }
 
+pub async fn read_channel(
+    State(state): State<AppState>,
+    Path(title): Path<String>,
+    Extension(session): Extension<UserSession>,
+) -> Json<Option<Channel>> {
+    let pool = &state.pool;
+    let result = sqlx::query_as::<_, Channel>(
+        "SELECT c.id, c.title, p.title as project_title FROM channel c join project p on c.project_id = p.id WHERE p.account_id = $1 and lower(c.title) = lower($2)",
+    )
+    .bind(session.account_id)
+    .bind(title)
+    .fetch_optional(pool)
+    .await
+    .unwrap();
+
+    Json(result)
+}
+
 pub async fn read_channels(
     State(state): State<AppState>,
     Extension(session): Extension<UserSession>,
 ) -> Json<Vec<Channel>> {
     let pool = &state.pool;
     let result = sqlx::query_as::<_, Channel>(
-        "SELECT c.id, c.title, p.title as project_title FROM channel c join project p on c.project_id = p.id WHERE p.account_id = $1;",
+        "SELECT c.id, c.title, p.title as project_title FROM channel c join project p on c.project_id = p.id WHERE p.account_id = $1",
     )
     .bind(session.account_id)
     .fetch_all(pool)
@@ -41,7 +63,7 @@ pub async fn create_channel(
     Json(payload): Json<CreateChannel>,
 ) -> StatusCode {
     let pool = &state.pool;
-    let res = sqlx::query("INSERT INTO channel (title, project_id) SELECT $1 AS title, $2 AS project_id WHERE EXISTS (SELECT 1 FROM project WHERE account_id = $3 and id = $2);")
+    let res = sqlx::query("INSERT INTO channel (title, project_id) SELECT $1 AS title, $2 AS project_id WHERE EXISTS (SELECT 1 FROM project WHERE account_id = $3 and id = $2)")
         .bind(payload.title)
         .bind(session.project_id)
         .bind(session.account_id)

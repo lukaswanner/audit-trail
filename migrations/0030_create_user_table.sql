@@ -5,5 +5,6 @@ CREATE TABLE event_user (
 	name TEXT NOT NULL,
 	project_id INTEGER NOT NULL,
 	properties jsonb NOT NULL,
-	FOREIGN KEY (project_id) REFERENCES project (id) ON DELETE CASCADE
+	FOREIGN KEY (project_id) REFERENCES project (id) ON DELETE CASCADE,
+	UNIQUE (name, project_id)
 );
