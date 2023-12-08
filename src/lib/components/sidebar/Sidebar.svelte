@@ -31,6 +31,7 @@
 			{item}
 		</button>
 	{/each}
+	<div class="divider my-0 w-1/2 self-center" />
 	<button
 		class="btn btn-ghost h-12 w-12 rounded-full fill-base-content transition-colors hover:fill-primary"
 	>
