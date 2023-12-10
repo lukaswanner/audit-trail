@@ -1,4 +1,4 @@
-import type { Channel, ChannelPayload } from "$lib/types/channel/ChannelTypes";
+import type { ChannelPayload } from "$lib/types/channel/ChannelTypes";
 
 const channelBase = 'http://localhost:3000/app';
 
@@ -8,43 +8,47 @@ const channelBase = 'http://localhost:3000/app';
 // u - update
 // d - delete
 
-export async function createChanenl(channelTitle: ChannelPayload) {
+export async function createChanenl(channelTitle: ChannelPayload): Promise<Response> {
 	const res = await fetch(channelBase + '/channel', {
 		method: 'POST',
+		credentials: "same-origin",
 		headers: {
 			'Content-Type': 'application/json',
 		},
 		body: JSON.stringify({ title: channelTitle }),
 	});
-	return await res.json();
+	return res;
 }
 
-export async function readChannelList(): Promise<Channel[]> {
+export async function readChannelList(): Promise<Response> {
 	const res = await fetch(channelBase + '/channels', {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
 		},
 	});
-	return await res.json();
+
+	return res;
 }
 
-export async function readChannel(channelTitle: string): Promise<Channel> {
+export async function readChannel(channelTitle: string): Promise<Response> {
 	const res = await fetch(channelBase + '/channel/' + channelTitle, {
 		method: 'GET',
+		credentials: "same-origin",
 		headers: {
 			'Content-Type': 'application/json',
 		},
 	});
-	return await res.json();
+	return res;
 }
 
-export async function deleteChannel(channelTitle: string) {
+export async function deleteChannel(channelTitle: string): Promise<Response> {
 	const res = await fetch(channelBase + '/channel/' + channelTitle, {
 		method: 'DELETE',
+		credentials: "same-origin",
 		headers: {
 			'Content-Type': 'application/json',
 		},
 	});
-	return await res.json();
+	return res;
 }

@@ -1,15 +1,25 @@
 <script lang="ts">
+	import { login } from '$lib/api/auth';
 	import { project } from '$lib/stores/project';
+	import type { Project } from '$lib/types/project/ProjectTypes';
 
-	export let menuItems = ['ma', 'qu', 'ch', 'gi'];
+	export let projects: Project[];
 
-	function setActive(item: string) {
+	function setActive(item: Project) {
 		project.set(item);
 	}
 </script>
 
 <div class="flex flex-col items-center gap-2">
 	<button
+		on:click={async () => {
+			const res = await login({
+				email: 'lukas.wanner@google.com',
+				password: 'some-secure-password',
+				rememberMe: false
+			});
+			console.log(res);
+		}}
 		class="btn btn-ghost h-16 w-16 rounded-full fill-base-content transition-colors hover:fill-primary"
 	>
 		<a href="/">
@@ -20,15 +30,15 @@
 			>
 		</a>
 	</button>
-	{#each menuItems as item}
+	{#each projects as project_item}
 		<button
-			on:click={() => setActive(item)}
-			data-active={item === $project}
-			on:click={() => setActive(item)}
+			on:click={() => setActive(project_item)}
+			data-active={project_item === $project}
+			on:click={() => setActive(project_item)}
 			class="btn btn-circle flex h-12 w-12 items-center justify-center rounded-full border-transparent bg-transparent hover:border-transparent hover:bg-transparent data-[active=true]:border
 		data-[active=true]:border-accent"
 		>
-			{item}
+			{project_item.title}
 		</button>
 	{/each}
 	<div class="divider my-0 w-1/2 self-center" />

@@ -1,4 +1,4 @@
-import type { Event, EventPayload } from "$lib/types/event/EventTypes";
+import type { EventPayload } from "$lib/types/event/EventTypes";
 
 const eventBase = 'http://localhost:3000/app';
 
@@ -8,43 +8,44 @@ const eventBase = 'http://localhost:3000/app';
 // u - update
 // d - delete
 
-export async function createEvent(eventId: EventPayload) {
+export async function createEvent(eventId: EventPayload): Promise<Response> {
 	const res = await fetch(eventBase + '/event/', {
 		method: 'POST',
+		credentials: "same-origin",
 		headers: {
 			'Content-Type': 'application/json',
 		},
 		body: JSON.stringify({ eventId }),
 	});
-	return await res.json();
+	return res;
 }
 
-export async function readEventList(): Promise<Event[]> {
+export async function readEventList(): Promise<Response> {
 	const res = await fetch(eventBase + '/events', {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
 		},
 	});
-	return await res.json();
+	return res
 }
 
-export async function readEvent(eventId: number): Promise<Event> {
+export async function readEvent(eventId: number): Promise<Response> {
 	const res = await fetch(eventBase + '/event/' + eventId, {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
 		},
 	});
-	return await res.json();
+	return res;
 }
 
-export async function deleteEvent(eventId: number) {
+export async function deleteEvent(eventId: number): Promise<Response> {
 	const res = await fetch(eventBase + '/event/' + eventId, {
 		method: 'DELETE',
 		headers: {
 			'Content-Type': 'application/json',
 		},
 	});
-	return await res.json();
+	return res;
 }

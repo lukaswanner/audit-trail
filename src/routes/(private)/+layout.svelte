@@ -1,14 +1,15 @@
 <script lang="ts">
 	import Sidebar from '$lib/components/sidebar/Sidebar.svelte';
 	import SidebarMenu from '$lib/components/sidebar/SidebarMenu.svelte';
+	import type { LayoutData } from '../$types';
 
-	let menuItems = ['ma', 'qu', 'ch', 'gi'];
-	let channels = ['signups', 'general', 'chat'];
+	export let data: LayoutData;
+	let { projects, channels } = data;
 </script>
 
 <div class="grid h-screen grid-cols-[100px_250px_6fr]">
 	<div class="border-r border-r-base-content/10 p-4">
-		<Sidebar {menuItems} />
+		<Sidebar {projects} />
 	</div>
 	<div class="border-r border-r-base-content/10 p-4">
 		<SidebarMenu {channels} />

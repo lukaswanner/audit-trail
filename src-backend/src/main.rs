@@ -5,7 +5,10 @@ mod session_state;
 
 use argon2::password_hash::SaltString;
 use axum::{
-    http::{header::CONTENT_TYPE, Method},
+    http::{
+        header::{ACCEPT, AUTHORIZATION, CONTENT_TYPE, ORIGIN},
+        Method, HeaderValue,
+    },
     middleware::{self},
     routing::{delete, get, post},
     Router,
@@ -74,9 +77,10 @@ async fn main() {
     let websocket_routes = Router::new().route("/events", get(websocket::handler));
 
     let cors = CorsLayer::new()
-        .allow_methods([Method::GET, Method::POST, Method::DELETE])
-        .allow_origin(Any)
-        .allow_headers([CONTENT_TYPE]);
+        .allow_methods(vec![Method::GET, Method::POST, Method::PUT, Method::DELETE])
+        .allow_headers(vec![ORIGIN, AUTHORIZATION, ACCEPT, CONTENT_TYPE])
+        .allow_credentials(true)
+        .allow_origin("http://localhost:5173".parse::<HeaderValue>().unwrap());
 
     let login_routes = Router::new()
         .route("/login", post(authorize::login))

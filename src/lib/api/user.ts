@@ -1,4 +1,4 @@
-import type { User, UserPayload } from "$lib/types/user/UserTypes";
+import type { UserPayload } from "$lib/types/user/UserTypes";
 const userBase = 'http://localhost:3000/app';
 
 // crud for api naming convention
@@ -7,7 +7,7 @@ const userBase = 'http://localhost:3000/app';
 // u - update
 // d - delete
 
-export async function createUser(user: UserPayload) {
+export async function createUser(user: UserPayload): Promise<Response> {
 	const res = await fetch(userBase + '/user', {
 		method: 'POST',
 		headers: {
@@ -15,35 +15,35 @@ export async function createUser(user: UserPayload) {
 		},
 		body: JSON.stringify({ user }),
 	});
-	return await res.json();
+	return res;
 }
 
-export async function readUserList(): Promise<User[]> {
+export async function readUserList(): Promise<Response> {
 	const res = await fetch(userBase + '/users', {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
 		},
 	});
-	return await res.json();
+	return res;
 }
 
-export async function readUser(userName: string): Promise<User> {
+export async function readUser(userName: string): Promise<Response> {
 	const res = await fetch(userBase + '/user/' + userName, {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
 		},
 	});
-	return await res.json();
+	return res;
 }
 
-export async function deleteUser(userName: string) {
+export async function deleteUser(userName: string): Promise<Response> {
 	const res = await fetch(userBase + '/user/' + userName, {
 		method: 'DELETE',
 		headers: {
 			'Content-Type': 'application/json',
 		},
 	});
-	return await res.json();
+	return res;
 }

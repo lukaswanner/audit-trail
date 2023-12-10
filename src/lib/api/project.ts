@@ -1,4 +1,4 @@
-import type { Project, ProjectPayload } from "$lib/types/project/ProjectTypes";
+import type { ProjectPayload } from "$lib/types/project/ProjectTypes";
 
 const projectBase = 'http://localhost:3000/app';
 
@@ -8,7 +8,7 @@ const projectBase = 'http://localhost:3000/app';
 // u - update
 // d - delete
 
-export async function createProject(projectTitle: ProjectPayload) {
+export async function createProject(projectTitle: ProjectPayload): Promise<Response> {
 	const res = await fetch(projectBase + '/project/', {
 		method: 'POST',
 		headers: {
@@ -16,35 +16,35 @@ export async function createProject(projectTitle: ProjectPayload) {
 		},
 		body: JSON.stringify({ projectTitle }),
 	});
-	return await res.json();
+	return res;
 }
 
-export async function readProjectList(): Promise<Project[]> {
+export async function readProjectList(): Promise<Response> {
 	const res = await fetch(projectBase + '/projects', {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
 		},
 	});
-	return await res.json();
+	return res;
 }
 
-export async function readProject(projectTitle: string): Promise<Project> {
+export async function readProject(projectTitle: string): Promise<Response> {
 	const res = await fetch(projectBase + '/project/' + projectTitle, {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
 		},
 	});
-	return await res.json();
+	return res;
 }
 
-export async function deleteProject(projectTitle: string) {
+export async function deleteProject(projectTitle: string): Promise<Response> {
 	const res = await fetch(projectBase + '/project/' + projectTitle, {
 		method: 'DELETE',
 		headers: {
 			'Content-Type': 'application/json',
 		},
 	});
-	return await res.json();
+	return res;
 }
