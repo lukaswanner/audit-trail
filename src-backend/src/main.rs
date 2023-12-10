@@ -53,6 +53,10 @@ async fn main() {
         .route("/users", get(user::read_users))
         .route("/user/:name", get(user::read_user))
         .route("/events", get(event::read_events))
+        .route(
+            "/events/:channel_title",
+            get(event::read_events_from_channel),
+        )
         .route("/event/:id", get(event::read_event))
         .route("/project/:title", get(project::read_project))
         .route("/projects", get(project::read_projects))

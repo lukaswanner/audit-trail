@@ -17,3 +17,4 @@
  11. - [x] Create middleware to set if user is authorized
  12. - [x] Fix ws-event id bug
  13. - [ ] Fix auth problem with websockets
+ 14. - [x] Add endpoint to get events for specific channel

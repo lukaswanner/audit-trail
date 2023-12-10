@@ -49,6 +49,22 @@ pub async fn read_events(
     Json(result)
 }
 
+pub async fn read_events_from_channel(
+    State(state): State<AppState>,
+    Path(channel_title): Path<String>,
+    Extension(session): Extension<UserSession>,
+) -> Json<Vec<Event>> {
+    let pool = &state.pool;
+    let result = sqlx::query_as::<_, Event>("SELECT e.id, e.icon, e.title, c.title as channel_title, u.name as user_name FROM event e JOIN channel c on e.channel_id = c.id JOIN event_user u on e.user_id = u.id JOIN project p on c.project_id = p.id where p.account_id = $1 and c.title = $2")
+            .bind(session.account_id)
+            .bind(channel_title)
+            .fetch_all(pool)
+            .await
+        .unwrap();
+
+    Json(result)
+}
+
 #[derive(Deserialize)]
 pub struct CreateEvent {
     icon: String,
