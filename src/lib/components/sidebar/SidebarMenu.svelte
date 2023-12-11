@@ -3,6 +3,9 @@
 	import { channel, channels } from '$lib/stores/channel';
 	import { page } from '$app/stores';
 
+	$: feedActive = $page.url.pathname === '/';
+	$: chartsActive = $page.url.pathname === '/charts';
+	$: insightsActive = $page.url.pathname === '/insights';
 </script>
 
 <div class="flex flex-col items-start gap-4">
@@ -20,7 +23,7 @@
 	</div>
 	<div class="flex w-full flex-col gap-2">
 		<a
-			data-active={$page.url.pathname === '/'}
+			data-active={feedActive}
 			href="/"
 			class="btn btn-ghost flex flex-row items-center justify-start gap-2 text-base-content transition-colors data-[active=true]:bg-base-content/20 data-[active=true]:text-primary"
 		>
@@ -33,8 +36,8 @@
 		</a>
 		<a
 			href="/charts"
-			data-active={$page.url.pathname === '/charts'}
-			class="btn btn-ghost flex flex-row items-center justify-start gap-2 text-base-content transition-colors data-[active=true]:bg-base-content/20 data-[active=true]:text-primary"
+			data-active={chartsActive}
+			class="btn btn-ghost flex flex-row items-center justify-start gap-2 text-base-content transition-colors data-[active=true]:bg-base-content/20 data-[active=true]:text-secondary"
 		>
 			<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 fill-current" viewBox="0 0 512 512"
 				><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.--><path
@@ -45,8 +48,8 @@
 		</a>
 		<a
 			href="/insights"
-			data-active={$page.url.pathname === '/insights'}
-			class="btn btn-ghost flex flex-row items-center justify-start gap-2 text-base-content transition-colors data-[active=true]:bg-base-content/20 data-[active=true]:text-primary"
+			data-active={insightsActive}
+			class="btn btn-ghost flex flex-row items-center justify-start gap-2 text-base-content transition-colors data-[active=true]:bg-base-content/20 data-[active=true]:text-accent"
 		>
 			<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 fill-current" viewBox="0 0 384 512"
 				><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.--><path
@@ -72,7 +75,10 @@
 		<button
 			on:click={() => channel.set(channel_item)}
 			data-active={channel_item === $channel}
-			class="btn btn-ghost flex w-full flex-row items-center justify-start gap-2 data-[active=true]:bg-base-content/20 data-[active=true]:text-primary"
+			data-feed={channel_item === $channel && feedActive}
+			data-charts={channel_item === $channel && chartsActive}
+			data-insights={channel_item === $channel && insightsActive}
+			class="btn btn-ghost flex w-full flex-row items-center justify-start gap-2 data-[active=true]:bg-base-content/20 data-[charts=true]:text-secondary data-[feed=true]:text-primary data-[insights=true]:text-accent"
 		>
 			<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 fill-current" viewBox="0 0 448 512"
 				><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.--><path

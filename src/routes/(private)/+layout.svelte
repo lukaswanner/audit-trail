@@ -4,7 +4,7 @@
 	import Sidebar from '$lib/components/sidebar/Sidebar.svelte';
 	import SidebarMenu from '$lib/components/sidebar/SidebarMenu.svelte';
 	import Loading from '$lib/layout/loading/Loading.svelte';
-	import { channels } from '$lib/stores/channel';
+	import { channel, channels } from '$lib/stores/channel';
 	import { project, projects } from '$lib/stores/project';
 	import { onMount } from 'svelte';
 
@@ -27,7 +27,11 @@
 	async function readChannels(projectTitle: string) {
 		const channelRes = await readChannelListForProject(projectTitle);
 		if (channelRes.status === 200) {
-			channels.set(await channelRes.json());
+			const newChannels = await channelRes.json();
+			channels.set(newChannels);
+			if (newChannels.length !== 0) {
+				channel.set(newChannels[0]);
+			}
 		} else {
 			channels.set([]);
 		}
