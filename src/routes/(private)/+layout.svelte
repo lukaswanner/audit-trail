@@ -66,7 +66,7 @@
 		<div class="overflow-auto border-r border-r-base-content/10 p-4">
 			<SidebarMenu />
 		</div>
-		<div>
+		<div class="flex flex-col overflow-hidden">
 			<slot />
 		</div>
 	</div>
