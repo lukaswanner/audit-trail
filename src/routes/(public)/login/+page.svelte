@@ -1,5 +1,8 @@
 <script lang="ts">
+	import { page } from '$app/stores';
 	import LoginCard from '$lib/components/auth/LoginCard.svelte';
+
+	let message: string;
 
 	let successfulLogIn = true;
 	let closeToast = false;
@@ -68,12 +71,14 @@
 		redMouth.style.top = `${y}%`;
 		redMouth.style.right = `${x}%`;
 	}
+
+	$: message = $page.url.searchParams.get('message') ?? '';
 </script>
 
 <svelte:window on:mousemove={getMousePosition} />
 {#if !successfulLogIn && !closeToast}
-	<div class="flex justify-center mb-4">
-		<div class="max-w-6xl alert alert-error flex justify-between">
+	<div class="mb-4 flex justify-center">
+		<div class="alert alert-error flex max-w-6xl justify-between">
 			<span>Invalid e-mail or password.</span>
 			<button
 				class="btn btn-square btn-outline"
@@ -99,10 +104,15 @@
 		</div>
 	</div>
 {/if}
+
+{#if message}
+	<p class="alert mb-4 text-error">{message}</p>
+{/if}
+
 <div class="flex">
 	<LoginCard {successfulLogIn} {closeToast} />
-	<div class="hero min-h-screen bg-base-200">
-		<div class="hero-content flex-col items-end gap-0 lg:flex-row">
+	<div class="hero bg-base-200">
+		<div class="hero-content flex-row items-end justify-evenly">
 			<div class="figureBlack">
 				<div bind:this={eyesLeft} class="eyesLeft">
 					<div bind:this={eyeL} class="eyeL"></div>
@@ -120,14 +130,6 @@
 					<div bind:this={eyeRRed} class="eyeRRed"></div>
 				</div>
 				<div bind:this={redMouth} class="redMouth"></div>
-			</div>
-			<div>
-				<h1 class="text-5xl font-bold">Audit Trail!</h1>
-				<p class="py-6">
-					Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi
-					exercitationem quasi. In deleniti eaque aut repudiandae et a id nisi.
-				</p>
-				<button class="btn btn-primary">Get Started</button>
 			</div>
 		</div>
 	</div>
