@@ -1,17 +1,9 @@
 <script lang="ts">
-	import { login } from '$lib/api/auth';
 	import { project, projects } from '$lib/stores/project';
 </script>
 
-<div class="flex flex-col items-center gap-2">
+<div class="flex items-center gap-2 md:flex-col">
 	<button
-		on:click={async () => {
-			await login({
-				email: 'lukas.wanner@google.com',
-				password: 'some-secure-password',
-				rememberMe: false
-			});
-		}}
 		class="btn btn-ghost h-16 w-16 rounded-full fill-base-content transition-colors hover:fill-primary"
 	>
 		<a href="/">
@@ -22,21 +14,23 @@
 			>
 		</a>
 	</button>
-	{#each $projects as project_item}
-		<button
-			on:click={() => project.set(project_item)}
-			data-active={project_item === $project}
-			class="btn btn-circle flex h-12 w-12 items-center justify-center overflow-hidden rounded-full border-transparent bg-transparent hover:border-transparent hover:bg-transparent data-[active=true]:border-2
+	<div class="flex flex-row items-center gap-2 md:flex-col">
+		{#each $projects as project_item}
+			<button
+				on:click={() => project.set(project_item)}
+				data-active={project_item === $project}
+				class="btn btn-circle flex h-12 w-12 items-center justify-center overflow-hidden rounded-full border-transparent bg-transparent hover:border-transparent hover:bg-transparent data-[active=true]:border-2
 		data-[active=true]:border-accent"
-		>
-			<p class="text-ellipsis text-lg font-bold">
-				{project_item.title.slice(0, 2)}
-			</p>
-		</button>
-	{/each}
-	<div class="divider my-0 w-1/2 self-center" />
+			>
+				<p class="text-ellipsis text-lg font-bold">
+					{project_item.title.slice(0, 2)}
+				</p>
+			</button>
+		{/each}
+	</div>
+	<div class="my-0 hidden w-1/2 !self-center md:divider" />
 	<button
-		class="btn btn-ghost h-12 w-12 rounded-full fill-base-content transition-colors hover:fill-primary"
+		class="btn btn-ghost ml-auto h-12 w-12 rounded-full fill-base-content transition-colors hover:fill-primary md:mr-auto"
 	>
 		<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 448 512"
 			><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.--><path

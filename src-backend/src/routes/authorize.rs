@@ -94,7 +94,7 @@ fn generate_token(account: Option<Account>, credentials: &Credentials) -> Respon
             )
             .unwrap();
 
-            let mut cookie = Cookie::new("jwt", token);
+            let mut cookie = Cookie::new("__audit", token);
 
             cookie.set_path("/");
 

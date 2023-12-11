@@ -9,7 +9,7 @@
 </script>
 
 <div class="flex flex-col items-start gap-4">
-	<div class="flex w-full flex-row items-center justify-between px-4">
+	<div class="flex w-full flex-row items-center justify-between px-2">
 		<h1 class="text-2xl font-bold">
 			{$project?.title}
 		</h1>

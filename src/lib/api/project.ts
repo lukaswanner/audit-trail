@@ -9,7 +9,7 @@ const projectBase = 'http://localhost:3000/app';
 // d - delete
 
 export async function createProject(projectTitle: ProjectPayload): Promise<Response> {
-	const res = await fetch(projectBase + '/project/', {
+	const res = await fetch(`${projectBase}/project/`, {
 		method: 'POST',
 		credentials: 'include',
 		headers: {
@@ -21,7 +21,7 @@ export async function createProject(projectTitle: ProjectPayload): Promise<Respo
 }
 
 export async function readProjectList(): Promise<Response> {
-	const res = await fetch(projectBase + '/projects', {
+	const res = await fetch(`${projectBase}/projects`, {
 		method: 'GET',
 		credentials: 'include',
 		headers: {
@@ -32,7 +32,7 @@ export async function readProjectList(): Promise<Response> {
 }
 
 export async function readProject(projectTitle: string): Promise<Response> {
-	const res = await fetch(projectBase + '/project/' + projectTitle, {
+	const res = await fetch(`${projectBase}/projects/${projectTitle}`, {
 		method: 'GET',
 		credentials: 'include',
 		headers: {
@@ -43,7 +43,7 @@ export async function readProject(projectTitle: string): Promise<Response> {
 }
 
 export async function deleteProject(projectTitle: string): Promise<Response> {
-	const res = await fetch(projectBase + '/project/' + projectTitle, {
+	const res = await fetch(`${projectBase}/project/${projectTitle}`, {
 		method: 'DELETE',
 		credentials: 'include',
 		headers: {

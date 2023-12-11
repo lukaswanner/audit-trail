@@ -8,7 +8,7 @@ const userBase = 'http://localhost:3000/app';
 // d - delete
 
 export async function createUser(user: UserPayload): Promise<Response> {
-	const res = await fetch(userBase + '/user', {
+	const res = await fetch(`${userBase}/user/`, {
 		method: 'POST',
 		credentials: "include",
 		headers: {
@@ -20,7 +20,7 @@ export async function createUser(user: UserPayload): Promise<Response> {
 }
 
 export async function readUserList(): Promise<Response> {
-	const res = await fetch(userBase + '/users', {
+	const res = await fetch(`${userBase}/users`, {
 		method: 'GET',
 		credentials: "include",
 		headers: {
@@ -31,7 +31,7 @@ export async function readUserList(): Promise<Response> {
 }
 
 export async function readUser(userName: string): Promise<Response> {
-	const res = await fetch(userBase + '/user/' + userName, {
+	const res = await fetch(`${userBase}/user/${userName}`, {
 		method: 'GET',
 		credentials: "include",
 		headers: {
@@ -42,7 +42,7 @@ export async function readUser(userName: string): Promise<Response> {
 }
 
 export async function deleteUser(userName: string): Promise<Response> {
-	const res = await fetch(userBase + '/user/' + userName, {
+	const res = await fetch(`${userBase}/user/${userName}`, {
 		method: 'DELETE',
 		credentials: "include",
 		headers: {

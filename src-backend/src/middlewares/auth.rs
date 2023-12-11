@@ -21,7 +21,7 @@ struct Claims {
 }
 
 fn extract_jwt_token(jar: &CookieJar) -> Option<&str> {
-    match jar.get("jwt") {
+    match jar.get("__audit") {
         Some(cookie) => Some(cookie.value()),
         None => None,
     }

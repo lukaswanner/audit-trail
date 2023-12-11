@@ -1,38 +1,40 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
+	import { login } from '$lib/api/auth';
+
 	let password = '';
 	let email = '';
 	let rememberAccount = false;
 	let emptyEmail = false;
 	let emptyPassword = false;
-	let correctCredentials = true;
 	export let closeToast: boolean;
 	export let successfulLogIn: boolean;
 
-	function logIn() {
+	async function logIn() {
 		emptyPassword = password === '';
 		emptyEmail = email === '';
-		correctCredentials = !emptyEmail && !emptyPassword;
 		closeToast = false;
-		(async () => {
-			const response = await fetch('http://localhost:3000/auth/login', {
-				method: 'POST',
-				headers: {
-					Accept: 'application/json',
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({ email: email, password: password })
-			});
-			successfulLogIn = correctCredentials && response.status === 200;
-			if (successfulLogIn) {
-				console.log('You are now logged in and taken back to the landing page');
+		const creds = {
+			email,
+			password,
+			rememberMe: rememberAccount
+		};
+
+		const res = await login(creds);
+		successfulLogIn = res.status === 200;
+		if (res.status === 200) {
+			const redirectTo = $page.url.searchParams.get('redirectTo');
+			if (redirectTo) {
+				goto(redirectTo);
 			} else {
-				console.log('Error trying to log in');
+				goto('/');
 			}
-		})();
+		}
 	}
 </script>
 
-<div class="flex flex-col items-center bg-base-100 min-w-[25vw] rounded-lg p-4">
+<div class="flex min-w-[25vw] flex-col items-center rounded-lg bg-base-100 p-4">
 	<label class="form-control w-full max-w-xs">
 		<div class="label">
 			<span class="label-text">E-Mail</span>
@@ -65,12 +67,12 @@
 			<span class="label-text-alt" style="color: red;">This field is necessary</span>
 		{/if}
 		<div class="form-control mt-4">
-			<label class="cursor-pointer label">
-				<input type="checkbox" bind:checked={rememberAccount} class="checkbox checkbox-info" />
+			<label class="label cursor-pointer">
+				<input type="checkbox" bind:checked={rememberAccount} class="checkbox-info checkbox" />
 				<span class="label-text">Remember me</span>
 			</label>
 		</div>
-		<button class="btn btn-active btn-info mt-4" on:click={logIn}>Log In</button>
+		<button class="btn btn-info btn-active mt-4" on:click={logIn}>Log In</button>
 		<hr class="mt-4" />
 		<div>
 			No account yet?

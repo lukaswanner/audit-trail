@@ -9,7 +9,7 @@ const eventBase = 'http://localhost:3000/app';
 // d - delete
 
 export async function createEvent(eventId: EventPayload): Promise<Response> {
-	const res = await fetch(eventBase + '/event/', {
+	const res = await fetch(`${eventBase}/event/`, {
 		method: 'POST',
 		credentials: "include",
 		headers: {
@@ -21,7 +21,7 @@ export async function createEvent(eventId: EventPayload): Promise<Response> {
 }
 
 export async function readEventList(): Promise<Response> {
-	const res = await fetch(eventBase + '/events', {
+	const res = await fetch(`${eventBase}/events`, {
 		method: 'GET',
 		credentials: "include",
 		headers: {
@@ -32,7 +32,7 @@ export async function readEventList(): Promise<Response> {
 }
 
 export async function readEventListForChannel(channelTitle: string): Promise<Response> {
-	const res = await fetch(eventBase + '/events/' + channelTitle, {
+	const res = await fetch(`${eventBase}/events/${channelTitle}`, {
 		method: 'GET',
 		credentials: "include",
 		headers: {
@@ -43,7 +43,7 @@ export async function readEventListForChannel(channelTitle: string): Promise<Res
 }
 
 export async function readEvent(eventId: number): Promise<Response> {
-	const res = await fetch(eventBase + '/event/' + eventId, {
+	const res = await fetch(`${eventBase}/event/${eventId}`, {
 		method: 'GET',
 		credentials: "include",
 		headers: {

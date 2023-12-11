@@ -21,7 +21,6 @@
 		} else {
 			projects.set([]);
 		}
-		return null;
 	}
 
 	async function readChannels(projectTitle: string) {
@@ -38,11 +37,16 @@
 	}
 
 	onMount(async () => {
-		await readProjects();
-		if (project) {
-			await readChannels($project.title);
+		try {
+			await readProjects();
+			if ($project) {
+				await readChannels($project.title);
+			}
+		} catch (e) {
+			console.log(e);
+		} finally {
+			loading = false;
 		}
-		loading = false;
 	});
 
 	$: if ($project) {
@@ -53,11 +57,13 @@
 {#if loading}
 	<Loading />
 {:else}
-	<div class="grid h-screen grid-cols-[125px_250px_6fr]">
-		<div class="border-r border-r-base-content/10 p-4">
+	<div
+		class="grid h-screen grid-rows-[auto_200px_1fr] md:grid-cols-[125px_250px_6fr] md:grid-rows-none"
+	>
+		<div class="overflow-auto p-4 md:border-r md:border-r-base-content/10">
 			<Sidebar />
 		</div>
-		<div class="border-r border-r-base-content/10 p-4">
+		<div class="overflow-auto border-r border-r-base-content/10 p-4">
 			<SidebarMenu />
 		</div>
 		<div>
