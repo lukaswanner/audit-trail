@@ -1,24 +1,16 @@
 <script lang="ts">
 	import { login } from '$lib/api/auth';
-	import { project } from '$lib/stores/project';
-	import type { Project } from '$lib/types/project/ProjectTypes';
-
-	export let projects: Project[];
-
-	function setActive(item: Project) {
-		project.set(item);
-	}
+	import { project, projects } from '$lib/stores/project';
 </script>
 
 <div class="flex flex-col items-center gap-2">
 	<button
 		on:click={async () => {
-			const res = await login({
+			await login({
 				email: 'lukas.wanner@google.com',
 				password: 'some-secure-password',
 				rememberMe: false
 			});
-			console.log(res);
 		}}
 		class="btn btn-ghost h-16 w-16 rounded-full fill-base-content transition-colors hover:fill-primary"
 	>
@@ -30,15 +22,16 @@
 			>
 		</a>
 	</button>
-	{#each projects as project_item}
+	{#each $projects as project_item}
 		<button
-			on:click={() => setActive(project_item)}
+			on:click={() => project.set(project_item)}
 			data-active={project_item === $project}
-			on:click={() => setActive(project_item)}
-			class="btn btn-circle flex h-12 w-12 items-center justify-center rounded-full border-transparent bg-transparent hover:border-transparent hover:bg-transparent data-[active=true]:border
+			class="btn btn-circle flex h-12 w-12 items-center justify-center overflow-hidden rounded-full border-transparent bg-transparent hover:border-transparent hover:bg-transparent data-[active=true]:border-2
 		data-[active=true]:border-accent"
 		>
-			{project_item.title}
+			<p class="text-ellipsis text-lg font-bold">
+				{project_item.title.slice(0, 2)}
+			</p>
 		</button>
 	{/each}
 	<div class="divider my-0 w-1/2 self-center" />

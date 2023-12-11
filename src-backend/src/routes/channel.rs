@@ -15,6 +15,7 @@ use crate::{
 pub struct Channel {
     id: i32,
     title: String,
+    #[serde(rename = "projectTitle")]
     project_title: String,
 }
 
@@ -47,6 +48,24 @@ pub async fn read_channels(
     .bind(session.account_id)
     .fetch_all(pool)
     .await
+    .unwrap();
+
+    Json(result)
+}
+
+pub async fn read_channels_for_project(
+    State(state): State<AppState>,
+    Path(project_title): Path<String>,
+    Extension(session): Extension<UserSession>,
+) -> Json<Vec<Channel>> {
+    let pool = &state.pool;
+    let result = sqlx::query_as::<_, Channel>(
+                "SELECT c.id, c.title, p.title as project_title FROM channel c join project p on c.project_id = p.id WHERE p.account_id = $1 and p.title = $2",
+            )
+        .bind(session.account_id)
+        .bind(project_title)
+        .fetch_all(pool)
+        .await
     .unwrap();
 
     Json(result)

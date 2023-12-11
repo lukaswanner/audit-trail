@@ -52,6 +52,7 @@ async fn main() {
     let app_routes = Router::new()
         // get
         .route("/channels", get(channel::read_channels))
+        .route("/channels/:title", get(channel::read_channels_for_project))
         .route("/channel/:title", get(channel::read_channel))
         .route("/users", get(user::read_users))
         .route("/user/:name", get(user::read_user))

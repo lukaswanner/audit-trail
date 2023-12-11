@@ -3,3 +3,4 @@ import { writable } from 'svelte/store';
 
 
 export const project = writable<Project>(undefined);
+export const projects = writable<Project[]>([]);

@@ -13,10 +13,10 @@
 	</div>
 	<div class="flex flex-col justify-center">
 		<div class="text-2xl font-bold">{event.title}</div>
-		<div class="text-base-content/50">{event.channel_title}</div>
+		<div class="text-base-content/50">{event.channelTitle}</div>
 	</div>
 	<div class="flex flex-col items-center justify-center">
-		<div class="text-base-content/50">{event.user_name}</div>
+		<div class="text-base-content/50">{event.userName}</div>
 		<div class="text-base-content/50">{formatRelative(new Date(event.ts), new Date())}</div>
 	</div>
 </div>

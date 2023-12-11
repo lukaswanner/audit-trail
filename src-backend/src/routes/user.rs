@@ -18,6 +18,7 @@ use serde::{Deserialize, Serialize};
 pub struct User {
     id: i32,
     name: String,
+    #[serde(rename = "projectTitle")]
     project_title: String,
     properties: sqlx::types::Json<HashMap<String, String>>,
 }

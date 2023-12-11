@@ -7,5 +7,5 @@ export type ChannelPayload = {
 export type Channel = {
 	id: number;
 	title: string;
-	project_title: string;
+	projectTitle: string;
 };

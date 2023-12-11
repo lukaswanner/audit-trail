@@ -11,7 +11,7 @@ const eventBase = 'http://localhost:3000/app';
 export async function createEvent(eventId: EventPayload): Promise<Response> {
 	const res = await fetch(eventBase + '/event/', {
 		method: 'POST',
-		credentials: "same-origin",
+		credentials: "include",
 		headers: {
 			'Content-Type': 'application/json',
 		},
@@ -23,6 +23,18 @@ export async function createEvent(eventId: EventPayload): Promise<Response> {
 export async function readEventList(): Promise<Response> {
 	const res = await fetch(eventBase + '/events', {
 		method: 'GET',
+		credentials: "include",
+		headers: {
+			'Content-Type': 'application/json',
+		},
+	});
+	return res
+}
+
+export async function readEventListForChannel(channelTitle: string): Promise<Response> {
+	const res = await fetch(eventBase + '/events/' + channelTitle, {
+		method: 'GET',
+		credentials: "include",
 		headers: {
 			'Content-Type': 'application/json',
 		},
@@ -33,6 +45,7 @@ export async function readEventList(): Promise<Response> {
 export async function readEvent(eventId: number): Promise<Response> {
 	const res = await fetch(eventBase + '/event/' + eventId, {
 		method: 'GET',
+		credentials: "include",
 		headers: {
 			'Content-Type': 'application/json',
 		},
@@ -43,6 +56,7 @@ export async function readEvent(eventId: number): Promise<Response> {
 export async function deleteEvent(eventId: number): Promise<Response> {
 	const res = await fetch(eventBase + '/event/' + eventId, {
 		method: 'DELETE',
+		credentials: "include",
 		headers: {
 			'Content-Type': 'application/json',
 		},

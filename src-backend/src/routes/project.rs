@@ -13,7 +13,7 @@ use sqlx::prelude::FromRow;
 #[derive(Debug, FromRow, Serialize, Deserialize)]
 pub struct Project {
     id: i32,
-    project_title: String,
+    title: String,
 }
 
 pub async fn read_project(
@@ -21,8 +21,7 @@ pub async fn read_project(
     Path(title): Path<String>,
     Extension(session): Extension<UserSession>,
 ) -> Json<Option<Project>> {
-    let query =
-        "SELECT id, title as project_title FROM project WHERE account_id = $1 and lower(title) = lower($2)";
+    let query = "SELECT id, title FROM project WHERE account_id = $1 and lower(title) = lower($2)";
     let result = sqlx::query_as::<_, Project>(query)
         .bind(session.account_id)
         .bind(title)
@@ -37,7 +36,7 @@ pub async fn read_projects(
     State(state): State<AppState>,
     Extension(session): Extension<UserSession>,
 ) -> Json<Vec<Project>> {
-    let query = "SELECT id, title as project_title FROM project WHERE account_id = $1";
+    let query = "SELECT id, title FROM project WHERE account_id = $1";
     let result = sqlx::query_as::<_, Project>(query)
         .bind(session.account_id)
         .fetch_all(&state.pool)

@@ -2,6 +2,7 @@ use crate::{
     session_state::{ApiSession, UserSession},
     AppState,
 };
+use ::chrono::{DateTime, Utc};
 use axum::{
     extract::{Path, State},
     Extension, Json,
@@ -14,9 +15,11 @@ pub struct Event {
     id: i32,
     icon: String,
     title: String,
+    #[serde(rename = "channelTitle")]
     channel_title: String,
+    #[serde(rename = "userName")]
     user_name: String,
-    ts: String,
+    ts: DateTime<Utc>,
 }
 
 pub async fn read_event(
@@ -25,7 +28,7 @@ pub async fn read_event(
     Extension(session): Extension<UserSession>,
 ) -> Json<Option<Event>> {
     let pool = &state.pool;
-    let result = sqlx::query_as::<_, Event>("SELECT e.id, e.icon, e.title, c.title as channel_title, u.name as user_name FROM event e JOIN channel c on e.channel_id = c.id JOIN event_user u on e.user_id = u.id JOIN project p on c.project_id = p.id where p.account_id = $1 and e.id = $2")
+    let result = sqlx::query_as::<_, Event>("SELECT e.id, e.icon, e.title, c.title as channel_title, u.name as user_name, e.ts FROM event e JOIN channel c on e.channel_id = c.id JOIN event_user u on e.user_id = u.id JOIN project p on c.project_id = p.id where p.account_id = $1 and e.id = $2")
         .bind(session.account_id)
         .bind(id)
         .fetch_optional(pool)
@@ -40,7 +43,7 @@ pub async fn read_events(
     Extension(session): Extension<UserSession>,
 ) -> Json<Vec<Event>> {
     let pool = &state.pool;
-    let result = sqlx::query_as::<_, Event>("SELECT e.id, e.icon, e.title, c.title as channel_title, u.name as user_name FROM event e JOIN channel c on e.channel_id = c.id JOIN event_user u on e.user_id = u.id JOIN project p on c.project_id = p.id where p.account_id = $1")
+    let result = sqlx::query_as::<_, Event>("SELECT e.id, e.icon, e.title, c.title as channel_title, u.name as user_name, e.ts FROM event e JOIN channel c on e.channel_id = c.id JOIN event_user u on e.user_id = u.id JOIN project p on c.project_id = p.id where p.account_id = $1")
         .bind(session.account_id)
         .fetch_all(pool)
         .await
@@ -55,7 +58,7 @@ pub async fn read_events_from_channel(
     Extension(session): Extension<UserSession>,
 ) -> Json<Vec<Event>> {
     let pool = &state.pool;
-    let result = sqlx::query_as::<_, Event>("SELECT e.id, e.icon, e.title, c.title as channel_title, u.name as user_name FROM event e JOIN channel c on e.channel_id = c.id JOIN event_user u on e.user_id = u.id JOIN project p on c.project_id = p.id where p.account_id = $1 and c.title = $2")
+    let result = sqlx::query_as::<_, Event>("SELECT e.id, e.icon, e.title, c.title as channel_title, u.name as user_name, e.ts FROM event e JOIN channel c on e.channel_id = c.id JOIN event_user u on e.user_id = u.id JOIN project p on c.project_id = p.id where p.account_id = $1 and c.title = $2")
             .bind(session.account_id)
             .bind(channel_title)
             .fetch_all(pool)

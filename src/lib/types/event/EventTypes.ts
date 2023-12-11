@@ -10,7 +10,7 @@ export type Event = {
 	id: number;
 	icon: string;
 	title: string;
-	channel_title: string;
-	user_name: string;
+	channelTitle: string;
+	userName: string;
 	ts: string;
 };

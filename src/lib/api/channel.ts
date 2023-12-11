@@ -11,7 +11,7 @@ const channelBase = 'http://localhost:3000/app';
 export async function createChanenl(channelTitle: ChannelPayload): Promise<Response> {
 	const res = await fetch(channelBase + '/channel', {
 		method: 'POST',
-		credentials: "same-origin",
+		credentials: "include",
 		headers: {
 			'Content-Type': 'application/json',
 		},
@@ -23,6 +23,19 @@ export async function createChanenl(channelTitle: ChannelPayload): Promise<Respo
 export async function readChannelList(): Promise<Response> {
 	const res = await fetch(channelBase + '/channels', {
 		method: 'GET',
+		credentials: "include",
+		headers: {
+			'Content-Type': 'application/json',
+		},
+	});
+
+	return res;
+}
+
+export async function readChannelListForProject(projectTitle: string): Promise<Response> {
+	const res = await fetch(channelBase + '/channels/' + projectTitle, {
+		method: 'GET',
+		credentials: "include",
 		headers: {
 			'Content-Type': 'application/json',
 		},
@@ -34,7 +47,7 @@ export async function readChannelList(): Promise<Response> {
 export async function readChannel(channelTitle: string): Promise<Response> {
 	const res = await fetch(channelBase + '/channel/' + channelTitle, {
 		method: 'GET',
-		credentials: "same-origin",
+		credentials: "include",
 		headers: {
 			'Content-Type': 'application/json',
 		},
@@ -45,7 +58,7 @@ export async function readChannel(channelTitle: string): Promise<Response> {
 export async function deleteChannel(channelTitle: string): Promise<Response> {
 	const res = await fetch(channelBase + '/channel/' + channelTitle, {
 		method: 'DELETE',
-		credentials: "same-origin",
+		credentials: "include",
 		headers: {
 			'Content-Type': 'application/json',
 		},
