@@ -2,7 +2,7 @@
 	export let list: string[];
 </script>
 
-<div class="navbar bg-base-100 mb-3">
+<div class="navbar bg-base-300 mb-3">
 	<div class="navbar-start">
 		<div class="dropdown">
 			<div tabindex="0" role="button" class="btn btn-ghost btn-circle">
