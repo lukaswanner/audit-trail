@@ -1,69 +1,34 @@
 <script lang="ts">
 	import LoginCard from '$lib/components/auth/LoginCard.svelte';
+	import type { PseudoEvent } from '$lib/types/login/login';
+	import { addToEventLog } from '$lib/utils/login/handleEventLog';
 	import { formatRelative } from 'date-fns';
-	import { fade } from 'svelte/transition';
-
-	type EventType = 'emailFocus' | 'passwordFocus' | 'emailTouched' | 'passwordTouched';
-
-	type PseudoEvent = {
-		icon: string;
-		title: string;
-		timeStamp: number;
-	};
+	import { flip } from 'svelte/animate';
+	import { slide } from 'svelte/transition';
 
 	let events: PseudoEvent[] = [];
-
-	function addToEventLog(event: EventType) {
-		let newEvent: PseudoEvent;
-		switch (event) {
-			case 'emailFocus':
-				newEvent = {
-					icon: '📧',
-					title: 'Email input focused',
-					timeStamp: Date.now()
-				};
-				break;
-			case 'passwordFocus':
-				newEvent = {
-					icon: '🔑',
-					title: 'Password input focused',
-					timeStamp: Date.now()
-				};
-				break;
-			case 'emailTouched':
-				newEvent = {
-					icon: '📧',
-					title: 'New Email input',
-					timeStamp: Date.now()
-				};
-				break;
-			case 'passwordTouched':
-				newEvent = {
-					icon: '🔑',
-					title: 'New Password input',
-					timeStamp: Date.now()
-				};
-				break;
-		}
-		events = [...events, newEvent];
-	}
-
 	let clear: number;
+
 	$: {
 		clearInterval(clear);
 		clear = setInterval(() => {
-			events.pop();
+			events.shift();
 			events = [...events];
-		}, 2500);
+		}, 2000);
 	}
 </script>
 
-<div class="grid h-full w-full grid-cols-1 lg:grid-cols-[2fr_4fr]">
-	<LoginCard {addToEventLog} />
-	<div class="overflow-hiden hidden flex-col items-center justify-center gap-4 lg:flex">
-		{#each events as event}
+<div class="grid h-full w-full grid-cols-1 grid-rows-[1fr] lg:grid-cols-[2fr_4fr]">
+	<LoginCard
+		addToEventLog={(msg) => {
+			events = addToEventLog(events, msg);
+		}}
+	/>
+	<div class="hidden flex-col items-center justify-start gap-4 overflow-auto lg:flex">
+		{#each events as event (event)}
 			<div
-				transition:fade
+				animate:flip
+				transition:slide|local
 				class="grid w-full max-w-md grid-cols-[auto_1fr] gap-4 rounded-3xl border-2 border-secondary p-4"
 			>
 				<div

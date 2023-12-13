@@ -5,7 +5,7 @@
 
 <div class="flex h-screen flex-col">
 	<Navbar {list} />
-	<div class="flex flex-1 flex-col p-4">
+	<div class="flex h-full flex-col overflow-hidden p-4">
 		<slot />
 	</div>
 </div>

@@ -7,7 +7,7 @@ use argon2::password_hash::SaltString;
 use axum::{
     http::{
         header::{ACCEPT, AUTHORIZATION, CONTENT_TYPE, ORIGIN},
-        Method, HeaderValue,
+        HeaderValue, Method,
     },
     middleware::{self},
     routing::{delete, get, post},
@@ -19,7 +19,7 @@ use rand::rngs::OsRng;
 use routes::{api_token, authorize, channel, event, project, user, websocket};
 
 use sqlx::PgPool;
-use tower_http::cors::{Any, CorsLayer};
+use tower_http::cors::CorsLayer;
 
 #[derive(Clone)]
 pub struct AppState {
