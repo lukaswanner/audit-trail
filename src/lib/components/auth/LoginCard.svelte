@@ -2,81 +2,100 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { login } from '$lib/api/auth';
+	import type { UserCredentialsLogin } from '$lib/types/account/AccountTypes';
+	import type { EventType } from '$lib/types/login/login';
+	import { handleSuccessfulRedirect } from '$lib/utils/redirectTo';
 
-	let password = '';
-	let email = '';
-	let rememberAccount = false;
-	let emptyEmail = false;
-	let emptyPassword = false;
-	export let closeToast: boolean;
-	export let successfulLogIn: boolean;
+	export let addToEventLog: (event: EventType) => void;
 
-	async function logIn() {
-		emptyPassword = password === '';
-		emptyEmail = email === '';
-		closeToast = false;
-		const creds = {
-			email,
-			password,
-			rememberMe: rememberAccount
+	let timer: number;
+
+	async function handleLogin(event: Event) {
+		const form = event.target as HTMLFormElement;
+		const formData = new FormData(form);
+		const data = Object.fromEntries(formData.entries());
+		const { email, password, rememberMe } = data;
+		const creds: UserCredentialsLogin = {
+			email: email as string,
+			password: password as string,
+			rememberMe: rememberMe === 'on' ? true : false
 		};
-
 		const res = await login(creds);
-		successfulLogIn = res.status === 200;
 		if (res.status === 200) {
-			const redirectTo = $page.url.searchParams.get('redirectTo');
-			if (redirectTo) {
-				goto(redirectTo);
-			} else {
-				goto('/');
-			}
+			addToEventLog('loginSuccess');
+			setTimeout(() => {
+				goto(handleSuccessfulRedirect($page.url));
+			}, 1000);
+		} else {
+			addToEventLog('loginFailure');
 		}
+	}
+
+	function handleCheckbox(event: Event) {
+		const { checked } = event.target as HTMLInputElement;
+		if (checked) {
+			addToEventLog('rememberMe');
+		} else {
+			addToEventLog('DontRememberMe');
+		}
+	}
+
+	function debounceInput(msg: EventType) {
+		clearTimeout(timer);
+		timer = setTimeout(() => {
+			addToEventLog(msg);
+		}, 1000);
 	}
 </script>
 
-<div class="flex min-w-[25vw] flex-col items-center rounded-lg bg-base-100 p-4">
-	<label class="form-control w-full max-w-xs">
-		<div class="label">
-			<span class="label-text">E-Mail</span>
-		</div>
-		<input
-			bind:value={email}
-			type="text"
-			placeholder="Type here"
-			class="input input-bordered w-full max-w-xs"
-		/>
-		{#if emptyEmail}
-			<span class="label-text-alt" style="color: red;">This field is necessary</span>
-		{/if}
-	</label>
-	<label class="form-control w-full max-w-xs">
-		<div class="label">
-			<span class="label-text">Password</span>
-		</div>
+<form
+	class="flex flex-col items-center gap-4 rounded-3xl bg-base-300 px-4"
+	on:submit|preventDefault={handleLogin}
+>
+	<div class="mb-10 mt-auto text-center">
+		<h1 class="text-3xl font-bold">Welcome back!</h1>
+		<p class="text-base-content/50">Please enter your details</p>
+	</div>
 
-		<div class="relative">
+	<div class="flex w-full flex-col items-center gap-2">
+		<label class="form-control w-full max-w-sm">
 			<input
-				type="password"
-				placeholder="Type here"
-				bind:value={password}
-				class="input input-bordered w-full max-w-xs"
+				on:input={() => debounceInput('emailTouched')}
+				type="email"
+				name="email"
+				placeholder="Email"
+				class="input w-full max-w-sm"
+				required
 			/>
-			<span class="absolute inset-y-0 right-0 flex items-center pl-2"> </span>
-		</div>
-		{#if emptyPassword}
-			<span class="label-text-alt" style="color: red;">This field is necessary</span>
-		{/if}
-		<div class="form-control mt-4">
-			<label class="label cursor-pointer">
-				<input type="checkbox" bind:checked={rememberAccount} class="checkbox-info checkbox" />
+		</label>
+
+		<label class="form-control w-full max-w-sm">
+			<input
+				on:input={() => debounceInput('passwordTouched')}
+				type="text"
+				name="password"
+				placeholder="Password"
+				class="input w-full max-w-sm"
+				required
+			/>
+		</label>
+
+		<div class="form-control w-full max-w-sm">
+			<label class="label cursor-pointer justify-start gap-2">
+				<input
+					on:change={handleCheckbox}
+					name="rememberMe"
+					type="checkbox"
+					checked={true}
+					class="checkbox checkbox-xs"
+				/>
 				<span class="label-text">Remember me</span>
 			</label>
 		</div>
-		<button class="btn btn-info btn-active mt-4" on:click={logIn}>Log In</button>
-		<hr class="mt-4" />
-		<div>
-			No account yet?
-			<a href="/register" class="link link-info">Click here to register</a>
-		</div>
-	</label>
-</div>
+	</div>
+
+	<button class="btn btn-primary w-full max-w-sm">Login</button>
+	<p class="mb-4 mt-auto text-sm">
+		Don't have an account? <a class="link-info" href="/register">Sign up</a>
+	</p>
+</form>
