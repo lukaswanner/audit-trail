@@ -1,7 +1,10 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
 	import { login } from '$lib/api/auth';
-	import type { UserCredentials } from '$lib/types/account/AccountTypes';
+	import type { UserCredentialsLogin } from '$lib/types/account/AccountTypes';
 	import type { EventType } from '$lib/types/login/login';
+	import { handleSuccessfulRedirect } from '$lib/utils/redirectTo';
 
 	export let addToEventLog: (event: EventType) => void;
 
@@ -12,13 +15,20 @@
 		const formData = new FormData(form);
 		const data = Object.fromEntries(formData.entries());
 		const { email, password, rememberMe } = data;
-		const creds: UserCredentials = {
+		const creds: UserCredentialsLogin = {
 			email: email as string,
 			password: password as string,
 			rememberMe: rememberMe === 'on' ? true : false
 		};
 		const res = await login(creds);
-		console.log(res);
+		if (res.status === 200) {
+			addToEventLog('loginSuccess');
+			setTimeout(() => {
+				goto(handleSuccessfulRedirect($page.url));
+			}, 1000);
+		} else {
+			addToEventLog('loginFailure');
+		}
 	}
 
 	function handleCheckbox(event: Event) {

@@ -52,6 +52,20 @@ export function addToEventLog(events: PseudoEvent[], event: EventType): PseudoEv
 				timeStamp: Date.now()
 			};
 			break;
+		case 'registerSuccess':
+			newEvent = {
+				icon: '🚀',
+				title: 'Register success',
+				timeStamp: Date.now()
+			};
+			break;
+		case 'registerFailure':
+			newEvent = {
+				icon: '❌',
+				title: 'Register failure',
+				timeStamp: Date.now()
+			};
+			break;
 	}
 	events.push(newEvent);
 	return events;

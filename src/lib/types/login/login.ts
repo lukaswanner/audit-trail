@@ -12,4 +12,7 @@ export type EventType =
 	| 'rememberMe'
 	| 'DontRememberMe'
 	| 'loginSuccess'
-	| 'loginFailure';
+	| 'loginFailure'
+	| 'registerSuccess'
+	| 'registerFailure'
+	;

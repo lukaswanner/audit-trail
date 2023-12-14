@@ -2,5 +2,6 @@
 export type UserCredentials = {
 	email: string;
 	password: string;
-	rememberMe: boolean;
 };
+
+export type UserCredentialsLogin = UserCredentials & { rememberMe: boolean };
