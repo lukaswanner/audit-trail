@@ -39,17 +39,27 @@ pub async fn register(
     State(state): State<AppState>,
     Json(credentials): Json<Credentials>,
 ) -> Response<Body> {
-    let query = "Insert into account (email, password) values ($1, $2)";
-    sqlx::query(query)
+    let query = "Insert into account (email, password) values ($1, $2) returning id, password";
+    let account = sqlx::query_as::<_, Account>(query)
         .bind(&credentials.email)
         .bind(hash_password(&credentials.password, &state.salt))
         .fetch_optional(&state.pool)
-        .await
-        .map(|_| Response::new(Body::empty()))
+        .await;
+
+    // map result to response if no err, if err return unauthorized
+    account
+        .map(|acc| {
+            if let Some(acc) = acc {
+                return generate_token(Some(acc), &credentials);
+            }
+            return Response::builder()
+                .status(StatusCode::UNAUTHORIZED)
+                .body(Body::empty())
+                .unwrap();
+        })
         .unwrap_or_else(|_| {
-            // todo map this to a proper response
             Response::builder()
-                .status(StatusCode::CONFLICT)
+                .status(StatusCode::UNAUTHORIZED)
                 .body(Body::empty())
                 .unwrap()
         })
