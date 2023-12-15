@@ -5,6 +5,6 @@ import { handleSuccessfulRedirect } from '$lib/utils/redirectTo';
 export const load: LayoutLoad = ({ data, url }) => {
 	const accountId = data.accountId;
 	if (accountId) {
-		throw redirect(302, handleSuccessfulRedirect(url));
+		redirect(302, handleSuccessfulRedirect(url));
 	}
 };
