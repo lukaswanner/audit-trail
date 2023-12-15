@@ -9,13 +9,13 @@ const projectBase = 'http://localhost:3000/app';
 // d - delete
 
 export async function createProject(projectTitle: ProjectPayload): Promise<Response> {
-	const res = await fetch(`${projectBase}/project/`, {
+	const res = await fetch(`${projectBase}/project`, {
 		method: 'POST',
 		credentials: 'include',
 		headers: {
 			'Content-Type': 'application/json',
 		},
-		body: JSON.stringify({ projectTitle }),
+		body: JSON.stringify(projectTitle),
 	});
 	return res;
 }

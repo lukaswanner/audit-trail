@@ -17,8 +17,6 @@
 	$: if ($channel) {
 		readEvents($channel.title);
 	}
-
-	console.log($events);
 </script>
 
 <div class="flex flex-row justify-between border-b border-b-base-content/10 p-4">

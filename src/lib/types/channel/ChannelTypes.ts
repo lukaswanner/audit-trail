@@ -1,7 +1,7 @@
 // type definitions for channel
 export type ChannelPayload = {
 	title: string;
-	project_title: string;
+	projectId: number;
 };
 
 export type Channel = {

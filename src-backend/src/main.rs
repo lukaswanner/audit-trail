@@ -40,7 +40,7 @@ async fn main() {
     // we have 2 routes, one for our website, one for our api
     // the api route gets checked via api-key and the website route gets checked via jwt
     let api_routes = Router::new()
-        .route("/channel", post(channel::create_channel))
+        .route("/channel", post(channel::create_channel_api))
         .route("/user", post(user::create_user))
         .route("/event", post(event::create_event))
         .route("/project", post(project::create_project_api))
@@ -54,6 +54,7 @@ async fn main() {
         .route("/channels", get(channel::read_channels))
         .route("/channels/:title", get(channel::read_channels_for_project))
         .route("/channel/:title", get(channel::read_channel))
+        .route("/channel", post(channel::create_channel))
         .route("/users", get(user::read_users))
         .route("/user/:name", get(user::read_user))
         .route("/events", get(event::read_events))

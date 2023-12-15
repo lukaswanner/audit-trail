@@ -72,14 +72,40 @@ pub async fn read_channels_for_project(
 }
 
 #[derive(Deserialize)]
-pub struct CreateChannel {
+pub struct CreateChannelPayload {
     title: String,
+    #[serde(rename = "projectId")]
+    project_id: i32,
 }
 
 pub async fn create_channel(
     State(state): State<AppState>,
+    Extension(session): Extension<UserSession>,
+    Json(payload): Json<CreateChannelPayload>,
+) -> StatusCode {
+    let pool = &state.pool;
+    let res = sqlx::query("INSERT INTO channel (title, project_id) SELECT $1 AS title, $2 AS project_id WHERE EXISTS (SELECT 1 FROM project WHERE account_id = $3 and id = $2)")
+        .bind(payload.title)
+        .bind(payload.project_id)
+        .bind(session.account_id)
+        .execute(pool)
+        .await;
+
+    match res {
+        Ok(_) => StatusCode::CREATED,
+        Err(_) => StatusCode::CONFLICT,
+    }
+}
+
+#[derive(Deserialize)]
+pub struct CreateChannelApi {
+    title: String,
+}
+
+pub async fn create_channel_api(
+    State(state): State<AppState>,
     Extension(session): Extension<ApiSession>,
-    Json(payload): Json<CreateChannel>,
+    Json(payload): Json<CreateChannelApi>,
 ) -> StatusCode {
     let pool = &state.pool;
     let res = sqlx::query("INSERT INTO channel (title, project_id) SELECT $1 AS title, $2 AS project_id WHERE EXISTS (SELECT 1 FROM project WHERE account_id = $3 and id = $2)")

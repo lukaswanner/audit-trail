@@ -8,14 +8,14 @@ const channelBase = 'http://localhost:3000/app';
 // u - update
 // d - delete
 
-export async function createChanenl(channelTitle: ChannelPayload): Promise<Response> {
+export async function createChannel(channel: ChannelPayload): Promise<Response> {
 	const res = await fetch(channelBase + '/channel', {
 		method: 'POST',
 		credentials: "include",
 		headers: {
 			'Content-Type': 'application/json',
 		},
-		body: JSON.stringify({ title: channelTitle }),
+		body: JSON.stringify(channel),
 	});
 	return res;
 }

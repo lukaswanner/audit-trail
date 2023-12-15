@@ -43,7 +43,7 @@
 				await readChannels($project.title);
 			}
 		} catch (e) {
-			console.log(e);
+			console.error(e);
 		} finally {
 			loading = false;
 		}
