@@ -71,8 +71,8 @@
 	</button>
 	<!-- Open the modal using ID.showModal() method -->
 </div>
-<dialog bind:this={modalRef} class="modal modal-bottom sm:modal-middle">
-	<form class="modal-box" on:submit={handleNewProject}>
+<dialog id="channel-id" bind:this={modalRef} class="modal modal-bottom sm:modal-middle">
+	<form class="modal-box" on:submit|preventDefault={handleNewProject}>
 		<h3 class="text-lg font-bold">Create new project</h3>
 		<p class="py-4">Create a new project to start working on it.</p>
 		<input
