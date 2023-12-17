@@ -36,7 +36,7 @@
 <div class="flex items-center gap-2 md:flex-col">
 	<button
 		on:click={() => goto('/')}
-		class="btn btn-ghost h-16 w-16 rounded-full fill-base-content transition-colors hover:fill-primary"
+		class="btn btn-ghost h-16 w-16 rounded-full fill-base-content brightness-150 transition-colors hover:fill-primary"
 	>
 		<svg xmlns="http://www.w3.org/2000/svg" class=" h-8 w-8" viewBox="0 0 576 512"
 			><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.--><path
@@ -52,7 +52,7 @@
 				class="btn btn-circle flex h-12 w-12 items-center justify-center overflow-hidden rounded-full border-transparent bg-transparent hover:border-transparent hover:bg-transparent data-[active=true]:border-2
 		data-[active=true]:border-accent"
 			>
-				<p class="text-ellipsis text-lg font-bold">
+				<p class="text-ellipsis text-lg font-bold brightness-150">
 					{project_item.title.slice(0, 2)}
 				</p>
 			</button>
@@ -60,7 +60,7 @@
 	</div>
 	<div class="my-0 hidden w-1/2 !self-center md:divider" />
 	<button
-		class="btn btn-ghost ml-auto h-12 w-12 rounded-full fill-base-content transition-colors hover:fill-primary md:mr-auto"
+		class="btn btn-ghost ml-auto h-12 w-12 rounded-full fill-base-content brightness-150 transition-colors hover:fill-primary md:mr-auto"
 		on:click={() => modalRef.showModal()}
 	>
 		<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 448 512"

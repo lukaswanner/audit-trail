@@ -38,7 +38,7 @@
 	}
 </script>
 
-<div class="flex w-full flex-row items-center justify-between px-4">
+<div class="flex w-full flex-row items-center justify-between px-4 brightness-150">
 	<h2 class="text-xl font-bold">Channels</h2>
 	<button
 		disabled={!$project}

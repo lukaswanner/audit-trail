@@ -12,8 +12,8 @@
 </script>
 
 <div class="flex flex-col items-start gap-4">
-	<div class="flex w-full flex-row items-center justify-between px-2">
-		<h1 class="text-2xl break-all font-bold">
+	<div class="flex w-full flex-row items-center justify-between px-2 brightness-150">
+		<h1 class="break-all text-2xl font-bold ">
 			{$project?.title || 'No project selected'}
 		</h1>
 		<button on:click={() => configModalRef.showModal()} disabled={!$project} class="btn btn-ghost">
