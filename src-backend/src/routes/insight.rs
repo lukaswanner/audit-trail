@@ -23,12 +23,13 @@ pub struct Insight {
 
 pub async fn read_insight(
     State(state): State<AppState>,
-    Path(name): Path<String>,
+    Path((project_title, name)): Path<(String, String)>,
     Extension(session): Extension<UserSession>,
 ) -> Json<Option<Insight>> {
-    let result = sqlx::query_as::<_, Insight>("SELECT i.id, i.icon, i.title, i.value, p.title as project_title FROM insight i join project p on i.project_id = p.id WHERE account_id = $1 and lower(i.title) = lower($2)")
+    let result = sqlx::query_as::<_, Insight>("SELECT i.id, i.icon, i.title, i.value, p.title as project_title FROM insight i join project p on i.project_id = p.id WHERE account_id = $1 and lower(p.title) = lower($3) and lower(i.title) = lower($2)")
         .bind(session.account_id)
         .bind(name)
+        .bind(project_title)
         .fetch_optional(&state.pool)
         .await
         .unwrap();
@@ -38,10 +39,12 @@ pub async fn read_insight(
 
 pub async fn read_insights(
     State(state): State<AppState>,
+    Path(project_title): Path<String>,
     Extension(session): Extension<UserSession>,
 ) -> Json<Vec<Insight>> {
-    let result = sqlx::query_as::<_, Insight>("SELECT i.id, i.icon, i.title, i.value, p.title as project_title FROM insight i join project p on i.project_id = p.id WHERE account_id = $1")
+    let result = sqlx::query_as::<_, Insight>("SELECT i.id, i.icon, i.title, i.value, p.title as project_title FROM insight i join project p on i.project_id = p.id WHERE account_id = $1 and p.title = lower($2)")
         .bind(session.account_id)
+        .bind(project_title)
         .fetch_all(&state.pool)
         .await
         .unwrap();
@@ -54,8 +57,6 @@ pub struct CreateInsight {
     icon: String,
     title: String,
     value: String,
-    #[serde(rename = "projectId")]
-    project_id: i32,
 }
 
 pub async fn create_insight(

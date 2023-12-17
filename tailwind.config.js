@@ -3,6 +3,6 @@ export default {
 	content: ['./src/**/*.{html,svelte,ts}'],
 	plugins: [require('daisyui')],
 	daisyui: {
-		themes: ['dim', 'light']
+		themes: ['dim', 'dark', 'light']
 	}
 };

@@ -16,7 +16,7 @@ use axum::{
 
 use middlewares::auth;
 use rand::rngs::OsRng;
-use routes::{api_token, authorize, channel, event, project, user, websocket, insight};
+use routes::{api_token, authorize, channel, event, insight, project, user, websocket};
 
 use sqlx::PgPool;
 use tower_http::cors::CorsLayer;
@@ -58,8 +58,8 @@ async fn main() {
         .route("/channel", post(channel::create_channel))
         .route("/users", get(user::read_users))
         .route("/user/:name", get(user::read_user))
-        .route("/insight/:name", get(insight::read_insight))
-        .route("/insights", get(insight::read_insights))
+        .route("/insight/:project_title/:name", get(insight::read_insight))
+        .route("/insights/:project_title", get(insight::read_insights))
         .route("/events", get(event::read_events))
         .route(
             "/events/:channel_title",

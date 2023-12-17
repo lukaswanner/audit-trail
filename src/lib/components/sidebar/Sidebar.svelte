@@ -1,8 +1,11 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { createProject, readProjectList } from '$lib/api/project';
+	import { channels } from '$lib/stores/channel';
+	import { events } from '$lib/stores/event';
+	import { insights } from '$lib/stores/insight';
 	import { project, projects } from '$lib/stores/project';
-	import type { ProjectPayload } from '$lib/types/project/ProjectTypes';
+	import type { Project, ProjectPayload } from '$lib/types/project/ProjectTypes';
 
 	let modalRef: HTMLDialogElement;
 	let error: string;
@@ -31,6 +34,13 @@
 			error = 'Something went wrong';
 		}
 	}
+
+	function handleProjectSwitch(newProject: Project) {
+		project.set(newProject);
+		channels.set([]);
+		events.set([]);
+		insights.set([]);
+	}
 </script>
 
 <div class="flex items-center gap-2 md:flex-col">
@@ -47,7 +57,7 @@
 	<div class="flex flex-row items-center gap-2 md:flex-col">
 		{#each $projects as project_item}
 			<button
-				on:click={() => project.set(project_item)}
+				on:click={() => handleProjectSwitch(project_item)}
 				data-active={project_item === $project}
 				class="btn btn-circle flex h-12 w-12 items-center justify-center overflow-hidden rounded-full border-transparent bg-transparent hover:border-transparent hover:bg-transparent data-[active=true]:border-2
 		data-[active=true]:border-accent"
