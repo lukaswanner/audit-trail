@@ -8,6 +8,7 @@ use axum::{
     Extension, Json,
 };
 use serde::{Deserialize, Serialize};
+use serde_json::Value;
 use sqlx::prelude::FromRow;
 
 #[derive(FromRow, Serialize, Deserialize)]
@@ -20,6 +21,7 @@ pub struct Event {
     #[serde(rename = "userName")]
     user_name: String,
     ts: DateTime<Utc>,
+    tags: Value,
 }
 
 pub async fn read_event(
@@ -28,7 +30,7 @@ pub async fn read_event(
     Extension(session): Extension<UserSession>,
 ) -> Json<Option<Event>> {
     let pool = &state.pool;
-    let result = sqlx::query_as::<_, Event>("SELECT e.id, e.icon, e.title, c.title as channel_title, u.name as user_name, e.ts FROM event e JOIN channel c on e.channel_id = c.id JOIN event_user u on e.user_id = u.id JOIN project p on c.project_id = p.id where p.account_id = $1 and e.id = $2")
+    let result = sqlx::query_as::<_, Event>("SELECT e.id, e.icon, e.title, c.title as channel_title, u.name as user_name, e.ts, JSONB_AGG(json_build_object(t.key, t.value)) as tags FROM event e JOIN channel c on e.channel_id = c.id JOIN event_user u on e.user_id = u.id JOIN project p on c.project_id = p.id join tag_event te on e.id = te.event_id join tag t on te.tag_id = t.id where p.account_id = $1 and e.id = $2 group by e.id, c.title, u.name")
         .bind(session.account_id)
         .bind(id)
         .fetch_optional(pool)
@@ -43,7 +45,7 @@ pub async fn read_events(
     Extension(session): Extension<UserSession>,
 ) -> Json<Vec<Event>> {
     let pool = &state.pool;
-    let result = sqlx::query_as::<_, Event>("SELECT e.id, e.icon, e.title, c.title as channel_title, u.name as user_name, e.ts FROM event e JOIN channel c on e.channel_id = c.id JOIN event_user u on e.user_id = u.id JOIN project p on c.project_id = p.id where p.account_id = $1")
+    let result = sqlx::query_as::<_, Event>("SELECT e.id, e.icon, e.title, c.title as channel_title, u.name as user_name, e.ts, JSONB_AGG(json_build_object(t.key, t.value)) as tags FROM event e JOIN channel c on e.channel_id = c.id JOIN event_user u on e.user_id = u.id JOIN project p on c.project_id = p.id join tag_event te on e.id = te.event_id join tag t on te.tag_id = t.id where p.account_id = $1 group by e.id, c.title, u.name")
         .bind(session.account_id)
         .fetch_all(pool)
         .await
