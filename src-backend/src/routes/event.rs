@@ -160,5 +160,3 @@ pub async fn create_event(
     }
     "Created event"
 }
-
-// how-to-get-inserted-row-ids-after-batch-insert/3789ttps://community.retool.com/t/

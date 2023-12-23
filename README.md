@@ -16,6 +16,7 @@
  10. - [x] Set up jwt auth work flow
  11. - [x] Create middleware to set if user is authorized
  12. - [x] Fix ws-event id bug
- 13. - [ ] Fix auth problem with websockets
- 14. - [x] Add endpoint to get events for specific channel
- 15. - [ ] fix api key for different projects
+ 13. - [x] Add endpoint to get events for specific channel
+ 14. - [x] Add tags to events
+ 15. - [ ] Fix auth problem with websockets
+ 16. - [ ] fix api key for different projects
