@@ -40,9 +40,9 @@ async fn main() {
     // we have 2 routes, one for our website, one for our api
     // the api route gets checked via api-key and the website route gets checked via jwt
     let api_routes = Router::new()
+        .route("/event", post(event::create_event))
         .route("/channel", post(channel::create_channel_api))
         .route("/user", post(user::create_user))
-        .route("/event", post(event::create_event))
         .route("/project", post(project::create_project_api))
         .route("/insight", post(insight::create_insight))
         .route_layer(middleware::from_fn_with_state(

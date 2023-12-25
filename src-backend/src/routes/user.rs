@@ -54,8 +54,6 @@ pub async fn read_users(
 #[derive(Serialize, Deserialize)]
 pub struct CreateUser {
     name: String,
-    #[serde(rename = "projectId")]
-    project_id: i32,
     properties: HashMap<String, Value>,
 }
 
@@ -70,13 +68,12 @@ pub async fn create_user(
     let res = sqlx::query(
         "INSERT INTO event_user (name,project_id, properties) 
 SELECT $1 AS name, $2 AS project_id, $3 as properties
-WHERE EXISTS (SELECT 1 FROM project WHERE account_id = $4 and id = $5)",
+WHERE EXISTS (SELECT 1 FROM project WHERE account_id = $4 and id = $2)",
     )
     .bind(payload.name)
-    .bind(payload.project_id)
+    .bind(session.project_id)
     .bind(props)
     .bind(session.account_id)
-    .bind(session.project_id)
     .execute(pool)
     .await;
 

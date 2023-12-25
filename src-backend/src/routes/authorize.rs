@@ -52,10 +52,10 @@ pub async fn register(
             if let Some(acc) = acc {
                 return generate_token(Some(acc), &credentials);
             }
-            return Response::builder()
+            Response::builder()
                 .status(StatusCode::UNAUTHORIZED)
                 .body(Body::empty())
-                .unwrap();
+                .unwrap()
         })
         .unwrap_or_else(|_| {
             Response::builder()

@@ -5,11 +5,12 @@ use crate::{
 use ::chrono::{DateTime, Utc};
 use axum::{
     extract::{Path, State},
+    http::StatusCode,
     Extension, Json,
 };
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
-use sqlx::{prelude::FromRow, QueryBuilder};
+use sqlx::prelude::FromRow;
 
 #[derive(FromRow, Serialize, Deserialize)]
 pub struct Event {
@@ -81,9 +82,9 @@ pub struct CreateEvent {
     icon: String,
     title: String,
     #[serde(rename = "channelId")]
-    channel_id: i32,
+    pub channel_id: i32,
     #[serde(rename = "userId")]
-    user_id: i32,
+    pub user_id: i32,
     tags: Vec<CreateTag>,
 }
 
@@ -97,12 +98,30 @@ pub struct TagResponse {
     id: i32,
 }
 
+async fn payload_is_valid(session: &ApiSession, payload: &CreateEvent, state: &AppState) -> bool {
+    let query = "SELECT eu.id as user_id, ch.id as channel_id FROM project p join channel ch on p.id = ch.project_id join event_user eu on p.id = eu.project_id WHERE p.id = $1 and eu.id = $2 and ch.id = $3";
+
+    let valid = sqlx::query(query)
+        .bind(session.project_id)
+        .bind(payload.user_id)
+        .bind(payload.channel_id)
+        .fetch_optional(&state.pool)
+        .await;
+
+    matches!(valid, Ok(Some(_)))
+}
+
 pub async fn create_event(
     State(state): State<AppState>,
     Extension(session): Extension<ApiSession>,
     Json(payload): Json<CreateEvent>,
-) -> &'static str {
+) -> StatusCode {
     let pool = &state.pool;
+
+    if !payload_is_valid(&session, &payload, &state).await {
+        return StatusCode::UNAUTHORIZED;
+    }
+
     let event_query = "INSERT INTO event (icon, title, channel_id, user_id)
     SELECT $1 AS title, $2 AS icon, $3 as channel_id, $4 as user_id
     WHERE EXISTS (SELECT 1 FROM project WHERE account_id = $5 and id = $6) returning id";
@@ -147,7 +166,7 @@ pub async fn create_event(
         .await
         .unwrap();
 
-    if tag_res.len() > 0 {
+    if !tag_res.is_empty() {
         let tag_event_query = "INSERT INTO tag_event(tag_id, event_id) select tag_id, $1 from unnest($2::int[]) as tag_id";
 
         let tag_ids: Vec<i32> = tag_res.iter().map(|t| t.id).collect();
@@ -158,5 +177,6 @@ pub async fn create_event(
             .await
             .unwrap();
     }
-    "Created event"
+
+    StatusCode::CREATED
 }

@@ -18,5 +18,5 @@
  12. - [x] Fix ws-event id bug
  13. - [x] Add endpoint to get events for specific channel
  14. - [x] Add tags to events
- 15. - [ ] Fix auth problem with websockets
- 16. - [ ] fix api key for different projects
+ 15. - [x] fix api key for different projects
+ 16. - [ ] Fix auth problem with websockets

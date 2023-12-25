@@ -78,6 +78,7 @@ async fn token_is_valid(token: &str, state: AppState) -> Option<Account> {
     }
     None
 }
+
 pub async fn check_request_with_jwt_token(
     State(state): State<AppState>,
     cookie: CookieJar,
@@ -95,7 +96,6 @@ pub async fn check_request_with_jwt_token(
     Err(StatusCode::UNAUTHORIZED)
 }
 
-// todo check if i can just use the body
 pub async fn check_request_with_api_token(
     State(state): State<AppState>,
     headers: HeaderMap,
@@ -104,7 +104,6 @@ pub async fn check_request_with_api_token(
 ) -> Result<Response, StatusCode> {
     if let Some(token) = extract_api_token(&headers) {
         if let Some(acc) = key_is_valid(token, state).await {
-            println!("acc: {:?}", acc);
             request
                 .extensions_mut()
                 .insert(ApiSession::new(acc.account_id, acc.project_id));
