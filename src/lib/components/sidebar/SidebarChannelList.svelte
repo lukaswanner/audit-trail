@@ -3,6 +3,7 @@
 	import { project } from '$lib/stores/project';
 	import { channel, channels } from '$lib/stores/channel';
 	import type { ChannelPayload } from '$lib/types/channel/ChannelTypes';
+	import { goto } from '$app/navigation';
 
 	export let feedActive: boolean;
 	export let insightsActive: boolean;
@@ -53,8 +54,11 @@
 </div>
 {#each $channels as channel_item}
 	<button
-		on:click={() => channel.set(channel_item)}
-		data-active={channel_item === $channel}
+		on:click={() => {
+			goto('/');
+			channel.set(channel_item);
+		}}
+		data-active={(feedActive || insightsActive) && channel_item === $channel}
 		data-feed={channel_item === $channel && feedActive}
 		data-insights={channel_item === $channel && insightsActive}
 		class="btn btn-ghost flex w-full flex-grow flex-row flex-nowrap items-center justify-start gap-2 data-[active=true]:bg-base-content/20 data-[feed=true]:text-primary data-[insights=true]:text-accent"
