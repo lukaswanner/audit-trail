@@ -1,9 +1,11 @@
 // type definitions for event
+
 export type EventPayload = {
 	icon: string;
 	title: string;
 	channel_title: string;
 	user_name: string;
+	tags: Record<string, unknown>[];
 };
 
 export type Event = {
@@ -13,4 +15,5 @@ export type Event = {
 	channelTitle: string;
 	userName: string;
 	ts: string;
+	tags: Record<string, unknown>[];
 };

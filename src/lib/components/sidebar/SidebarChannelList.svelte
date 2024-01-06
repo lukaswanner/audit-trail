@@ -5,7 +5,6 @@
 	import type { ChannelPayload } from '$lib/types/channel/ChannelTypes';
 
 	export let feedActive: boolean;
-	export let chartsActive: boolean;
 	export let insightsActive: boolean;
 
 	let modalRef: HTMLDialogElement;
@@ -57,9 +56,8 @@
 		on:click={() => channel.set(channel_item)}
 		data-active={channel_item === $channel}
 		data-feed={channel_item === $channel && feedActive}
-		data-charts={channel_item === $channel && chartsActive}
 		data-insights={channel_item === $channel && insightsActive}
-		class="btn btn-ghost flex w-full flex-grow flex-row flex-nowrap items-center justify-start gap-2 data-[active=true]:bg-base-content/20 data-[charts=true]:text-secondary data-[feed=true]:text-primary data-[insights=true]:text-accent"
+		class="btn btn-ghost flex w-full flex-grow flex-row flex-nowrap items-center justify-start gap-2 data-[active=true]:bg-base-content/20 data-[feed=true]:text-primary data-[insights=true]:text-accent"
 	>
 		<svg
 			xmlns="http://www.w3.org/2000/svg"

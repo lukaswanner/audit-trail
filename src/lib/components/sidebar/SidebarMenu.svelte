@@ -7,7 +7,6 @@
 	let configModalRef: HTMLDialogElement;
 
 	$: feedActive = $page.url.pathname === '/';
-	$: chartsActive = $page.url.pathname === '/charts';
 	$: insightsActive = $page.url.pathname === '/insights';
 </script>
 
@@ -24,8 +23,8 @@
 			>
 		</button>
 	</div>
-	<SidebarMenuSelection {feedActive} {chartsActive} {insightsActive} />
-	<SidebarChannelList {feedActive} {chartsActive} {insightsActive} />
+	<SidebarMenuSelection {feedActive} {insightsActive} />
+	<SidebarChannelList {feedActive} {insightsActive} />
 </div>
 <dialog
 	id="project-config-modal"
@@ -33,7 +32,7 @@
 	class="modal modal-bottom sm:modal-middle"
 >
 	<div class="modal-box">
-		<h3 class="text-lg font-bold">{$project.title}</h3>
+		<h3 class="text-lg font-bold brightness-150">{$project.title}</h3>
 		<p class="py-4">Manage your project.</p>
 		<div class="modal-action">
 			<button class="btn btn-error">Delete</button>

@@ -7,15 +7,6 @@
 	import { slide } from 'svelte/transition';
 
 	let events: PseudoEvent[] = [];
-	let clear: number;
-
-	$: {
-		clearInterval(clear);
-		clear = setInterval(() => {
-			events.shift();
-			events = [...events];
-		}, 2000);
-	}
 </script>
 
 <div class="grid h-full w-full grid-cols-1 grid-rows-[1fr] lg:grid-cols-[2fr_4fr]">
