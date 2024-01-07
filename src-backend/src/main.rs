@@ -69,6 +69,7 @@ async fn main() {
         .route("/project/:title", get(project::read_project))
         .route("/projects", get(project::read_projects))
         .route("/api-tokens", get(api_token::read_api_tokens))
+        .route("/search/:key/:value", get(event::read_events_from_tag))
         // post
         .route("/project", post(project::create_project))
         .route("/api-token", post(api_token::create_api_token))

@@ -55,6 +55,23 @@ pub async fn read_events(
     Json(result)
 }
 
+pub async fn read_events_from_tag(
+    State(state): State<AppState>,
+    Path((key, value)): Path<(String, String)>,
+    Extension(session): Extension<UserSession>,
+) -> Json<Vec<Event>> {
+    let pool = &state.pool;
+    let result = sqlx::query_as::<_, Event>("SELECT e.id, e.icon, e.title, c.title as channel_title, u.name as user_name, e.ts, JSONB_AGG(json_build_object(t.key, t.value)) as tags FROM event e JOIN channel c on e.channel_id = c.id JOIN event_user u on e.user_id = u.id JOIN project p on c.project_id = p.id join tag_event te on e.id = te.event_id join tag t on te.tag_id = t.id where p.account_id = $1 and t.key = $2 and t.value = $3 group by e.id, c.title, u.name")
+        .bind(session.account_id)
+        .bind(key)
+        .bind(value)
+        .fetch_all(pool)
+        .await
+        .unwrap();
+
+    Json(result)
+}
+
 pub async fn read_events_from_channel(
     State(state): State<AppState>,
     Path(channel_title): Path<String>,
