@@ -4,7 +4,7 @@ use crate::{
 };
 use ::chrono::{DateTime, Utc};
 use axum::{
-    extract::{Path, State},
+    extract::{Path, Query, State},
     http::StatusCode,
     Extension, Json,
 };
@@ -55,19 +55,51 @@ pub async fn read_events(
     Json(result)
 }
 
+#[derive(Deserialize, Debug)]
+pub struct TagSearch {
+    key: String,
+    value: String,
+}
+
 pub async fn read_events_from_tag(
     State(state): State<AppState>,
-    Path((key, value)): Path<(String, String)>,
+    search_query: Query<TagSearch>,
     Extension(session): Extension<UserSession>,
 ) -> Json<Vec<Event>> {
     let pool = &state.pool;
-    let result = sqlx::query_as::<_, Event>("SELECT e.id, e.icon, e.title, c.title as channel_title, u.name as user_name, e.ts, JSONB_AGG(json_build_object(t.key, t.value)) as tags FROM event e JOIN channel c on e.channel_id = c.id JOIN event_user u on e.user_id = u.id JOIN project p on c.project_id = p.id join tag_event te on e.id = te.event_id join tag t on te.tag_id = t.id where p.account_id = $1 and t.key = $2 and t.value = $3 group by e.id, c.title, u.name")
-        .bind(session.account_id)
-        .bind(key)
-        .bind(value)
-        .fetch_all(pool)
-        .await
-        .unwrap();
+    let result = sqlx::query_as::<_, Event>(
+        r#"
+SELECT e.id,
+       e.icon,
+       e.title,
+       c.title AS channel_title,
+       u.NAME AS user_name,
+       e.ts,
+       Jsonb_agg(Json_build_object(t.KEY, t.value)) AS tags
+FROM   event e
+       JOIN channel c
+         ON e.channel_id = c.id
+       JOIN event_user u
+         ON e.user_id = u.id
+       JOIN project p
+         ON c.project_id = p.id
+       JOIN tag_event te
+         ON e.id = te.event_id
+       JOIN tag t
+         ON te.tag_id = t.id
+WHERE  p.account_id = $1
+GROUP  BY e.id,
+          c.title,
+          u.NAME
+HAVING MAX(CASE WHEN t.key = $2 AND t.value = $3 THEN 1 ELSE 0 END) = 1
+"#,
+    )
+    .bind(session.account_id)
+    .bind(&search_query.key)
+    .bind(&search_query.value)
+    .fetch_all(pool)
+    .await
+    .unwrap();
 
     Json(result)
 }

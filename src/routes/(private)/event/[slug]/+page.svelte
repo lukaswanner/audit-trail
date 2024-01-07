@@ -80,7 +80,7 @@
 	<div class="divider my-0" />
 	<div class="flex flex-row flex-wrap items-center gap-4 p-4">
 		{#each event.tags as tag}
-			<a href="/search">
+			<a href={`/search?key=${Object.keys(tag)[0]}&value=${Object.values(tag)[0]}`}>
 				<Tag {tag} />
 			</a>
 		{/each}
