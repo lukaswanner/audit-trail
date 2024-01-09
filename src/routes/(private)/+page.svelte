@@ -23,7 +23,7 @@
 	<h1 class="text-3xl font-bold brightness-150">feed</h1>
 </div>
 
-<div class="flex flex-col gap-4 overflow-auto">
+<div class="flex flex-col gap-4 overflow-auto p-4">
 	{#each [...$events] as event, index}
 		{#key event.id}
 			<div in:fade|global={{ delay: 75 * (index + 1) }}>

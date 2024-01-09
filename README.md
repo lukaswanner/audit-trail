@@ -20,3 +20,4 @@
  14. - [x] Add tags to events
  15. - [x] fix api key for different projects
  16. - [ ] Fix auth problem with websockets
+ 17. - [x] Fix the tooltip, i hate css sometimes
