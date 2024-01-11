@@ -21,6 +21,8 @@ pub struct Event {
     channel_title: String,
     #[serde(rename = "userName")]
     user_name: String,
+    #[serde(rename = "projectId")]
+    project_id: i32,
     ts: DateTime<Utc>,
     tags: Value,
 }
@@ -31,12 +33,42 @@ pub async fn read_event(
     Extension(session): Extension<UserSession>,
 ) -> Json<Option<Event>> {
     let pool = &state.pool;
-    let result = sqlx::query_as::<_, Event>("SELECT e.id, e.icon, e.title, c.title as channel_title, u.name as user_name, e.ts, JSONB_AGG(json_build_object(t.key, t.value)) as tags FROM event e JOIN channel c on e.channel_id = c.id JOIN event_user u on e.user_id = u.id JOIN project p on c.project_id = p.id join tag_event te on e.id = te.event_id join tag t on te.tag_id = t.id where p.account_id = $1 and e.id = $2 group by e.id, c.title, u.name")
-        .bind(session.account_id)
-        .bind(id)
-        .fetch_optional(pool)
-        .await
-        .unwrap();
+    let result = sqlx::query_as::<_, Event>(
+        r#"
+    SELECT 
+        e.id,
+        e.icon,
+        e.title,
+        c.title as channel_title,
+        u.name as user_name,
+        p.id as project_id,
+        e.ts,
+        COALESCE(
+            (
+                SELECT
+                    JSONB_AGG(json_build_object(t.key, t.value))
+                FROM 
+                    tag_event te
+                JOIN tag t ON te.tag_id = t.id
+                WHERE 
+                    te.event_id = e.id
+            )
+        , '[]'::jsonb) AS tags
+    FROM 
+        event e 
+    JOIN channel c on e.channel_id = c.id 
+    JOIN event_user u on e.user_id = u.id 
+    JOIN project p on c.project_id = p.id 
+    WHERE 
+        p.account_id = $1 and e.id = $2 
+    GROUP BY 
+        e.id, c.title, u.name, p.id"#,
+    )
+    .bind(session.account_id)
+    .bind(id)
+    .fetch_optional(pool)
+    .await
+    .unwrap();
 
     Json(result)
 }
@@ -46,11 +78,41 @@ pub async fn read_events(
     Extension(session): Extension<UserSession>,
 ) -> Json<Vec<Event>> {
     let pool = &state.pool;
-    let result = sqlx::query_as::<_, Event>("SELECT e.id, e.icon, e.title, c.title as channel_title, u.name as user_name, e.ts, JSONB_AGG(json_build_object(t.key, t.value)) as tags FROM event e JOIN channel c on e.channel_id = c.id JOIN event_user u on e.user_id = u.id JOIN project p on c.project_id = p.id join tag_event te on e.id = te.event_id join tag t on te.tag_id = t.id where p.account_id = $1 group by e.id, c.title, u.name")
-        .bind(session.account_id)
-        .fetch_all(pool)
-        .await
-        .unwrap();
+    let result = sqlx::query_as::<_, Event>(
+        r#"
+    SELECT 
+        e.id,
+        e.icon,
+        e.title,
+        c.title as channel_title,
+        u.name as user_name,
+        p.id as project_id,
+        e.ts,
+        COALESCE(
+            (
+                SELECT
+                    JSONB_AGG(json_build_object(t.key, t.value))
+                FROM 
+                    tag_event te
+                JOIN tag t ON te.tag_id = t.id
+                WHERE 
+                    te.event_id = e.id
+            )
+        , '[]'::jsonb) AS tags
+    FROM 
+        event e 
+    JOIN channel c on e.channel_id = c.id 
+    JOIN event_user u on e.user_id = u.id 
+    JOIN project p on c.project_id = p.id 
+    where 
+        p.account_id = $1 
+    GROUP BY
+        e.id, c.title, u.name,p.id"#,
+    )
+    .bind(session.account_id)
+    .fetch_all(pool)
+    .await
+    .unwrap();
 
     Json(result)
 }
@@ -69,29 +131,27 @@ pub async fn read_events_from_tag(
     let pool = &state.pool;
     let result = sqlx::query_as::<_, Event>(
         r#"
-SELECT e.id,
-       e.icon,
-       e.title,
-       c.title AS channel_title,
-       u.NAME AS user_name,
-       e.ts,
-       Jsonb_agg(Json_build_object(t.KEY, t.value)) AS tags
-FROM   event e
-       JOIN channel c
-         ON e.channel_id = c.id
-       JOIN event_user u
-         ON e.user_id = u.id
-       JOIN project p
-         ON c.project_id = p.id
-       JOIN tag_event te
-         ON e.id = te.event_id
-       JOIN tag t
-         ON te.tag_id = t.id
-WHERE  p.account_id = $1
-GROUP  BY e.id,
-          c.title,
-          u.NAME
-HAVING MAX(CASE WHEN t.key = $2 AND t.value = $3 THEN 1 ELSE 0 END) = 1
+    SELECT 
+        e.id,
+        e.icon,
+        e.title,
+        c.title AS channel_title,
+        u.NAME AS user_name,
+        p.id as project_id,
+        e.ts,
+        Jsonb_agg(Json_build_object(t.KEY, t.value)) AS tags
+    FROM 
+        event e
+       JOIN channel c ON e.channel_id = c.id
+       JOIN event_user u ON e.user_id = u.id
+       JOIN project p ON c.project_id = p.id
+       JOIN tag_event te ON e.id = te.event_id
+       JOIN tag t ON te.tag_id = t.id
+    WHERE  
+        p.account_id = $1
+    GROUP BY e.id, c.title, u.NAME, p.id
+    HAVING
+        MAX(CASE WHEN t.key = $2 AND t.value = $3 THEN 1 ELSE 0 END) = 1
 "#,
     )
     .bind(session.account_id)
@@ -110,12 +170,41 @@ pub async fn read_events_from_channel(
     Extension(session): Extension<UserSession>,
 ) -> Json<Vec<Event>> {
     let pool = &state.pool;
-    let result = sqlx::query_as::<_, Event>("SELECT e.id, e.icon, e.title, c.title as channel_title, u.name as user_name, e.ts, JSONB_AGG(json_build_object(t.key, t.value)) as tags FROM event e JOIN channel c on e.channel_id = c.id JOIN event_user u on e.user_id = u.id JOIN project p on c.project_id = p.id join tag_event te on e.id = te.event_id join tag t on te.tag_id = t.id where p.account_id = $1 and c.title = $2 group by e.id, c.title, u.name")
-            .bind(session.account_id)
-            .bind(channel_title)
-            .fetch_all(pool)
-            .await
-        .unwrap();
+    let result = sqlx::query_as::<_, Event>(
+        r#"
+    SELECT 
+        e.id,
+        e.icon,
+        e.title,
+        c.title AS channel_title,
+        u.name AS user_name,
+        p.id as project_id,
+        e.ts,
+        COALESCE(
+            (
+                SELECT
+                    JSONB_AGG(json_build_object(t.key, t.value))
+                FROM 
+                    tag_event te
+                JOIN tag t ON te.tag_id = t.id
+                WHERE 
+                    te.event_id = e.id
+            )
+        , '[]'::jsonb) AS tags
+    FROM event e
+    JOIN channel c ON e.channel_id = c.id
+    JOIN event_user u ON e.user_id = u.id
+    JOIN project p ON c.project_id = p.id
+    WHERE 
+        p.account_id = $1
+        AND c.title = $2
+    GROUP BY e.id, c.title, u.name, p.id"#,
+    )
+    .bind(session.account_id)
+    .bind(channel_title)
+    .fetch_all(pool)
+    .await
+    .unwrap();
 
     Json(result)
 }

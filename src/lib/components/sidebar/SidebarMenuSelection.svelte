@@ -3,6 +3,7 @@
 	import { project } from '$lib/stores/project';
 
 	export let feedActive: boolean;
+	export let searchActive: boolean;
 	export let insightsActive: boolean;
 </script>
 
@@ -19,6 +20,25 @@
 			/></svg
 		>
 		<p>feed</p>
+	</button>
+	<button
+		class="btn btn-ghost flex flex-row items-center justify-start gap-2 text-base-content transition-colors data-[active=true]:bg-base-content/20 data-[active=true]:text-secondary"
+		disabled={!$project}
+		data-active={searchActive}
+		on:click={() => goto('/search')}
+	>
+		<svg
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="currentColor"
+			stroke-width="2"
+			stroke-linecap="round"
+			stroke-linejoin="round"
+			class="h-4 w-4 fill-current"
+			><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"
+			></line></svg
+		>
+		<p>search</p>
 	</button>
 	<button
 		class="btn btn-ghost flex flex-row items-center justify-start gap-2 text-base-content transition-colors data-[active=true]:bg-base-content/20 data-[active=true]:text-accent"

@@ -55,8 +55,8 @@ export async function readChannel(channelTitle: string): Promise<Response> {
 	return res;
 }
 
-export async function deleteChannel(channelTitle: string): Promise<Response> {
-	const res = await fetch(channelBase + '/channel/' + channelTitle, {
+export async function deleteChannel(channelId: number): Promise<Response> {
+	const res = await fetch(channelBase + '/channel-delete/' + channelId, {
 		method: 'DELETE',
 		credentials: "include",
 		headers: {

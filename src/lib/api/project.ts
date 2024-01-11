@@ -42,8 +42,8 @@ export async function readProject(projectTitle: string): Promise<Response> {
 	return res;
 }
 
-export async function deleteProject(projectTitle: string): Promise<Response> {
-	const res = await fetch(`${projectBase}/project/${projectTitle}`, {
+export async function deleteProject(projectId: number): Promise<Response> {
+	const res = await fetch(`${projectBase}/project-delete/${projectId}`, {
 		method: 'DELETE',
 		credentials: 'include',
 		headers: {

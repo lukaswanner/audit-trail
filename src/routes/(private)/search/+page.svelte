@@ -1,32 +1,80 @@
 <script lang="ts">
 	import Loading from '$lib/layout/loading/Loading.svelte';
 	import { onMount } from 'svelte';
-	import type { PageData } from './$types';
-	import { readEventListWithMatchingTags } from '$lib/api/event';
+	import { readEventList, readEventListWithMatchingTags } from '$lib/api/event';
 	import type { Event as EventType } from '$lib/types/event/EventTypes';
 	import Event from '$lib/components/event/Event.svelte';
+	import { project } from '$lib/stores/project';
+	import { goto } from '$app/navigation';
 
 	let loading = true;
+	let searchQuery = new URLSearchParams(window.location.search);
 	let events: EventType[] = [];
-	export let data: PageData;
+	let filteredEvents: EventType[] = [];
+
+	async function searchEvents(event: Event) {
+		searchQuery.set('title', event.target.value);
+		goto(`/search?${searchQuery.toString()}`, { keepFocus: true });
+		filterEvents();
+	}
+
+	async function filterEvents() {
+		const searchTitle = searchQuery.get('title')?.toLowerCase();
+		if (!searchTitle) {
+			filteredEvents = events;
+		}
+		if (searchTitle) {
+			filteredEvents = events.filter((event) => {
+				return event.title.toLowerCase().includes(searchTitle);
+			});
+		}
+	}
+
+	async function readEvents() {
+		const res = await readEventList();
+		const allEvents = (await res.json()) as EventType[];
+		events = allEvents.filter((event) => {
+			return event.projectId === $project.id;
+		});
+	}
 
 	onMount(async () => {
-		if (data.key && data.value) {
+		const key = searchQuery.get('key');
+		const value = searchQuery.get('value');
+		const searchTitle = searchQuery.get('title');
+		if (key && value) {
 			try {
-				const res = await readEventListWithMatchingTags(data.key, data.value);
+				const res = await readEventListWithMatchingTags(key, value);
 				events = await res.json();
-				console.log(events);
+				filteredEvents = events;
+				loading = false;
+			} catch (err) {
+				console.log(err);
+			}
+		} else if (searchTitle) {
+			try {
+				await readEvents();
+				filteredEvents = events;
+				filterEvents();
+			} catch (err) {
+				console.log(err);
+			}
+		} else {
+			try {
+				await readEvents();
+				filteredEvents = events;
 				loading = false;
 			} catch (err) {
 				console.log(err);
 			}
 		}
 		loading = false;
-		console.log(loading, events);
 	});
+
+	$: $project.id, readEvents();
 </script>
 
-<div class="flex flex-row items-center border-b border-b-base-content/10 p-4">
+<div class="flex flex-row items-center gap-4 border-b border-b-base-content/10 px-4 py-2">
 	<a href="/">
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
@@ -39,7 +87,12 @@
 			/></svg
 		>
 	</a>
-	<h1 class="mx-auto text-3xl font-bold brightness-150">search</h1>
+	<input
+		type="text"
+		on:input={searchEvents}
+		placeholder={`Search in ${$project.title}`}
+		class="input input-bordered w-full"
+	/>
 </div>
 
 {#if loading}
@@ -48,15 +101,15 @@
 	</div>
 {/if}
 
-{#if !loading && events.length > 0}
-	<div class="flex flex-col gap-4">
-		{#each events as event}
+{#if !loading && filteredEvents.length > 0}
+	<div class="flex flex-col gap-4 overflow-auto p-4">
+		{#each filteredEvents as event}
 			<Event {event} />
 		{/each}
 	</div>
 {/if}
 
-{#if !loading && events.length === 0}
+{#if !loading && filteredEvents.length === 0}
 	<div class="flex h-full w-full flex-col items-center justify-center">
 		<h1 class="text-3xl font-bold">No events found</h1>
 	</div>

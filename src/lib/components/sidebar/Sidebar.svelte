@@ -24,6 +24,16 @@
 		const formData = new FormData(form);
 		const data = Object.fromEntries(formData.entries());
 
+		if (!data.title || data.title === '') {
+			error = 'Project name is required';
+			return;
+		}
+
+		if ($projects.find((el) => el.title === data.title)) {
+			error = 'Project name already assigned';
+			return;
+		}
+
 		const res = await createProject(data as ProjectPayload);
 		if (res.status === 201) {
 			await fetchProjects();

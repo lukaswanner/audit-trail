@@ -75,6 +75,8 @@ async fn main() {
         .route("/api-token", post(api_token::create_api_token))
         // delete
         .route("/api-token", delete(api_token::delete_api_token))
+        .route("/project-delete/:id", delete(project::delete_project))
+        .route("/channel-delete/:id", delete(channel::delete_channel))
         .route_layer(middleware::from_fn_with_state(
             shared_state.clone(),
             auth::check_request_with_jwt_token,

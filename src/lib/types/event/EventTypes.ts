@@ -14,6 +14,7 @@ export type Event = {
 	title: string;
 	channelTitle: string;
 	userName: string;
+	projectId: number;
 	ts: string;
 	tags: Record<string, unknown>[];
 };

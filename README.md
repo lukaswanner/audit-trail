@@ -21,3 +21,4 @@
  15. - [x] fix api key for different projects
  16. - [ ] Fix auth problem with websockets
  17. - [x] Fix the tooltip, i hate css sometimes
+ 18. - [x] Implement basic search to filter for events

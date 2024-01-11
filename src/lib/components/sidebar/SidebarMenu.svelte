@@ -1,18 +1,40 @@
 <script lang="ts">
-	import { project } from '$lib/stores/project';
+	import { project, projects } from '$lib/stores/project';
 	import { page } from '$app/stores';
 	import SidebarChannelList from './SidebarChannelList.svelte';
 	import SidebarMenuSelection from './SidebarMenuSelection.svelte';
+	import { deleteProject, readProjectList } from '$lib/api/project';
 
+	let error: string;
 	let configModalRef: HTMLDialogElement;
 
 	$: feedActive = $page.url.pathname === '/';
+	$: searchActive = $page.url.pathname === '/search';
 	$: insightsActive = $page.url.pathname === '/insights';
+
+	async function fetchProjects() {
+		const projectRes = await readProjectList();
+		if (projectRes.status === 200) {
+			const newProjects = await projectRes.json();
+			projects.set(newProjects);
+			project.set(newProjects[newProjects.length - 1]);
+		}
+	}
+
+	async function handleDeleteProject() {
+		const res = await deleteProject($project.id);
+		if (res.status === 204) {
+			await fetchProjects();
+			configModalRef.close();
+		} else {
+			error = 'Something went wrong';
+		}
+	}
 </script>
 
 <div class="flex flex-col items-start gap-4">
 	<div class="flex w-full flex-row items-center justify-between px-2 brightness-150">
-		<h1 class="break-all text-2xl font-bold">
+		<h1 class="break-word text-2xl font-bold">
 			{$project?.title || 'No project selected'}
 		</h1>
 		<button on:click={() => configModalRef.showModal()} disabled={!$project} class="btn btn-ghost">
@@ -23,7 +45,7 @@
 			>
 		</button>
 	</div>
-	<SidebarMenuSelection {feedActive} {insightsActive} />
+	<SidebarMenuSelection {feedActive} {searchActive} {insightsActive} />
 	<SidebarChannelList {feedActive} {insightsActive} />
 </div>
 <dialog
@@ -31,14 +53,17 @@
 	bind:this={configModalRef}
 	class="modal modal-bottom sm:modal-middle"
 >
-	<div class="modal-box">
+	<form class="modal-box" on:submit|preventDefault={handleDeleteProject}>
 		<h3 class="text-lg font-bold brightness-150">{$project.title}</h3>
 		<p class="py-4">Manage your project.</p>
+		{#if error}
+			<p class="text-error">{error}</p>
+		{/if}
 		<div class="modal-action">
 			<button class="btn btn-error">Delete</button>
 			<form method="dialog">
 				<button class="btn btn-outline">Close</button>
 			</form>
 		</div>
-	</div>
+	</form>
 </dialog>

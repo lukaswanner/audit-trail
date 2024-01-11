@@ -120,3 +120,22 @@ pub async fn create_channel_api(
         Err(_) => StatusCode::CONFLICT,
     }
 }
+
+pub async fn delete_channel(
+    State(state): State<AppState>,
+    Extension(session): Extension<UserSession>,
+    Path(id): Path<i32>,
+) -> StatusCode {
+    let res = sqlx::query("DELETE FROM channel WHERE EXISTS (SELECT 1 from project WHERE account_id = $1) AND id = $2")
+        .bind(session.account_id)
+        .bind(id)
+        .execute(&state.pool)
+        .await
+        .unwrap();
+
+    if res.rows_affected() == 0 {
+        return StatusCode::NOT_FOUND;
+    }
+
+    StatusCode::NO_CONTENT
+}
