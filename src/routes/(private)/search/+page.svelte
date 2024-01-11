@@ -6,6 +6,8 @@
 	import Event from '$lib/components/event/Event.svelte';
 	import { project } from '$lib/stores/project';
 	import { goto } from '$app/navigation';
+	import { fly } from 'svelte/transition';
+	import { backOut } from 'svelte/easing';
 
 	let loading = true;
 	let searchQuery = new URLSearchParams(window.location.search);
@@ -36,6 +38,7 @@
 		events = allEvents.filter((event) => {
 			return event.projectId === $project.id;
 		});
+		filteredEvents = events;
 	}
 
 	onMount(async () => {
@@ -54,7 +57,6 @@
 		} else if (searchTitle) {
 			try {
 				await readEvents();
-				filteredEvents = events;
 				filterEvents();
 			} catch (err) {
 				console.log(err);
@@ -71,7 +73,7 @@
 		loading = false;
 	});
 
-	$: $project.id, readEvents();
+	$: $project, readEvents();
 </script>
 
 <div class="flex flex-row items-center gap-4 border-b border-b-base-content/10 px-4 py-2">
@@ -102,9 +104,19 @@
 {/if}
 
 {#if !loading && filteredEvents.length > 0}
-	<div class="flex flex-col gap-4 overflow-auto p-4">
-		{#each filteredEvents as event}
-			<Event {event} />
+	<div class="flex h-full flex-col gap-4 overflow-auto p-4">
+		{#each [...filteredEvents] as event, index}
+			{#key event.id}
+				<div
+					in:fly|global={{
+						y: 100,
+						delay: 100 * index,
+						easing: backOut
+					}}
+				>
+					<Event {event} />
+				</div>
+			{/key}
 		{/each}
 	</div>
 {/if}
