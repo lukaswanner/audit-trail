@@ -1,4 +1,9 @@
 // type definitions for project
+export type UpdateProjectPayload = {
+	id: number;
+	title: string;
+};
+
 export type ProjectPayload = {
 	title: string;
 };

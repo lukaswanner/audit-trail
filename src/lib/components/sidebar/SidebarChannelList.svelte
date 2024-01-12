@@ -12,7 +12,7 @@
 	let error: string;
 
 	async function fetchChannels() {
-		const channelRes = await readChannelListForProject($project.title);
+		const channelRes = await readChannelListForProject($project.id);
 		if (channelRes.status === 200) {
 			const newChannels = await channelRes.json();
 			channels.set(newChannels);

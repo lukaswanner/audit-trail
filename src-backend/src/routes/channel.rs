@@ -21,15 +21,15 @@ pub struct Channel {
 
 pub async fn read_channel(
     State(state): State<AppState>,
-    Path(title): Path<String>,
+    Path(id): Path<i32>,
     Extension(session): Extension<UserSession>,
 ) -> Json<Option<Channel>> {
     let pool = &state.pool;
     let result = sqlx::query_as::<_, Channel>(
-        "SELECT c.id, c.title, p.title as project_title FROM channel c join project p on c.project_id = p.id WHERE p.account_id = $1 and lower(c.title) = lower($2)",
+        "SELECT c.id, c.title, p.title as project_title FROM channel c join project p on c.project_id = p.id WHERE p.account_id = $1 and c.id = $2",
     )
     .bind(session.account_id)
-    .bind(title)
+    .bind(id)
     .fetch_optional(pool)
     .await
     .unwrap();
@@ -55,15 +55,15 @@ pub async fn read_channels(
 
 pub async fn read_channels_for_project(
     State(state): State<AppState>,
-    Path(project_title): Path<String>,
+    Path(project_id): Path<i32>,
     Extension(session): Extension<UserSession>,
 ) -> Json<Vec<Channel>> {
     let pool = &state.pool;
     let result = sqlx::query_as::<_, Channel>(
-                "SELECT c.id, c.title, p.title as project_title FROM channel c join project p on c.project_id = p.id WHERE p.account_id = $1 and p.title = $2",
+                "SELECT c.id, c.title, p.title as project_title FROM channel c join project p on c.project_id = p.id WHERE p.account_id = $1 and p.id = $2",
             )
         .bind(session.account_id)
-        .bind(project_title)
+        .bind(project_id)
         .fetch_all(pool)
         .await
     .unwrap();

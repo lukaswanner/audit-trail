@@ -18,13 +18,13 @@ pub struct Project {
 
 pub async fn read_project(
     State(state): State<AppState>,
-    Path(title): Path<String>,
+    Path(id): Path<i32>,
     Extension(session): Extension<UserSession>,
 ) -> Json<Option<Project>> {
-    let query = "SELECT id, title FROM project WHERE account_id = $1 and lower(title) = lower($2)";
+    let query = "SELECT id, title FROM project WHERE account_id = $1 and id = $2";
     let result = sqlx::query_as::<_, Project>(query)
         .bind(session.account_id)
-        .bind(title)
+        .bind(id)
         .fetch_optional(&state.pool)
         .await
         .unwrap();
@@ -36,7 +36,7 @@ pub async fn read_projects(
     State(state): State<AppState>,
     Extension(session): Extension<UserSession>,
 ) -> Json<Vec<Project>> {
-    let query = "SELECT id, title FROM project WHERE account_id = $1";
+    let query = "SELECT id, title FROM project WHERE account_id = $1 ORDER BY id asc";
     let result = sqlx::query_as::<_, Project>(query)
         .bind(session.account_id)
         .fetch_all(&state.pool)
@@ -44,6 +44,33 @@ pub async fn read_projects(
         .unwrap();
 
     Json(result)
+}
+
+#[derive(Deserialize)]
+pub struct UpdateProject {
+    id: i32,
+    title: String,
+}
+
+pub async fn update_project(
+    State(state): State<AppState>,
+    Extension(session): Extension<UserSession>,
+    Json(payload): Json<UpdateProject>,
+) -> StatusCode {
+    let pool = &state.pool;
+    let query = "UPDATE project SET title = $1 WHERE account_id = $2 AND id = $3";
+
+    let res = sqlx::query(query)
+        .bind(payload.title)
+        .bind(session.account_id)
+        .bind(payload.id)
+        .execute(pool)
+        .await;
+
+    match res {
+        Ok(_) => StatusCode::OK,
+        Err(_) => StatusCode::NOT_MODIFIED,
+    }
 }
 
 #[derive(Deserialize)]

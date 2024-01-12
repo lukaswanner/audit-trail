@@ -1,6 +1,8 @@
 <script lang="ts">
+	import { page } from '$app/stores';
 	import { readChannelListForProject } from '$lib/api/channel';
 	import { readProjectList } from '$lib/api/project';
+	import SettingsSidebar from '$lib/components/sidebar/SettingsSidebar.svelte';
 	import Sidebar from '$lib/components/sidebar/Sidebar.svelte';
 	import SidebarMenu from '$lib/components/sidebar/SidebarMenu.svelte';
 	import Loading from '$lib/layout/loading/Loading.svelte';
@@ -23,8 +25,8 @@
 		}
 	}
 
-	async function readChannels(projectTitle: string) {
-		const channelRes = await readChannelListForProject(projectTitle);
+	async function readChannels(projectId: number) {
+		const channelRes = await readChannelListForProject(projectId);
 		if (channelRes.status === 200) {
 			const newChannels = await channelRes.json();
 			channels.set(newChannels);
@@ -40,7 +42,7 @@
 		try {
 			await readProjects();
 			if ($project) {
-				await readChannels($project.title);
+				await readChannels($project.id);
 			}
 		} catch (e) {
 			console.error(e);
@@ -50,8 +52,10 @@
 	});
 
 	$: if ($project) {
-		readChannels($project.title);
+		readChannels($project.id);
 	}
+
+	$: settingsActive = $page.url.pathname.includes('/settings');
 </script>
 
 {#if loading}
@@ -63,9 +67,15 @@
 		<div class="overflow-auto p-4 md:border-r md:border-r-base-content/10">
 			<Sidebar />
 		</div>
-		<div class="overflow-auto border-r border-r-base-content/10 p-4">
-			<SidebarMenu />
-		</div>
+		{#if settingsActive}
+			<div class="overflow-auto border-r border-r-base-content/10 p-4">
+				<SettingsSidebar />
+			</div>
+		{:else}
+			<div class="overflow-auto border-r border-r-base-content/10 p-4">
+				<SidebarMenu />
+			</div>
+		{/if}
 		<div class="flex flex-col overflow-hidden">
 			<slot />
 		</div>
