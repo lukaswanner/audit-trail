@@ -46,24 +46,32 @@
 		class="flex w-full max-w-md flex-col items-start justify-center gap-4 rounded-md border-2 border-neutral bg-base-300 p-4"
 		on:submit|preventDefault={handleDelete}
 	>
-		<p>Are you sure you want to delte this project?</p>
-		<p>
-			To confirm, please type
-			<span class="text-error">{$project?.title}</span>
-			in the field below.
-		</p>
-		<input
-			type="text"
-			name="title"
-			class="input input-bordered w-full max-w-md"
-			placeholder="project name"
-			bind:value={inputTitle}
-		/>
-		{#if error}
-			<p class="text-xs text-error">{error}</p>
+		{#if $project}
+			<p>Are you sure you want to delte this project?</p>
+			<p>
+				To confirm, please type
+				<span class="text-error">
+					{$project.title}
+				</span>
+				in the field below.
+			</p>
+			<input
+				type="text"
+				name="title"
+				disabled={!$project}
+				class="input input-bordered w-full max-w-md"
+				placeholder="project name"
+				bind:value={inputTitle}
+			/>
+			{#if error}
+				<p class="text-xs text-error">{error}</p>
+			{/if}
+			<button disabled={inputTitle.trim() !== projectTitle?.trim()} class="btn btn-error w-24"
+				>delete</button
+			>
 		{/if}
-		<button disabled={inputTitle.trim() !== projectTitle?.trim()} class="btn btn-error w-24"
-			>delete</button
-		>
+		{#if !$project}
+			<p class="text-md text-error">Please create a project first!</p>
+		{/if}
 	</form>
 </div>

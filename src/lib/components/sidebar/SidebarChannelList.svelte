@@ -43,12 +43,12 @@
 	}
 </script>
 
-<div class="flex w-full flex-row items-center justify-between px-4 brightness-150">
-	<h2 class="text-xl font-bold">Channels</h2>
+<div class="flex w-full flex-row items-center justify-between px-4">
+	<h2 class="text-xl font-bold brightness-150">Channels</h2>
 	<button
 		disabled={!$project}
 		on:click={() => modalRef.showModal()}
-		class="btn btn-ghost rounded-full fill-base-content transition-colors hover:fill-primary"
+		class="btn btn-ghost rounded-full fill-base-content brightness-150 transition-colors hover:fill-primary hover:brightness-100"
 	>
 		<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 448 512"
 			><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.--><path
