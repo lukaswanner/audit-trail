@@ -3,13 +3,18 @@
 	import { updateProject, readProjectList } from '$lib/api/project';
 	import type { Project, UpdateProjectPayload } from '$lib/types/project/ProjectTypes';
 
-	let projectTitle = $project.title;
+	let projectTitle = $project?.title;
 	let error: string;
 
 	async function handleTitleChange(e: Event) {
 		const form = e.target as HTMLFormElement;
 		const formData = new FormData(form);
 		const data = Object.fromEntries(formData.entries());
+
+		if (!$project) {
+			error = 'Select a project first';
+			return;
+		}
 
 		if (!data.title || data.title === '') {
 			error = 'Project name is required';
@@ -29,7 +34,7 @@
 				try {
 					const updatedProjects = await res.json();
 					projects.set(updatedProjects);
-					project.set(updatedProjects.find((el: Project) => el.id === $project.id));
+					project.set(updatedProjects.find((el: Project) => el.id === $project!.id));
 				} catch (e) {
 					console.error(e);
 				}
@@ -42,7 +47,7 @@
 	}
 
 	function updateTitle() {
-		projectTitle = $project.title;
+		projectTitle = $project?.title;
 		error = '';
 	}
 

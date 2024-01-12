@@ -8,11 +8,12 @@
 	export let feedActive: boolean;
 	export let insightsActive: boolean;
 
+	let channelTitle = '';
 	let modalRef: HTMLDialogElement;
 	let error: string;
 
 	async function fetchChannels() {
-		const channelRes = await readChannelListForProject($project.id);
+		const channelRes = await readChannelListForProject($project!.id);
 		if (channelRes.status === 200) {
 			const newChannels = await channelRes.json();
 			channels.set(newChannels);
@@ -25,6 +26,10 @@
 		const formData = new FormData(form);
 		const data = Object.fromEntries(formData.entries());
 
+		if (!$project) {
+			error = 'Select a project first';
+			return;
+		}
 		const payload: ChannelPayload = { title: data.title as string, projectId: $project.id };
 		const res = await createChannel(payload);
 		if (res.status === 201) {
@@ -86,12 +91,15 @@
 			type="text"
 			placeholder="Channel name"
 			class="input input-bordered w-full"
+			bind:value={channelTitle}
 		/>
 		{#if error}
 			<p class="text-error">{error}</p>
 		{/if}
 		<div class="modal-action">
-			<button class="btn btn-primary" type="submit">Create</button>
+			<button disabled={channelTitle.length === 0} class="btn btn-primary" type="submit"
+				>Create</button
+			>
 			<form method="dialog">
 				<button class="btn btn-outline">Close</button>
 			</form>
