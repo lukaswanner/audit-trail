@@ -38,7 +38,7 @@ async fn write(mut sender: SplitSink<WebSocket, Message>, project_id: i32, state
     let mut interval = interval(Duration::from_secs(5));
 
     let query_events =
-        "select e.id, e.icon, e.title, c.title as channel_title, ev.name as user_name from event e left join channel c on e.channel_id = c.id join event_user ev on e.user_id = ev.id where c.project_id = $1";
+        "select e.id, e.icon, e.title, c.title as channel_title, ev.name as user_name from event e left join channel c on e.channel_id = c.id join actor a on e.actor_id = a.id where c.project_id = $1";
     loop {
         interval.tick().await;
         let events = sqlx::query_as::<_, Event>(query_events)

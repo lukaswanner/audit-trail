@@ -19,8 +19,8 @@ pub struct Event {
     title: String,
     #[serde(rename = "channelTitle")]
     channel_title: String,
-    #[serde(rename = "userName")]
-    user_name: String,
+    #[serde(rename = "actorName")]
+    actor_name: String,
     #[serde(rename = "projectId")]
     project_id: i32,
     ts: DateTime<Utc>,
@@ -40,7 +40,7 @@ pub async fn read_event(
         e.icon,
         e.title,
         c.title as channel_title,
-        u.name as user_name,
+        a.name as actor_name,
         p.id as project_id,
         e.ts,
         COALESCE(
@@ -57,12 +57,12 @@ pub async fn read_event(
     FROM 
         event e 
     JOIN channel c on e.channel_id = c.id 
-    JOIN event_user u on e.user_id = u.id 
+    JOIN actor a on e.actor_id = a.id 
     JOIN project p on c.project_id = p.id 
     WHERE 
         p.account_id = $1 and e.id = $2 
     GROUP BY 
-        e.id, c.title, u.name, p.id"#,
+        e.id, c.title, a.name, p.id"#,
     )
     .bind(session.account_id)
     .bind(id)
@@ -85,7 +85,7 @@ pub async fn read_events(
         e.icon,
         e.title,
         c.title as channel_title,
-        u.name as user_name,
+        a.name as actor_name,
         p.id as project_id,
         e.ts,
         COALESCE(
@@ -102,12 +102,12 @@ pub async fn read_events(
     FROM 
         event e 
     JOIN channel c on e.channel_id = c.id 
-    JOIN event_user u on e.user_id = u.id 
+    JOIN actor a on e.actor_id = a.id 
     JOIN project p on c.project_id = p.id 
     where 
         p.account_id = $1 
     GROUP BY
-        e.id, c.title, u.name,p.id"#,
+        e.id, c.title, a.name,p.id"#,
     )
     .bind(session.account_id)
     .fetch_all(pool)
@@ -136,20 +136,20 @@ pub async fn read_events_from_tag(
         e.icon,
         e.title,
         c.title AS channel_title,
-        u.NAME AS user_name,
+        a.name AS actor_name,
         p.id as project_id,
         e.ts,
         Jsonb_agg(Json_build_object(t.KEY, t.value)) AS tags
     FROM 
         event e
        JOIN channel c ON e.channel_id = c.id
-       JOIN event_user u ON e.user_id = u.id
+       JOIN actor a ON e.actor_id = a.id
        JOIN project p ON c.project_id = p.id
        JOIN tag_event te ON e.id = te.event_id
        JOIN tag t ON te.tag_id = t.id
     WHERE  
         p.account_id = $1
-    GROUP BY e.id, c.title, u.NAME, p.id
+    GROUP BY e.id, c.title, a.name, p.id
     HAVING
         MAX(CASE WHEN t.key = $2 AND t.value = $3 THEN 1 ELSE 0 END) = 1
 "#,
@@ -177,7 +177,7 @@ pub async fn read_events_from_channel(
         e.icon,
         e.title,
         c.title AS channel_title,
-        u.name AS user_name,
+        a.name AS actor_name,
         p.id as project_id,
         e.ts,
         COALESCE(
@@ -193,12 +193,12 @@ pub async fn read_events_from_channel(
         , '[]'::jsonb) AS tags
     FROM event e
     JOIN channel c ON e.channel_id = c.id
-    JOIN event_user u ON e.user_id = u.id
+    JOIN actor a ON e.actor_id = a.id
     JOIN project p ON c.project_id = p.id
     WHERE 
         p.account_id = $1
         AND c.title = $2
-    GROUP BY e.id, c.title, u.name, p.id"#,
+    GROUP BY e.id, c.title, a.name, p.id"#,
     )
     .bind(session.account_id)
     .bind(channel_title)
@@ -221,8 +221,8 @@ pub struct CreateEvent {
     title: String,
     #[serde(rename = "channelId")]
     pub channel_id: i32,
-    #[serde(rename = "userId")]
-    pub user_id: i32,
+    #[serde(rename = "actorId")]
+    pub actor_id: i32,
     tags: Vec<CreateTag>,
 }
 
@@ -237,11 +237,11 @@ pub struct TagResponse {
 }
 
 async fn payload_is_valid(session: &ApiSession, payload: &CreateEvent, state: &AppState) -> bool {
-    let query = "SELECT eu.id as user_id, ch.id as channel_id FROM project p join channel ch on p.id = ch.project_id join event_user eu on p.id = eu.project_id WHERE p.id = $1 and eu.id = $2 and ch.id = $3";
+    let query = "SELECT a.id as actor_id, ch.id as channel_id FROM project p join channel ch on p.id = ch.project_id join actor a on p.id = a.project_id WHERE p.id = $1 and a.id = $2 and ch.id = $3";
 
     let valid = sqlx::query(query)
         .bind(session.project_id)
-        .bind(payload.user_id)
+        .bind(payload.actor_id)
         .bind(payload.channel_id)
         .fetch_optional(&state.pool)
         .await;
@@ -260,14 +260,14 @@ pub async fn create_event(
         return StatusCode::UNAUTHORIZED;
     }
 
-    let event_query = "INSERT INTO event (icon, title, channel_id, user_id)
-    SELECT $1 AS title, $2 AS icon, $3 as channel_id, $4 as user_id
+    let event_query = "INSERT INTO event (icon, title, channel_id, actor_id)
+    SELECT $1 AS title, $2 AS icon, $3 as channel_id, $4 as actor_id
     WHERE EXISTS (SELECT 1 FROM project WHERE account_id = $5 and id = $6) returning id";
     let event_res = sqlx::query_as::<_, CreateEventResponse>(event_query)
         .bind(payload.icon)
         .bind(payload.title)
         .bind(payload.channel_id)
-        .bind(payload.user_id)
+        .bind(payload.actor_id)
         .bind(session.account_id)
         .bind(session.project_id)
         .fetch_one(pool)

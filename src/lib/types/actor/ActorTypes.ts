@@ -1,14 +1,14 @@
 // type definitions for user
-export type UserPayload = {
+export type ActorPayload = {
 	name: string;
-	project_title: string;
+	projectTitle: string;
 	properties: Record<string, unknown>;
 };
 
-export type User = {
+export type Actor = {
 	id: number;
 	name: string;
-	project_title: string;
+	projectTitle: string;
 	properties: Record<string, unknown>;
 };
 

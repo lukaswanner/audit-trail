@@ -1,6 +1,6 @@
 -- Add migration script here
 -- create user table
-CREATE TABLE event_user (
+CREATE TABLE actor (
 	id SERIAL PRIMARY KEY,
 	name TEXT NOT NULL,
 	project_id INTEGER NOT NULL,

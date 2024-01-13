@@ -5,8 +5,8 @@ CREATE TABLE event (
     icon TEXT NOT NULL,
     title TEXT NOT NULL,
     channel_id INTEGER NOT NULL,
-    user_id INTEGER NOT NULL,
+    actor_id INTEGER NOT NULL,
     ts TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     FOREIGN KEY (channel_id) REFERENCES channel (id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES event_user (id) ON DELETE CASCADE
+    FOREIGN KEY (actor_id) REFERENCES actor (id) ON DELETE CASCADE
 );

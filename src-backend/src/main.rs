@@ -16,7 +16,7 @@ use axum::{
 
 use middlewares::auth;
 use rand::rngs::OsRng;
-use routes::{api_token, authorize, channel, event, insight, project, user, websocket};
+use routes::{api_token, authorize, channel, event, insight, project, actor, websocket};
 
 use sqlx::PgPool;
 use tower_http::cors::CorsLayer;
@@ -42,7 +42,7 @@ async fn main() {
     let api_routes = Router::new()
         .route("/event", post(event::create_event))
         .route("/channel", post(channel::create_channel_api))
-        .route("/user", post(user::create_user))
+        .route("/actor", post(actor::create_actor))
         .route("/project", post(project::create_project_api))
         .route("/insight", post(insight::create_insight))
         .route_layer(middleware::from_fn_with_state(
@@ -59,8 +59,8 @@ async fn main() {
         )
         .route("/channel/:id", get(channel::read_channel))
         .route("/channel", post(channel::create_channel))
-        .route("/users", get(user::read_users))
-        .route("/user/:name", get(user::read_user))
+        .route("/actors", get(actor::read_actors))
+        .route("/actor/:name", get(actor::read_actor))
         .route("/insight/:project_title/:name", get(insight::read_insight))
         .route("/insights/:project_title", get(insight::read_insights))
         .route("/events", get(event::read_events))

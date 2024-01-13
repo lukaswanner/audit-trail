@@ -71,7 +71,7 @@
 			<div class="flex flex-col justify-center">
 				<div class="text-2xl font-bold">{event.title}</div>
 				<p class="text-base-content">
-					{event.userName} | <span>{formatRelative(new Date(event.ts), new Date())}</span>
+					{event.actorName} | <span>{formatRelative(new Date(event.ts), new Date())}</span>
 				</p>
 			</div>
 		</div>
