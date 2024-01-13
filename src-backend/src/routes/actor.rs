@@ -25,7 +25,7 @@ pub struct Actor {
 
 pub async fn read_actor(
     State(state): State<AppState>,
-    Path(id): Path<String>,
+    Path(id): Path<i32>,
     Extension(session): Extension<UserSession>,
 ) -> Json<Option<Actor>> {
     let result = sqlx::query_as::<_, Actor>("SELECT a.id, a.name, p.title as project_title, a.properties FROM actor a join project p on a.project_id = p.id WHERE account_id = $1 and a.id = $2")

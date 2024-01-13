@@ -60,7 +60,7 @@ async fn main() {
         .route("/channel/:id", get(channel::read_channel))
         .route("/channel", post(channel::create_channel))
         .route("/actors", get(actor::read_actors))
-        .route("/actor/:name", get(actor::read_actor))
+        .route("/actor/:id", get(actor::read_actor))
         .route("/insight/:project_title/:name", get(insight::read_insight))
         .route("/insights/:project_title", get(insight::read_insights))
         .route("/events", get(event::read_events))
