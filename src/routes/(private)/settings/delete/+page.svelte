@@ -38,7 +38,7 @@
 </script>
 
 <div class="flex flex-row justify-between border-b border-b-base-content/10 p-4">
-	<h1 class="text-3xl font-bold brightness-150">project settings</h1>
+	<h1 class="text-3xl font-bold brightness-150">delete project</h1>
 </div>
 
 <div class="flex flex-col items-start gap-4 p-4">
@@ -47,7 +47,7 @@
 		on:submit|preventDefault={handleDelete}
 	>
 		{#if $project}
-			<p>Are you sure you want to delte this project?</p>
+			<p>Are you sure you want to delete this project?</p>
 			<p>
 				To confirm, please type
 				<span class="text-error">

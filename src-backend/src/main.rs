@@ -16,7 +16,7 @@ use axum::{
 
 use middlewares::auth;
 use rand::rngs::OsRng;
-use routes::{api_token, authorize, channel, event, insight, project, actor, websocket};
+use routes::{actor, api_token, authorize, channel, event, insight, project, websocket};
 
 use sqlx::PgPool;
 use tower_http::cors::CorsLayer;
@@ -78,10 +78,12 @@ async fn main() {
         .route("/api-token", post(api_token::create_api_token))
         // patch
         .route("/project", patch(project::update_project))
+        .route("/actor", patch(actor::update_actor))
         // delete
         .route("/api-token", delete(api_token::delete_api_token))
-        .route("/project/:id", delete(project::delete_project))
+        .route("/actor/:id", delete(actor::delete_actor))
         .route("/channel/:id", delete(channel::delete_channel))
+        .route("/project/:id", delete(project::delete_project))
         .route_layer(middleware::from_fn_with_state(
             shared_state.clone(),
             auth::check_request_with_jwt_token,

@@ -82,3 +82,61 @@ WHERE EXISTS (SELECT 1 FROM project WHERE account_id = $4 and id = $2)",
         Err(_) => StatusCode::CONFLICT,
     }
 }
+
+#[derive(Serialize, Deserialize)]
+pub struct UpdateActor {
+    id: i32,
+    name: String,
+    properties: HashMap<String, Value>,
+}
+
+pub async fn update_actor(
+    State(state): State<AppState>,
+    Extension(session): Extension<ApiSession>,
+    Json(payload): Json<UpdateActor>,
+) -> StatusCode {
+    let pool = &state.pool;
+
+    let props = json!(payload.properties);
+    let query = r#"
+    UPDATE actor 
+        SET name = $1, properties = $2  
+    WHERE 
+        id = $3 AND 
+        EXISTS (SELECT 1 FROM project WHERE account_id = $4 and id = $5)"#;
+
+    let res = sqlx::query(query)
+        .bind(payload.name)
+        .bind(props)
+        .bind(payload.id)
+        .bind(session.project_id)
+        .bind(session.account_id)
+        .execute(pool)
+        .await;
+
+    match res {
+        Ok(_) => StatusCode::OK,
+        Err(_) => StatusCode::NOT_MODIFIED,
+    }
+}
+
+pub async fn delete_actor(
+    State(state): State<AppState>,
+    Extension(session): Extension<UserSession>,
+    Path(id): Path<i32>,
+) -> StatusCode {
+    let res = sqlx::query(
+        "DELETE FROM actor WHERE EXISTS (SELECT 1 from project WHERE account_id = $1) AND id = $2",
+    )
+    .bind(session.account_id)
+    .bind(id)
+    .execute(&state.pool)
+    .await
+    .unwrap();
+
+    if res.rows_affected() == 0 {
+        return StatusCode::NOT_FOUND;
+    }
+
+    StatusCode::NO_CONTENT
+}

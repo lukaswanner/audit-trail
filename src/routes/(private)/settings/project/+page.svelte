@@ -60,7 +60,7 @@
 
 <div class="flex flex-col items-start gap-4 p-4">
 	<form
-		class="flex w-full max-w-md flex-col items-start justify-center gap-4 rounded-md border-2 border-neutral bg-base-300 p-4"
+		class="flex w-full max-w-xl flex-col items-start justify-center gap-4 rounded-md border-2 border-neutral bg-base-300 p-4"
 		on:submit|preventDefault={handleTitleChange}
 	>
 		<p>project name</p>

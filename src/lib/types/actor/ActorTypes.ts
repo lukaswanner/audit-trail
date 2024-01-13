@@ -1,7 +1,14 @@
 // type definitions for user
 export type ActorPayload = {
 	name: string;
-	projectTitle: string;
+	projectId: number;
+	properties: Record<string, unknown>;
+};
+
+export type UpdateActorPayload = {
+	id: number;
+	name: string;
+	projectId: number;
 	properties: Record<string, unknown>;
 };
 
