@@ -8,13 +8,13 @@ const actorBase = 'http://localhost:3000/app';
 // d - delete
 
 export async function createActor(actor: ActorPayload): Promise<Response> {
-	const res = await fetch(`${actorBase}/actor/`, {
+	const res = await fetch(`${actorBase}/actor`, {
 		method: 'POST',
 		credentials: "include",
 		headers: {
 			'Content-Type': 'application/json',
 		},
-		body: JSON.stringify({ actor }),
+		body: JSON.stringify(actor),
 	});
 	return res;
 }
@@ -26,7 +26,7 @@ export async function updateActor(actor: UpdateActorPayload): Promise<Response> 
 		headers: {
 			'Content-Type': 'application/json',
 		},
-		body: JSON.stringify({ actor }),
+		body: JSON.stringify(actor),
 	});
 	return res;
 }

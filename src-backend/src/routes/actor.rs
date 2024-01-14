@@ -83,16 +83,18 @@ WHERE EXISTS (SELECT 1 FROM project WHERE account_id = $4 and id = $2)",
     }
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct UpdateActor {
     id: i32,
+    #[serde(rename = "projectId")]
+    project_id: i32,
     name: String,
     properties: HashMap<String, Value>,
 }
 
 pub async fn update_actor(
     State(state): State<AppState>,
-    Extension(session): Extension<ApiSession>,
+    Extension(session): Extension<UserSession>,
     Json(payload): Json<UpdateActor>,
 ) -> StatusCode {
     let pool = &state.pool;
@@ -109,7 +111,7 @@ pub async fn update_actor(
         .bind(payload.name)
         .bind(props)
         .bind(payload.id)
-        .bind(session.project_id)
+        .bind(payload.project_id)
         .bind(session.account_id)
         .execute(pool)
         .await;

@@ -8,7 +8,6 @@ export type ActorPayload = {
 export type UpdateActorPayload = {
 	id: number;
 	name: string;
-	projectId: number;
 	properties: Record<string, unknown>;
 };
 

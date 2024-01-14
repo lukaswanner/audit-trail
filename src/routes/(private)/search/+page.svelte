@@ -36,7 +36,7 @@
 		const res = await readEventList();
 		const allEvents = (await res.json()) as EventType[];
 		events = allEvents.filter((event) => {
-			return event.projectId === $project.id;
+			return event.projectId === $project!.id;
 		});
 		filteredEvents = events;
 	}
@@ -76,7 +76,7 @@
 	$: $project, readEvents();
 </script>
 
-<div class="flex flex-row items-center gap-4 border-b border-b-base-content/10 px-4 py-2">
+<div class="flex flex-row items-center gap-4 border-b border-b-base-content/10 p-4">
 	<a href="/">
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
@@ -92,7 +92,7 @@
 	<input
 		type="text"
 		on:input={searchEvents}
-		placeholder={`Search in ${$project.title}`}
+		placeholder={`Search in for event title in ${$project.name}`}
 		class="input input-bordered w-full"
 	/>
 </div>

@@ -79,6 +79,6 @@
 				y2="15"
 			></line></svg
 		>
-		<p>delete</p>
+		<p>delete project</p>
 	</a>
 </div>

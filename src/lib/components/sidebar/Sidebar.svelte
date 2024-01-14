@@ -48,11 +48,14 @@
 	}
 
 	function handleProjectSwitch(newProject: Project) {
+		if (newProject === $project) {
+			goto('/');
+			return;
+		}
 		project.set(newProject);
 		channels.set([]);
 		events.set([]);
 		insights.set([]);
-		goto('/');
 	}
 
 	$: settingsActive = $page.url.pathname === '/settings';

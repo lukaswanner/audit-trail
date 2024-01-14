@@ -27,7 +27,9 @@
 </div>
 
 {#if loading}
-	<Loading />
+	<div class="relative">
+		<Loading />
+	</div>
 {/if}
 <div class="grid grid-cols-[1fr_1fr] gap-4 p-4">
 	{#each $insights as insight}

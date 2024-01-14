@@ -1,19 +1,19 @@
 <script lang="ts">
-	import { readActorList } from '$lib/api/actor';
+	import { readChannelListForProject } from '$lib/api/channel';
 	import Loading from '$lib/layout/loading/Loading.svelte';
-	import { actors } from '$lib/stores/actor';
+	import { channels } from '$lib/stores/channel';
 	import { project } from '$lib/stores/project';
 	import { onMount } from 'svelte';
 
 	let loading = true;
 
-	async function updateActorsList() {
+	async function updateChannelList() {
 		loading = true;
-		let res = await readActorList();
+		let res = await readChannelListForProject($project!.id);
 		if (res.status === 200) {
 			try {
-				const updatedActors = await res.json();
-				actors.set(updatedActors);
+				const updatedChannels = await res.json();
+				channels.set(updatedChannels);
 			} catch (e) {
 				console.error(e);
 			}
@@ -21,15 +21,15 @@
 		loading = false;
 	}
 
-	$: $project, updateActorsList();
+	$: $project, updateChannelList();
 
 	onMount(async () => {
-		updateActorsList();
+		updateChannelList();
 	});
 </script>
 
 <div class="flex flex-row justify-between border-b border-b-base-content/10 p-4">
-	<h1 class="text-3xl font-bold brightness-150">actors</h1>
+	<h1 class="text-3xl font-bold brightness-150">channels</h1>
 </div>
 
 {#if loading}
@@ -55,24 +55,27 @@
 				></path></svg
 			>
 		</div>
-		<h1 class="text-2xl brightness-150">actors for {$project?.title}</h1>
+		<h1 class="text-2xl brightness-150">channels for {$project?.title}</h1>
 	</div>
-	{#if $actors.length === 0}
+	{#if $channels.length === 0}
 		<div
 			class="flex w-full flex-col items-start justify-center gap-4 rounded-bl-md rounded-br-md border-b-2 border-l-2 border-r-2 border-t-2 border-neutral bg-base-300 p-4"
 		>
-			<p class="text-base-content">no actors yet created</p>
+			<p class="text-base-content">no channels yet created</p>
 		</div>
 	{/if}
-	{#each $actors as actor, index}
+	{#each $channels as channel, index}
 		<div
-			data-last={index === $actors.length - 1}
+			data-last={index === $channels.length - 1}
 			class="flex w-full flex-col items-start justify-center gap-4 border-l-2 border-r-2 border-t-2 border-neutral bg-base-300 p-4 data-[last=true]:rounded-bl-md data-[last=true]:rounded-br-md data-[last=true]:border-b-2"
 		>
 			<div class="flex w-full flex-row items-center justify-between">
-				<p class="text-base-content">{actor.name}</p>
+				<p class="text-base-content">{channel.title}</p>
 				<div class="flex flex-row items-center gap-2">
-					<a href={`/settings/actors/${actor.name}`} class="transition-colors hover:text-secondary">
+					<a
+						href={`/settings/channels/${channel.title}`}
+						class="transition-colors hover:text-secondary"
+					>
 						<svg
 							viewBox="0 0 24 24"
 							fill="none"
@@ -87,7 +90,7 @@
 						>
 					</a>
 					<a
-						href={`/settings/actors/${actor.name}/danger`}
+						href={`/settings/channels/${channel.title}/danger`}
 						class="transition-colors hover:text-secondary"
 					>
 						<svg
