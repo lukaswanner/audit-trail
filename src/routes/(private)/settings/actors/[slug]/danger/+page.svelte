@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { deleteActor, readActorList } from '$lib/api/actor';
+	import { deleteActor, readActorListForProject } from '$lib/api/actor';
 	import { actors } from '$lib/stores/actor';
+	import { project } from '$lib/stores/project';
 
 	let error: string;
 	let actorName = decodeURIComponent($page.url.pathname.split('/')[3]);
@@ -16,7 +17,7 @@
 		}
 		const res = await deleteActor(id);
 		if (res.status === 204) {
-			let res = await readActorList();
+			let res = await readActorListForProject($project!.id);
 			if (res.status === 200) {
 				try {
 					const updatedActorList = await res.json();

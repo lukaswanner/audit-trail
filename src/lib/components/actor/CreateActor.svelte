@@ -1,11 +1,24 @@
 <script lang="ts">
 	import { project } from '$lib/stores/project';
-	import { createActor, readActorList } from '$lib/api/actor';
+	import { createActor, readActorListForProject } from '$lib/api/actor';
 	import type { ActorPayload } from '$lib/types/actor/ActorTypes';
 	import { actors } from '$lib/stores/actor';
 	import { onMount } from 'svelte';
 
 	let error: string;
+
+	async function updateActorsList() {
+		let res = await readActorListForProject($project!.id);
+		if (res.status === 200) {
+			try {
+				const updatedActors = await res.json();
+				actors.set(updatedActors);
+			} catch (e) {
+				console.error(e);
+			}
+		}
+		error = '';
+	}
 
 	async function handleCreateActor(e: Event) {
 		const form = e.target as HTMLFormElement;
@@ -33,31 +46,10 @@
 		const res = await createActor(payload);
 		if (res.status === 201) {
 			error = '';
-			let res = await readActorList();
-			if (res.status === 200) {
-				try {
-					const updatedActors = await res.json();
-					actors.set(updatedActors);
-				} catch (e) {
-					console.error(e);
-				}
-			}
+			await updateActorsList();
 		} else {
 			error = 'Something went wrong';
 		}
-	}
-
-	async function updateActorsList() {
-		let res = await readActorList();
-		if (res.status === 200) {
-			try {
-				const updatedActors = await res.json();
-				actors.set(updatedActors);
-			} catch (e) {
-				console.error(e);
-			}
-		}
-		error = '';
 	}
 
 	$: $project, updateActorsList();

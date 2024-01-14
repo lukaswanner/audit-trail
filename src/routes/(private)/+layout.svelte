@@ -1,11 +1,13 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import { readActorListForProject } from '$lib/api/actor';
 	import { readChannelListForProject } from '$lib/api/channel';
 	import { readProjectList } from '$lib/api/project';
 	import SettingsSidebar from '$lib/components/sidebar/SettingsSidebar.svelte';
 	import Sidebar from '$lib/components/sidebar/Sidebar.svelte';
 	import SidebarMenu from '$lib/components/sidebar/SidebarMenu.svelte';
 	import Loading from '$lib/layout/loading/Loading.svelte';
+	import { actors } from '$lib/stores/actor';
 	import { channel, channels } from '$lib/stores/channel';
 	import { project, projects } from '$lib/stores/project';
 	import { onMount } from 'svelte';
@@ -38,11 +40,22 @@
 		}
 	}
 
+	async function readActors(projectId: number) {
+		const actorRes = await readActorListForProject(projectId);
+		if (actorRes.status === 200) {
+			const newActors = await actorRes.json();
+			actors.set(newActors);
+		} else {
+			actors.set([]);
+		}
+	}
+
 	onMount(async () => {
 		try {
 			await readProjects();
 			if ($project) {
 				await readChannels($project.id);
+				await readActors($project.id);
 			}
 		} catch (e) {
 			console.error(e);

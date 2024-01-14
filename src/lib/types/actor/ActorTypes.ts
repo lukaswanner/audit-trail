@@ -7,6 +7,7 @@ export type ActorPayload = {
 
 export type UpdateActorPayload = {
 	id: number;
+	projectId: number;
 	name: string;
 	properties: Record<string, unknown>;
 };

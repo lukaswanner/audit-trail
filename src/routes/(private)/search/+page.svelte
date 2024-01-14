@@ -74,6 +74,8 @@
 	});
 
 	$: $project, readEvents();
+
+	console.log($project);
 </script>
 
 <div class="flex flex-row items-center gap-4 border-b border-b-base-content/10 p-4">
@@ -92,7 +94,7 @@
 	<input
 		type="text"
 		on:input={searchEvents}
-		placeholder={`Search in for event title in ${$project.name}`}
+		placeholder={`Search in for event title in ${$project?.title}`}
 		class="input input-bordered w-full"
 	/>
 </div>

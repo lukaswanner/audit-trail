@@ -3,6 +3,7 @@
 	import { page } from '$app/stores';
 	import SidebarChannelList from './SidebarChannelList.svelte';
 	import SidebarMenuSelection from './SidebarMenuSelection.svelte';
+	import SidebarActorList from './SidebarActorList.svelte';
 
 	$: feedActive = $page.url.pathname === '/';
 	$: searchActive = $page.url.pathname === '/search';
@@ -16,5 +17,6 @@
 		</h1>
 	</div>
 	<SidebarMenuSelection {feedActive} {searchActive} {insightsActive} />
-	<SidebarChannelList {feedActive} {insightsActive} />
+	<SidebarChannelList {feedActive} />
+	<SidebarActorList />
 </div>

@@ -42,6 +42,17 @@ export async function readActorList(): Promise<Response> {
 	return res;
 }
 
+export async function readActorListForProject(id: number): Promise<Response> {
+	const res = await fetch(`${actorBase}/actors/${id}`, {
+		method: 'GET',
+		credentials: "include",
+		headers: {
+			'Content-Type': 'application/json',
+		},
+	});
+	return res;
+}
+
 export async function readActor(actorName: string): Promise<Response> {
 	const res = await fetch(`${actorBase}/actor/${actorName}`, {
 		method: 'GET',

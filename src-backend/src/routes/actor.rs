@@ -51,6 +51,21 @@ pub async fn read_actors(
     Json(result)
 }
 
+pub async fn read_actors_for_project(
+    State(state): State<AppState>,
+    Path(project_id): Path<i32>,
+    Extension(session): Extension<UserSession>,
+) -> Json<Vec<Actor>> {
+    let result = sqlx::query_as::<_, Actor>("SELECT a.id, a.name, p.title as project_title, a.properties FROM actor a join project p on a.project_id = p.id WHERE account_id = $1 and p.id = $2")
+        .bind(session.account_id)
+        .bind(project_id)
+        .fetch_all(&state.pool)
+        .await
+        .unwrap();
+
+    Json(result)
+}
+
 #[derive(Serialize, Deserialize)]
 pub struct CreateActor {
     name: String,

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { readActorList, updateActor } from '$lib/api/actor';
+	import { readActorListForProject, updateActor } from '$lib/api/actor';
 	import { actors } from '$lib/stores/actor';
 	import { project } from '$lib/stores/project';
 
@@ -10,17 +10,22 @@
 
 	let inputName = '';
 
-	async function handleNameChange() {
-		// make sure we have the latest actor list
-		let res = await readActorList();
+	async function updateActorsList() {
+		let res = await readActorListForProject($project!.id);
 		if (res.status === 200) {
 			try {
-				const actorList = await res.json();
-				actors.set(actorList);
+				const updatedActors = await res.json();
+				actors.set(updatedActors);
 			} catch (e) {
 				console.error(e);
 			}
 		}
+		error = '';
+	}
+
+	async function handleNameChange() {
+		// make sure we have the latest actor list
+		await updateActorsList();
 		const currentActor = $actors.find((actor) => actor.name === actorName);
 		if (!$project || !$project.id) {
 			error = 'no project selected';
@@ -37,17 +42,9 @@
 			properties: currentActor.properties
 		};
 
-		res = await updateActor(payload);
+		const res = await updateActor(payload);
 		if (res.status === 200) {
-			let res = await readActorList();
-			if (res.status === 200) {
-				try {
-					const updatedActorList = await res.json();
-					actors.set(updatedActorList);
-				} catch (e) {
-					console.error(e);
-				}
-			}
+			await updateActorsList();
 			goto('/settings/actors');
 		}
 	}

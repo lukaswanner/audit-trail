@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { readActorList } from '$lib/api/actor';
+	import { readActorListForProject } from '$lib/api/actor';
 	import Loading from '$lib/layout/loading/Loading.svelte';
 	import { actors } from '$lib/stores/actor';
 	import { project } from '$lib/stores/project';
@@ -9,7 +9,7 @@
 
 	async function updateActorsList() {
 		loading = true;
-		let res = await readActorList();
+		let res = await readActorListForProject();
 		if (res.status === 200) {
 			try {
 				const updatedActors = await res.json();

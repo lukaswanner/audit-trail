@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { createProject, readProjectList } from '$lib/api/project';
+	import { actors } from '$lib/stores/actor';
 	import { channels } from '$lib/stores/channel';
 	import { events } from '$lib/stores/event';
 	import { insights } from '$lib/stores/insight';
@@ -54,6 +55,7 @@
 		}
 		project.set(newProject);
 		channels.set([]);
+		actors.set([]);
 		events.set([]);
 		insights.set([]);
 	}
@@ -121,8 +123,8 @@
 		{#if error}
 			<p class="text-error">{error}</p>
 		{/if}
-		<div class="modal-action">
-			<button disabled={projectTitle.length === 0} class="btn btn-primary" type="submit"
+		<div class="modal-action justify-start">
+			<button disabled={projectTitle.length === 0} class="btn btn-success" type="submit"
 				>Create</button
 			>
 			<form method="dialog">
