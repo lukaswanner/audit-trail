@@ -9,7 +9,7 @@
 
 	async function updateActorsList() {
 		loading = true;
-		let res = await readActorListForProject();
+		let res = await readActorListForProject($project!.id);
 		if (res.status === 200) {
 			try {
 				const updatedActors = await res.json();
