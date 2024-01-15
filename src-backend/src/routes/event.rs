@@ -209,6 +209,51 @@ pub async fn read_events_from_channel(
     Json(result)
 }
 
+pub async fn read_events_from_actor(
+    State(state): State<AppState>,
+    Path(actor_id): Path<i32>,
+    Extension(session): Extension<UserSession>,
+) -> Json<Vec<Event>> {
+    let pool = &state.pool;
+    let result = sqlx::query_as::<_, Event>(
+        r#"
+    SELECT 
+        e.id,
+        e.icon,
+        e.title,
+        c.title AS channel_title,
+        a.name AS actor_name,
+        p.id as project_id,
+        e.ts,
+        COALESCE(
+            (
+                SELECT
+                    JSONB_AGG(json_build_object(t.key, t.value))
+                FROM 
+                    tag_event te
+                JOIN tag t ON te.tag_id = t.id
+                WHERE 
+                    te.event_id = e.id
+            )
+        , '[]'::jsonb) AS tags
+    FROM event e
+    JOIN channel c ON e.channel_id = c.id
+    JOIN actor a ON e.actor_id = a.id
+    JOIN project p ON c.project_id = p.id
+    WHERE 
+        p.account_id = $1
+        AND e.actor_id = $2
+    GROUP BY e.id, c.title, a.name, p.id"#,
+    )
+    .bind(session.account_id)
+    .bind(actor_id)
+    .fetch_all(pool)
+    .await
+    .unwrap();
+
+    Json(result)
+}
+
 #[derive(Deserialize)]
 pub struct CreateTag {
     key: String,

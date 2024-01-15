@@ -66,8 +66,12 @@ async fn main() {
         .route("/insights/:project_title", get(insight::read_insights))
         .route("/events", get(event::read_events))
         .route(
-            "/events/:channel_title",
+            "/events/channel/:channel_title",
             get(event::read_events_from_channel),
+        )
+        .route(
+            "/events/actor/:actor_id",
+            get(event::read_events_from_actor),
         )
         .route("/event/:id", get(event::read_event))
         .route("/project/:id", get(project::read_project))

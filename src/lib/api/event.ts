@@ -43,7 +43,18 @@ export async function readEventListWithMatchingTags(key: string, value: string):
 }
 
 export async function readEventListForChannel(channelTitle: string): Promise<Response> {
-	const res = await fetch(`${eventBase}/events/${channelTitle}`, {
+	const res = await fetch(`${eventBase}/events/channel/${channelTitle}`, {
+		method: 'GET',
+		credentials: "include",
+		headers: {
+			'Content-Type': 'application/json',
+		},
+	});
+	return res
+}
+
+export async function readEventListForActor(actorId: number): Promise<Response> {
+	const res = await fetch(`${eventBase}/events/actor/${actorId}`, {
 		method: 'GET',
 		credentials: "include",
 		headers: {

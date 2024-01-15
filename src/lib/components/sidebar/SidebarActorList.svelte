@@ -2,7 +2,6 @@
 	import { createActor, readActorListForProject } from '$lib/api/actor';
 	import { project } from '$lib/stores/project';
 	import { actors } from '$lib/stores/actor';
-	import { goto } from '$app/navigation';
 	import type { ActorPayload } from '$lib/types/actor/ActorTypes';
 
 	let actorName = '';
@@ -58,10 +57,8 @@
 	</button>
 </div>
 {#each $actors as actor}
-	<button
-		on:click={() => {
-			goto('/');
-		}}
+	<a
+		href={`/actor/${actor.id}`}
 		class="btn btn-ghost flex w-full flex-grow flex-row flex-nowrap items-center justify-start gap-2"
 	>
 		<svg
@@ -72,15 +69,15 @@
 			stroke-linecap="round"
 			stroke-linejoin="round"
 			class="h-4 w-4"
-			><circle cx="12" cy="12" r="4"></circle><path
-				d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"
-			></path></svg
 		>
+			<circle cx="12" cy="12" r="4" />
+			<path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94" />
+		</svg>
 
 		<p class="h-12 overflow-hidden text-ellipsis whitespace-nowrap font-bold leading-[3rem]">
 			{actor.name}
 		</p>
-	</button>
+	</a>
 {/each}
 
 <dialog id="channel-modal" bind:this={modalRef} class="modal modal-bottom sm:modal-middle">

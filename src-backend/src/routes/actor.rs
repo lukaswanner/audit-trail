@@ -20,7 +20,7 @@ pub struct Actor {
     name: String,
     #[serde(rename = "projectTitle")]
     project_title: String,
-    properties: sqlx::types::Json<HashMap<String, String>>,
+    properties: sqlx::types::Json<HashMap<String, Value>>,
 }
 
 pub async fn read_actor(
@@ -28,12 +28,24 @@ pub async fn read_actor(
     Path(id): Path<i32>,
     Extension(session): Extension<UserSession>,
 ) -> Json<Option<Actor>> {
-    let result = sqlx::query_as::<_, Actor>("SELECT a.id, a.name, p.title as project_title, a.properties FROM actor a join project p on a.project_id = p.id WHERE account_id = $1 and a.id = $2")
-        .bind(session.account_id)
-        .bind(id)
-        .fetch_optional(&state.pool)
-        .await
-        .unwrap();
+    let result = sqlx::query_as::<_, Actor>(
+        r#"
+    SELECT 
+        a.id,
+        a.name,
+        p.title as project_title,
+        a.properties 
+    FROM 
+        actor a 
+    JOIN project p on a.project_id = p.id 
+    WHERE 
+        account_id = $1 and a.id = $2"#,
+    )
+    .bind(session.account_id)
+    .bind(id)
+    .fetch_optional(&state.pool)
+    .await
+    .unwrap();
 
     Json(result)
 }
