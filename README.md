@@ -22,3 +22,4 @@
  16. - [ ] Fix auth problem with websockets
  17. - [x] Fix the tooltip, i hate css sometimes
  18. - [x] Implement basic search to filter for events
+ 19. - [ ] Swap design to bento grid for insights
