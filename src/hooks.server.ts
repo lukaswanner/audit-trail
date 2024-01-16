@@ -1,10 +1,10 @@
-import type { Handle } from '@sveltejs/kit';
-import { jwtDecode } from 'jwt-decode';
+import type { Handle } from "@sveltejs/kit";
+import { jwtDecode } from "jwt-decode";
 
 type UserJwt = {
 	account_id: number;
 	exp: number;
-}
+};
 
 async function getUserInformation(cookie: string | undefined) {
 	if (!cookie) return undefined;
@@ -15,9 +15,8 @@ async function getUserInformation(cookie: string | undefined) {
 	return decoded.account_id;
 }
 
-
 export const handle: Handle = async ({ event, resolve }) => {
-	event.locals.account_id = await getUserInformation(event.cookies.get('__audit'));
+	event.locals.account_id = await getUserInformation(event.cookies.get("__audit"));
 
 	return await resolve(event);
 };

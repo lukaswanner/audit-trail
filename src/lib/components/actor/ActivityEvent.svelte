@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Event } from '$lib/types/event/EventTypes';
+	import type { Event } from "$lib/types/event/EventTypes";
 
 	export let event: Event;
 </script>

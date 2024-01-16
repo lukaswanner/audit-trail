@@ -4,11 +4,11 @@ declare global {
 	namespace App {
 		// interface Error {}
 		interface Locals {
-			account_id?: number
+			account_id?: number;
 		}
 		// interface PageData {}
 		// interface Platform {}
 	}
 }
 
-export { };
+export {};

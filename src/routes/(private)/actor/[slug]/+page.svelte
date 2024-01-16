@@ -1,6 +1,6 @@
 <script lang="ts">
-	import PaginationActor from '$lib/components/actor/PaginationActor.svelte';
-	import type { PageData } from './$types';
+	import PaginationActor from "$lib/components/actor/PaginationActor.svelte";
+	import type { PageData } from "./$types";
 
 	export let data: PageData;
 

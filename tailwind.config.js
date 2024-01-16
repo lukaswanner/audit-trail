@@ -1,8 +1,8 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-	content: ['./src/**/*.{html,svelte,ts}'],
-	plugins: [require('daisyui')],
+	content: ["./src/**/*.{html,svelte,ts}"],
+	plugins: [require("daisyui")],
 	daisyui: {
-		themes: ['dim', 'dark', 'light']
+		themes: ["dim", "dark", "light"]
 	}
 };

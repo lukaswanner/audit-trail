@@ -1,14 +1,14 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import { page } from '$app/stores';
-	import { readActorListForProject, updateActor } from '$lib/api/actor';
-	import { actors } from '$lib/stores/actor';
-	import { project } from '$lib/stores/project';
+	import { goto } from "$app/navigation";
+	import { page } from "$app/stores";
+	import { readActorListForProject, updateActor } from "$lib/api/actor";
+	import { actors } from "$lib/stores/actor";
+	import { project } from "$lib/stores/project";
 
 	let error: string;
-	let actorName = decodeURIComponent($page.url.pathname.split('/')[3]);
+	let actorName = decodeURIComponent($page.url.pathname.split("/")[3]);
 
-	let inputName = '';
+	let inputName = "";
 
 	async function updateActorsList() {
 		let res = await readActorListForProject($project!.id);
@@ -20,7 +20,7 @@
 				console.error(e);
 			}
 		}
-		error = '';
+		error = "";
 	}
 
 	async function handleNameChange() {
@@ -28,11 +28,11 @@
 		await updateActorsList();
 		const currentActor = $actors.find((actor) => actor.name === actorName);
 		if (!$project || !$project.id) {
-			error = 'no project selected';
+			error = "no project selected";
 			return;
 		}
 		if (!currentActor) {
-			error = 'actor not found';
+			error = "actor not found";
 			return;
 		}
 		const payload = {
@@ -45,7 +45,7 @@
 		const res = await updateActor(payload);
 		if (res.status === 200) {
 			await updateActorsList();
-			goto('/settings/actors');
+			goto("/settings/actors");
 		}
 	}
 </script>
@@ -82,6 +82,6 @@
 		{#if error}
 			<p class="text-xs text-error">{error}</p>
 		{/if}
-		<button disabled={inputName.trim() === ''} class="btn btn-success w-24">update</button>
+		<button disabled={inputName.trim() === ""} class="btn btn-success w-24">update</button>
 	</form>
 </div>

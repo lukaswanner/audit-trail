@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import { project } from '$lib/stores/project';
+	import { goto } from "$app/navigation";
+	import { project } from "$lib/stores/project";
 
 	export let feedActive: boolean;
 	export let searchActive: boolean;
@@ -12,7 +12,7 @@
 		class="btn btn-ghost flex flex-row items-center justify-start gap-2 text-base-content transition-colors data-[active=true]:bg-base-content/20 data-[active=true]:text-primary"
 		disabled={!$project}
 		data-active={feedActive}
-		on:click={() => goto('/')}
+		on:click={() => goto("/")}
 	>
 		<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 fill-current" viewBox="0 0 512 512"
 			><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.--><path
@@ -25,7 +25,7 @@
 		class="btn btn-ghost flex flex-row items-center justify-start gap-2 text-base-content transition-colors data-[active=true]:bg-base-content/20 data-[active=true]:text-secondary"
 		disabled={!$project}
 		data-active={searchActive}
-		on:click={() => goto('/search')}
+		on:click={() => goto("/search")}
 	>
 		<svg
 			viewBox="0 0 24 24"
@@ -44,7 +44,7 @@
 		class="btn btn-ghost flex flex-row items-center justify-start gap-2 text-base-content transition-colors data-[active=true]:bg-base-content/20 data-[active=true]:text-accent"
 		disabled={!$project}
 		data-active={insightsActive}
-		on:click={() => goto('/insights')}
+		on:click={() => goto("/insights")}
 	>
 		<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 fill-current" viewBox="0 0 384 512"
 			><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.--><path

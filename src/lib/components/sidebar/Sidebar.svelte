@@ -1,15 +1,15 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import { page } from '$app/stores';
-	import { createProject, readProjectList } from '$lib/api/project';
-	import { actors } from '$lib/stores/actor';
-	import { channels } from '$lib/stores/channel';
-	import { events } from '$lib/stores/event';
-	import { insights } from '$lib/stores/insight';
-	import { project, projects } from '$lib/stores/project';
-	import type { Project, ProjectPayload } from '$lib/types/project/ProjectTypes';
+	import { goto } from "$app/navigation";
+	import { page } from "$app/stores";
+	import { createProject, readProjectList } from "$lib/api/project";
+	import { actors } from "$lib/stores/actor";
+	import { channels } from "$lib/stores/channel";
+	import { events } from "$lib/stores/event";
+	import { insights } from "$lib/stores/insight";
+	import { project, projects } from "$lib/stores/project";
+	import type { Project, ProjectPayload } from "$lib/types/project/ProjectTypes";
 
-	let projectTitle = '';
+	let projectTitle = "";
 	let modalRef: HTMLDialogElement;
 	let error: string;
 
@@ -27,13 +27,13 @@
 		const formData = new FormData(form);
 		const data = Object.fromEntries(formData.entries());
 
-		if (!data.title || data.title === '') {
-			error = 'Project name is required';
+		if (!data.title || data.title === "") {
+			error = "Project name is required";
 			return;
 		}
 
 		if ($projects.find((el) => el.title === data.title)) {
-			error = 'Project name already assigned';
+			error = "Project name already assigned";
 			return;
 		}
 
@@ -42,15 +42,15 @@
 			await fetchProjects();
 			modalRef.close();
 		} else if (res.status === 409) {
-			error = 'Project already exists';
+			error = "Project already exists";
 		} else {
-			error = 'Something went wrong';
+			error = "Something went wrong";
 		}
 	}
 
 	function handleProjectSwitch(newProject: Project) {
 		if (newProject === $project) {
-			goto('/');
+			goto("/");
 			return;
 		}
 		project.set(newProject);
@@ -60,12 +60,12 @@
 		insights.set([]);
 	}
 
-	$: settingsActive = $page.url.pathname === '/settings';
+	$: settingsActive = $page.url.pathname === "/settings";
 </script>
 
 <div class="flex h-full items-center gap-2 md:flex-col">
 	<button
-		on:click={() => goto('/')}
+		on:click={() => goto("/")}
 		class="btn btn-ghost h-14 w-14 rounded-full fill-base-content brightness-150 transition-colors hover:fill-primary hover:brightness-100"
 	>
 		<svg xmlns="http://www.w3.org/2000/svg" class="h-full w-full" viewBox="0 0 576 512"

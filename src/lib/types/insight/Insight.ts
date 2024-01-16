@@ -1,4 +1,3 @@
-
 export type Insight = {
 	id: number;
 	title: string;
@@ -11,4 +10,4 @@ export type InsightPayload = {
 	title: string;
 	icon: string;
 	value: string;
-};	
+};

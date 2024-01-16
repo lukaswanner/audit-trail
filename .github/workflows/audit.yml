@@ -1,25 +1,25 @@
 name: Rust App Check
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+    push:
+        branches:
+            - main
+    pull_request:
+        branches:
+            - main
 
 jobs:
-  check:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./src-backend
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+    check:
+        runs-on: ubuntu-latest
+        defaults:
+            run:
+                working-directory: ./src-backend
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
 
-      - name: Install stable toolchain
-        uses: dtolnay/rust-toolchain@stable
+            - name: Install stable toolchain
+              uses: dtolnay/rust-toolchain@stable
 
-      - name: Check that code can compile
-        run: cargo check
+            - name: Check that code can compile
+              run: cargo check

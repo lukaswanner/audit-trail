@@ -1,6 +1,6 @@
 import type { ChannelPayload } from "$lib/types/channel/ChannelTypes";
 
-const channelBase = 'http://localhost:3000/app';
+const channelBase = "http://localhost:3000/app";
 
 // crud for api naming convention
 // c - create
@@ -10,23 +10,23 @@ const channelBase = 'http://localhost:3000/app';
 
 export async function createChannel(channel: ChannelPayload): Promise<Response> {
 	const res = await fetch(`${channelBase}/channel`, {
-		method: 'POST',
+		method: "POST",
 		credentials: "include",
 		headers: {
-			'Content-Type': 'application/json',
+			"Content-Type": "application/json"
 		},
-		body: JSON.stringify(channel),
+		body: JSON.stringify(channel)
 	});
 	return res;
 }
 
 export async function readChannelList(): Promise<Response> {
 	const res = await fetch(`${channelBase}/channels`, {
-		method: 'GET',
+		method: "GET",
 		credentials: "include",
 		headers: {
-			'Content-Type': 'application/json',
-		},
+			"Content-Type": "application/json"
+		}
 	});
 
 	return res;
@@ -34,11 +34,11 @@ export async function readChannelList(): Promise<Response> {
 
 export async function readChannelListForProject(id: number): Promise<Response> {
 	const res = await fetch(`${channelBase}/channels/${id}`, {
-		method: 'GET',
+		method: "GET",
 		credentials: "include",
 		headers: {
-			'Content-Type': 'application/json',
-		},
+			"Content-Type": "application/json"
+		}
 	});
 
 	return res;
@@ -46,22 +46,22 @@ export async function readChannelListForProject(id: number): Promise<Response> {
 
 export async function readChannel(channelId: number): Promise<Response> {
 	const res = await fetch(`${channelBase}/channel/${channelId}`, {
-		method: 'GET',
+		method: "GET",
 		credentials: "include",
 		headers: {
-			'Content-Type': 'application/json',
-		},
+			"Content-Type": "application/json"
+		}
 	});
 	return res;
 }
 
 export async function deleteChannel(channelId: number): Promise<Response> {
 	const res = await fetch(`${channelBase}/channel/${channelId}`, {
-		method: 'DELETE',
+		method: "DELETE",
 		credentials: "include",
 		headers: {
-			'Content-Type': 'application/json',
-		},
+			"Content-Type": "application/json"
+		}
 	});
 	return res;
 }

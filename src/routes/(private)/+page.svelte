@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { readEventListForChannel } from '$lib/api/event';
-	import Event from '$lib/components/event/Event.svelte';
-	import { channel } from '$lib/stores/channel';
-	import { events } from '$lib/stores/event';
-	import { fade } from 'svelte/transition';
+	import { readEventListForChannel } from "$lib/api/event";
+	import Event from "$lib/components/event/Event.svelte";
+	import { channel } from "$lib/stores/channel";
+	import { events } from "$lib/stores/event";
+	import { fade } from "svelte/transition";
 
 	async function readEvents(channelTitle: string) {
 		const eventRes = await readEventListForChannel(channelTitle);

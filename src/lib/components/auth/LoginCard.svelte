@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import { page } from '$app/stores';
-	import { login } from '$lib/api/auth';
-	import type { UserCredentialsLogin } from '$lib/types/account/AccountTypes';
-	import type { EventType } from '$lib/types/login/login';
-	import { handleSuccessfulRedirect } from '$lib/utils/redirectTo';
+	import { goto } from "$app/navigation";
+	import { page } from "$app/stores";
+	import { login } from "$lib/api/auth";
+	import type { UserCredentialsLogin } from "$lib/types/account/AccountTypes";
+	import type { EventType } from "$lib/types/login/login";
+	import { handleSuccessfulRedirect } from "$lib/utils/redirectTo";
 
 	export let addToEventLog: (event: EventType) => void;
 
@@ -18,25 +18,25 @@
 		const creds: UserCredentialsLogin = {
 			email: email as string,
 			password: password as string,
-			rememberMe: rememberMe === 'on' ? true : false
+			rememberMe: rememberMe === "on" ? true : false
 		};
 		const res = await login(creds);
 		if (res.status === 200) {
-			addToEventLog('loginSuccess');
+			addToEventLog("loginSuccess");
 			setTimeout(() => {
 				goto(handleSuccessfulRedirect($page.url));
 			}, 1000);
 		} else {
-			addToEventLog('loginFailure');
+			addToEventLog("loginFailure");
 		}
 	}
 
 	function handleCheckbox(event: Event) {
 		const { checked } = event.target as HTMLInputElement;
 		if (checked) {
-			addToEventLog('rememberMe');
+			addToEventLog("rememberMe");
 		} else {
-			addToEventLog('DontRememberMe');
+			addToEventLog("DontRememberMe");
 		}
 	}
 
@@ -60,7 +60,7 @@
 	<div class="flex w-full flex-col items-center gap-2">
 		<label class="form-control w-full max-w-sm">
 			<input
-				on:input={() => debounceInput('emailTouched')}
+				on:input={() => debounceInput("emailTouched")}
 				type="email"
 				name="email"
 				placeholder="Email"
@@ -71,7 +71,7 @@
 
 		<label class="form-control w-full max-w-sm">
 			<input
-				on:input={() => debounceInput('passwordTouched')}
+				on:input={() => debounceInput("passwordTouched")}
 				type="text"
 				name="password"
 				placeholder="Password"

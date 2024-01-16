@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { Event } from '$lib/types/event/EventTypes';
-	import ActivityEvent from './ActivityEvent.svelte';
+	import type { Event } from "$lib/types/event/EventTypes";
+	import ActivityEvent from "./ActivityEvent.svelte";
 
 	export let events: Event[];
 

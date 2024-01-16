@@ -1,16 +1,16 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import { readActorListForProject } from '$lib/api/actor';
-	import { readChannelListForProject } from '$lib/api/channel';
-	import { readProjectList } from '$lib/api/project';
-	import SettingsSidebar from '$lib/components/sidebar/SettingsSidebar.svelte';
-	import Sidebar from '$lib/components/sidebar/Sidebar.svelte';
-	import SidebarMenu from '$lib/components/sidebar/SidebarMenu.svelte';
-	import Loading from '$lib/layout/loading/Loading.svelte';
-	import { actors } from '$lib/stores/actor';
-	import { channel, channels } from '$lib/stores/channel';
-	import { project, projects } from '$lib/stores/project';
-	import { onMount } from 'svelte';
+	import { page } from "$app/stores";
+	import { readActorListForProject } from "$lib/api/actor";
+	import { readChannelListForProject } from "$lib/api/channel";
+	import { readProjectList } from "$lib/api/project";
+	import SettingsSidebar from "$lib/components/sidebar/SettingsSidebar.svelte";
+	import Sidebar from "$lib/components/sidebar/Sidebar.svelte";
+	import SidebarMenu from "$lib/components/sidebar/SidebarMenu.svelte";
+	import Loading from "$lib/layout/loading/Loading.svelte";
+	import { actors } from "$lib/stores/actor";
+	import { channel, channels } from "$lib/stores/channel";
+	import { project, projects } from "$lib/stores/project";
+	import { onMount } from "svelte";
 
 	let loading = true;
 
@@ -68,7 +68,7 @@
 		readChannels($project.id);
 	}
 
-	$: settingsActive = $page.url.pathname.includes('/settings');
+	$: settingsActive = $page.url.pathname.includes("/settings");
 </script>
 
 {#if loading}

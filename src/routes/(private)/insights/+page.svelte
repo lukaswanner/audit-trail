@@ -1,9 +1,9 @@
 <script lang="ts">
-	import Card from '$lib/components/insight/Card.svelte';
-	import { readInsightList } from '$lib/api/insight';
-	import { insights } from '$lib/stores/insight';
-	import Loading from '$lib/layout/loading/Loading.svelte';
-	import { project } from '$lib/stores/project';
+	import Card from "$lib/components/insight/Card.svelte";
+	import { readInsightList } from "$lib/api/insight";
+	import { insights } from "$lib/stores/insight";
+	import Loading from "$lib/layout/loading/Loading.svelte";
+	import { project } from "$lib/stores/project";
 
 	let loading = true;
 	async function fetchInsights(projectTitle: string): Promise<void> {
@@ -35,8 +35,8 @@
 	{#each $insights as insight, index}
 		<div
 			class={` rounded-xl border-2 border-neutral 
-${index !== 0 && index % 5 === 0 ? 'col-span-2' : 'col-span-1'}
-${index === 0 || index % 9 === 0 ? 'col-span-2 row-span-2' : 'row-span-1'}
+${index !== 0 && index % 5 === 0 ? "col-span-2" : "col-span-1"}
+${index === 0 || index % 9 === 0 ? "col-span-2 row-span-2" : "row-span-1"}
 
 `}
 		>

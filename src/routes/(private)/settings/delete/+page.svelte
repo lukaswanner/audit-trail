@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { deleteProject, readProjectList } from '$lib/api/project';
-	import { project, projects } from '$lib/stores/project';
+	import { deleteProject, readProjectList } from "$lib/api/project";
+	import { project, projects } from "$lib/stores/project";
 
 	let error: string;
 	let projectTitle = $project?.title;
-	let inputTitle = '';
+	let inputTitle = "";
 
 	async function handleDelete() {
 		if (!$project) {
@@ -31,7 +31,7 @@
 
 	function updateTitle() {
 		projectTitle = $project?.title;
-		error = '';
+		error = "";
 	}
 
 	$: $project, updateTitle();

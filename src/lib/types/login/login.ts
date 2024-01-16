@@ -1,4 +1,3 @@
-
 export type PseudoEvent = {
 	icon: string;
 	title: string;
@@ -6,13 +5,12 @@ export type PseudoEvent = {
 };
 
 export type EventType =
-	| 'emailTouched'
-	| 'passwordTouched'
-	| 'mustLogin'
-	| 'rememberMe'
-	| 'DontRememberMe'
-	| 'loginSuccess'
-	| 'loginFailure'
-	| 'registerSuccess'
-	| 'registerFailure'
-	;
+	| "emailTouched"
+	| "passwordTouched"
+	| "mustLogin"
+	| "rememberMe"
+	| "DontRememberMe"
+	| "loginSuccess"
+	| "loginFailure"
+	| "registerSuccess"
+	| "registerFailure";

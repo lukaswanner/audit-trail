@@ -1,7 +1,7 @@
 <script lang="ts">
-	import type { Event } from '$lib/types/event/EventTypes';
-	import { formatRelative } from 'date-fns';
-	import Tags from './Tags.svelte';
+	import type { Event } from "$lib/types/event/EventTypes";
+	import { formatRelative } from "date-fns";
+	import Tags from "./Tags.svelte";
 
 	export let event: Event;
 	export let enableTags = true;

@@ -1,14 +1,14 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import { page } from '$app/stores';
-	import { deleteActor, readActorListForProject } from '$lib/api/actor';
-	import { actors } from '$lib/stores/actor';
-	import { project } from '$lib/stores/project';
+	import { goto } from "$app/navigation";
+	import { page } from "$app/stores";
+	import { deleteActor, readActorListForProject } from "$lib/api/actor";
+	import { actors } from "$lib/stores/actor";
+	import { project } from "$lib/stores/project";
 
 	let error: string;
-	let actorName = decodeURIComponent($page.url.pathname.split('/')[3]);
+	let actorName = decodeURIComponent($page.url.pathname.split("/")[3]);
 
-	let inputName = '';
+	let inputName = "";
 
 	async function handleDelete() {
 		const id = $actors.find((actor) => actor.name === actorName)?.id;
@@ -22,7 +22,7 @@
 				try {
 					const updatedActorList = await res.json();
 					actors.set(updatedActorList);
-					goto('/settings/actors');
+					goto("/settings/actors");
 				} catch (e) {
 					console.error(e);
 				}

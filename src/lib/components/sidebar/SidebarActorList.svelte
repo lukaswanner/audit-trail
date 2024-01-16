@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { createActor, readActorListForProject } from '$lib/api/actor';
-	import { project } from '$lib/stores/project';
-	import { actors } from '$lib/stores/actor';
-	import type { ActorPayload } from '$lib/types/actor/ActorTypes';
-	import { page } from '$app/stores';
+	import { createActor, readActorListForProject } from "$lib/api/actor";
+	import { project } from "$lib/stores/project";
+	import { actors } from "$lib/stores/actor";
+	import type { ActorPayload } from "$lib/types/actor/ActorTypes";
+	import { page } from "$app/stores";
 
-	let actorName = '';
+	let actorName = "";
 	let modalRef: HTMLDialogElement;
 	let error: string;
 
@@ -23,7 +23,7 @@
 		const data = Object.fromEntries(formData.entries());
 
 		if (!$project) {
-			error = 'Select a project first';
+			error = "Select a project first";
 			return;
 		}
 		const payload: ActorPayload = {
@@ -36,9 +36,9 @@
 			await fetchActors();
 			modalRef.close();
 		} else if (res.status === 409) {
-			error = 'Actor already exists';
+			error = "Actor already exists";
 		} else {
-			error = 'Something went wrong';
+			error = "Something went wrong";
 		}
 	}
 </script>
@@ -59,7 +59,7 @@
 </div>
 {#each $actors as actor}
 	<a
-		data-active={actor.id.toString() === $page.url.pathname.split('/')[2]}
+		data-active={actor.id.toString() === $page.url.pathname.split("/")[2]}
 		href={`/actor/${actor.id}`}
 		class="btn btn-ghost flex w-full flex-grow flex-row flex-nowrap items-center justify-start gap-2 data-[active=true]:bg-base-content/20 data-[active=true]:text-primary"
 	>
@@ -97,7 +97,8 @@
 			<p class="text-error">{error}</p>
 		{/if}
 		<div class="modal-action justify-start">
-			<button disabled={actorName.length === 0} class="btn btn-success" type="submit">Create</button
+			<button disabled={actorName.length === 0} class="btn btn-success" type="submit"
+				>Create</button
 			>
 			<form method="dialog">
 				<button class="btn btn-outline">Close</button>

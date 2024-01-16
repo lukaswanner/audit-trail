@@ -1,13 +1,13 @@
 <script lang="ts">
-	import { createChannel, readChannelListForProject } from '$lib/api/channel';
-	import { project } from '$lib/stores/project';
-	import { channel, channels } from '$lib/stores/channel';
-	import type { ChannelPayload } from '$lib/types/channel/ChannelTypes';
-	import { goto } from '$app/navigation';
+	import { createChannel, readChannelListForProject } from "$lib/api/channel";
+	import { project } from "$lib/stores/project";
+	import { channel, channels } from "$lib/stores/channel";
+	import type { ChannelPayload } from "$lib/types/channel/ChannelTypes";
+	import { goto } from "$app/navigation";
 
 	export let feedActive: boolean;
 
-	let channelTitle = '';
+	let channelTitle = "";
 	let modalRef: HTMLDialogElement;
 	let error: string;
 
@@ -26,7 +26,7 @@
 		const data = Object.fromEntries(formData.entries());
 
 		if (!$project) {
-			error = 'Select a project first';
+			error = "Select a project first";
 			return;
 		}
 		const payload: ChannelPayload = { title: data.title as string, projectId: $project.id };
@@ -35,9 +35,9 @@
 			await fetchChannels();
 			modalRef.close();
 		} else if (res.status === 409) {
-			error = 'Channel already exists';
+			error = "Channel already exists";
 		} else {
-			error = 'Something went wrong';
+			error = "Something went wrong";
 		}
 	}
 </script>
@@ -60,7 +60,7 @@
 	<button
 		on:click={() => {
 			channel.set(channel_item);
-			goto('/');
+			goto("/");
 		}}
 		data-active={feedActive && channel_item === $channel}
 		data-feed={channel_item === $channel && feedActive}

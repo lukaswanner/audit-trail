@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { readEvent } from '$lib/api/event';
-	import Loading from '$lib/layout/loading/Loading.svelte';
-	import { onMount } from 'svelte';
-	import type { Event as EventType } from '$lib/types/event/EventTypes';
-	import type { PageData } from './$types';
-	import { formatRelative } from 'date-fns';
-	import Tag from '$lib/components/event/Tag.svelte';
+	import { readEvent } from "$lib/api/event";
+	import Loading from "$lib/layout/loading/Loading.svelte";
+	import { onMount } from "svelte";
+	import type { Event as EventType } from "$lib/types/event/EventTypes";
+	import type { PageData } from "./$types";
+	import { formatRelative } from "date-fns";
+	import Tag from "$lib/components/event/Tag.svelte";
 
 	let loading = true;
 	let error: boolean;
@@ -71,7 +71,8 @@
 			<div class="flex flex-col justify-center">
 				<div class="text-2xl font-bold">{event.title}</div>
 				<p class="text-base-content">
-					{event.actorName} | <span>{formatRelative(new Date(event.ts), new Date())}</span>
+					{event.actorName} |
+					<span>{formatRelative(new Date(event.ts), new Date())}</span>
 				</p>
 			</div>
 		</div>

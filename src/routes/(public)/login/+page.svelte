@@ -1,10 +1,10 @@
 <script lang="ts">
-	import LoginCard from '$lib/components/auth/LoginCard.svelte';
-	import type { PseudoEvent } from '$lib/types/login/login';
-	import { addToEventLog } from '$lib/utils/login/handleEventLog';
-	import { formatRelative } from 'date-fns';
-	import { flip } from 'svelte/animate';
-	import { slide } from 'svelte/transition';
+	import LoginCard from "$lib/components/auth/LoginCard.svelte";
+	import type { PseudoEvent } from "$lib/types/login/login";
+	import { addToEventLog } from "$lib/utils/login/handleEventLog";
+	import { formatRelative } from "date-fns";
+	import { flip } from "svelte/animate";
+	import { slide } from "svelte/transition";
 
 	let events: PseudoEvent[] = [];
 </script>

@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { project } from '$lib/stores/project';
-	import { createActor, readActorListForProject } from '$lib/api/actor';
-	import type { ActorPayload } from '$lib/types/actor/ActorTypes';
-	import { actors } from '$lib/stores/actor';
-	import { onMount } from 'svelte';
+	import { project } from "$lib/stores/project";
+	import { createActor, readActorListForProject } from "$lib/api/actor";
+	import type { ActorPayload } from "$lib/types/actor/ActorTypes";
+	import { actors } from "$lib/stores/actor";
+	import { onMount } from "svelte";
 
 	let error: string;
 
@@ -17,7 +17,7 @@
 				console.error(e);
 			}
 		}
-		error = '';
+		error = "";
 	}
 
 	async function handleCreateActor(e: Event) {
@@ -26,12 +26,12 @@
 		const data = Object.fromEntries(formData.entries());
 
 		if (!$project || !$project.id) {
-			error = 'Select a project first';
+			error = "Select a project first";
 			return;
 		}
 
-		if (!data.name || data.name === '') {
-			error = 'Actor name cannot be empty';
+		if (!data.name || data.name === "") {
+			error = "Actor name cannot be empty";
 			return;
 		}
 
@@ -45,10 +45,10 @@
 
 		const res = await createActor(payload);
 		if (res.status === 201) {
-			error = '';
+			error = "";
 			await updateActorsList();
 		} else {
-			error = 'Something went wrong';
+			error = "Something went wrong";
 		}
 	}
 

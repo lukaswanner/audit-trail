@@ -1,13 +1,13 @@
 <script lang="ts">
-	import Loading from '$lib/layout/loading/Loading.svelte';
-	import { onMount } from 'svelte';
-	import { readEventList, readEventListWithMatchingTags } from '$lib/api/event';
-	import type { Event as EventType } from '$lib/types/event/EventTypes';
-	import Event from '$lib/components/event/Event.svelte';
-	import { project } from '$lib/stores/project';
-	import { goto } from '$app/navigation';
-	import { fly } from 'svelte/transition';
-	import { backOut } from 'svelte/easing';
+	import Loading from "$lib/layout/loading/Loading.svelte";
+	import { onMount } from "svelte";
+	import { readEventList, readEventListWithMatchingTags } from "$lib/api/event";
+	import type { Event as EventType } from "$lib/types/event/EventTypes";
+	import Event from "$lib/components/event/Event.svelte";
+	import { project } from "$lib/stores/project";
+	import { goto } from "$app/navigation";
+	import { fly } from "svelte/transition";
+	import { backOut } from "svelte/easing";
 
 	let loading = true;
 	let searchQuery = new URLSearchParams(window.location.search);
@@ -15,13 +15,13 @@
 	let filteredEvents: EventType[] = [];
 
 	async function searchEvents(event: Event) {
-		searchQuery.set('title', event.target.value);
+		searchQuery.set("title", event.target.value);
 		goto(`/search?${searchQuery.toString()}`, { keepFocus: true });
 		filterEvents();
 	}
 
 	async function filterEvents() {
-		const searchTitle = searchQuery.get('title')?.toLowerCase();
+		const searchTitle = searchQuery.get("title")?.toLowerCase();
 		if (!searchTitle) {
 			filteredEvents = events;
 		}
@@ -42,9 +42,9 @@
 	}
 
 	onMount(async () => {
-		const key = searchQuery.get('key');
-		const value = searchQuery.get('value');
-		const searchTitle = searchQuery.get('title');
+		const key = searchQuery.get("key");
+		const value = searchQuery.get("value");
+		const searchTitle = searchQuery.get("title");
 		if (key && value) {
 			try {
 				const res = await readEventListWithMatchingTags(key, value);

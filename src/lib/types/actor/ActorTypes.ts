@@ -18,4 +18,3 @@ export type Actor = {
 	projectTitle: string;
 	properties: Record<string, unknown>;
 };
-

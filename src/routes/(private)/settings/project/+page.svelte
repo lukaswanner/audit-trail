@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { project, projects } from '$lib/stores/project';
-	import { updateProject, readProjectList } from '$lib/api/project';
-	import type { Project, UpdateProjectPayload } from '$lib/types/project/ProjectTypes';
+	import { project, projects } from "$lib/stores/project";
+	import { updateProject, readProjectList } from "$lib/api/project";
+	import type { Project, UpdateProjectPayload } from "$lib/types/project/ProjectTypes";
 
 	let projectTitle = $project?.title;
 	let error: string;
@@ -12,23 +12,23 @@
 		const data = Object.fromEntries(formData.entries());
 
 		if (!$project) {
-			error = 'Select a project first';
+			error = "Select a project first";
 			return;
 		}
 
-		if (!data.title || data.title === '') {
-			error = 'Project name is required';
+		if (!data.title || data.title === "") {
+			error = "Project name is required";
 			return;
 		}
 
 		if ($projects.find((el) => el.title === data.title)) {
-			error = 'Project name already assigned';
+			error = "Project name already assigned";
 			return;
 		}
 
 		const res = await updateProject({ ...data, id: $project.id } as UpdateProjectPayload);
 		if (res.status === 200) {
-			error = '';
+			error = "";
 			let res = await readProjectList();
 			if (res.status === 200) {
 				try {
@@ -40,15 +40,15 @@
 				}
 			}
 		} else if (res.status === 409) {
-			error = 'Project already exists';
+			error = "Project already exists";
 		} else {
-			error = 'Something went wrong';
+			error = "Something went wrong";
 		}
 	}
 
 	function updateTitle() {
 		projectTitle = $project?.title;
-		error = '';
+		error = "";
 	}
 
 	$: $project, updateTitle();

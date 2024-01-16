@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import { page } from '$app/stores';
-	import { register } from '$lib/api/auth';
-	import type { UserCredentials } from '$lib/types/account/AccountTypes';
-	import type { EventType } from '$lib/types/login/login';
-	import { handleSuccessfulRedirect } from '$lib/utils/redirectTo';
+	import { goto } from "$app/navigation";
+	import { page } from "$app/stores";
+	import { register } from "$lib/api/auth";
+	import type { UserCredentials } from "$lib/types/account/AccountTypes";
+	import type { EventType } from "$lib/types/login/login";
+	import { handleSuccessfulRedirect } from "$lib/utils/redirectTo";
 
 	export let addToEventLog: (event: EventType) => void;
 
@@ -21,12 +21,12 @@
 		};
 		const res = await register(creds);
 		if (res.status === 200) {
-			addToEventLog('registerSuccess');
+			addToEventLog("registerSuccess");
 			setTimeout(() => {
 				goto(handleSuccessfulRedirect($page.url));
 			}, 1000);
 		} else {
-			addToEventLog('registerFailure');
+			addToEventLog("registerFailure");
 		}
 	}
 
@@ -50,7 +50,7 @@
 	<div class="flex w-full flex-col items-center gap-2">
 		<label class="form-control w-full max-w-sm">
 			<input
-				on:input={() => debounceInput('emailTouched')}
+				on:input={() => debounceInput("emailTouched")}
 				type="email"
 				name="email"
 				placeholder="Email"
@@ -61,7 +61,7 @@
 
 		<label class="form-control w-full max-w-sm">
 			<input
-				on:input={() => debounceInput('passwordTouched')}
+				on:input={() => debounceInput("passwordTouched")}
 				type="text"
 				name="password"
 				placeholder="Password"

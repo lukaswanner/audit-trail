@@ -1,28 +1,27 @@
 import type { UserCredentials } from "$lib/types/account/AccountTypes";
 
-
-const authBase = 'http://localhost:3000/auth';
+const authBase = "http://localhost:3000/auth";
 
 export async function login(creds: UserCredentials) {
 	const res = await fetch(`${authBase}/login`, {
-		method: 'POST',
+		method: "POST",
 		credentials: "include",
 		headers: {
-			'Content-Type': 'application/json',
+			"Content-Type": "application/json"
 		},
-		body: JSON.stringify(creds),
+		body: JSON.stringify(creds)
 	});
 	return res;
 }
 
 export async function register(creds: UserCredentials) {
 	const res = await fetch(`${authBase}/register`, {
-		method: 'POST',
+		method: "POST",
 		credentials: "include",
 		headers: {
-			'Content-Type': 'application/json',
+			"Content-Type": "application/json"
 		},
-		body: JSON.stringify(creds),
+		body: JSON.stringify(creds)
 	});
 	return res;
 }

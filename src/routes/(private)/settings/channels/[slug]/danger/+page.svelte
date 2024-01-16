@@ -1,14 +1,14 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import { page } from '$app/stores';
-	import { deleteChannel, readChannelListForProject } from '$lib/api/channel';
-	import { channels } from '$lib/stores/channel';
-	import { project } from '$lib/stores/project';
+	import { goto } from "$app/navigation";
+	import { page } from "$app/stores";
+	import { deleteChannel, readChannelListForProject } from "$lib/api/channel";
+	import { channels } from "$lib/stores/channel";
+	import { project } from "$lib/stores/project";
 
 	let error: string;
-	let channelName = decodeURIComponent($page.url.pathname.split('/')[3]);
+	let channelName = decodeURIComponent($page.url.pathname.split("/")[3]);
 
-	let inputName = '';
+	let inputName = "";
 
 	async function handleDelete() {
 		const id = $channels.find((channel) => channel.title === channelName)?.id;
@@ -22,7 +22,7 @@
 				try {
 					const updatedActorList = await res.json();
 					channels.set(updatedActorList);
-					goto('/settings/channels');
+					goto("/settings/channels");
 				} catch (e) {
 					console.error(e);
 				}
