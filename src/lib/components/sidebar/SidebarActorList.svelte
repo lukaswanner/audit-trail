@@ -3,6 +3,7 @@
 	import { project } from '$lib/stores/project';
 	import { actors } from '$lib/stores/actor';
 	import type { ActorPayload } from '$lib/types/actor/ActorTypes';
+	import { page } from '$app/stores';
 
 	let actorName = '';
 	let modalRef: HTMLDialogElement;
@@ -58,8 +59,9 @@
 </div>
 {#each $actors as actor}
 	<a
+		data-active={actor.id.toString() === $page.url.pathname.split('/')[2]}
 		href={`/actor/${actor.id}`}
-		class="btn btn-ghost flex w-full flex-grow flex-row flex-nowrap items-center justify-start gap-2"
+		class="btn btn-ghost flex w-full flex-grow flex-row flex-nowrap items-center justify-start gap-2 data-[active=true]:bg-base-content/20 data-[active=true]:text-primary"
 	>
 		<svg
 			viewBox="0 0 24 24"

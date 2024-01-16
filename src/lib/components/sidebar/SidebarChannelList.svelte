@@ -3,6 +3,7 @@
 	import { project } from '$lib/stores/project';
 	import { channel, channels } from '$lib/stores/channel';
 	import type { ChannelPayload } from '$lib/types/channel/ChannelTypes';
+	import { goto } from '$app/navigation';
 
 	export let feedActive: boolean;
 
@@ -59,6 +60,7 @@
 	<button
 		on:click={() => {
 			channel.set(channel_item);
+			goto('/');
 		}}
 		data-active={feedActive && channel_item === $channel}
 		data-feed={channel_item === $channel && feedActive}

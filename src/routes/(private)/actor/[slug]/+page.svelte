@@ -1,24 +1,11 @@
 <script lang="ts">
-	import ActivityEvent from '$lib/components/actor/ActivityEvent.svelte';
+	import PaginationActor from '$lib/components/actor/PaginationActor.svelte';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
-	let page = 1;
 
 	const actor = data.actor;
 	let events = data.events;
-
-	function handleSelect(i: number) {
-		page = i;
-	}
-
-	function handleIncrement() {
-		page++;
-	}
-
-	function handleDecrement() {
-		page--;
-	}
 </script>
 
 <div class="flex flex-row border-b border-b-base-content/10 p-4">
@@ -64,66 +51,7 @@
 				</div>
 			</div>
 			<div class="flex flex-col gap-4 p-4">
-				<div class="flex flex-row items-center gap-4">
-					<div class="w-fit rounded bg-base-100 p-4">
-						<svg
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="2"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							class="h-4 w-4 text-primary"
-						>
-							<polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-						</svg>
-					</div>
-					<p class="text-xl">recent activity</p>
-				</div>
-				{#if events && events.length > 0}
-					{#each events.splice(10 * (page - 1), 10 * page) as event}
-						<ActivityEvent {event} />
-					{/each}
-					<div class="join">
-						<button disabled={page === 1} on:click={handleDecrement} class="btn join-item">
-							<svg
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="2"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								class="h-4 w-4 text-primary"
-							>
-								<circle cx="12" cy="12" r="10" />
-								<polyline points="12 8 8 12 12 16" />
-								<line x1="16" y1="12" x2="8" y2="12" />
-							</svg>
-						</button>
-						<button on:click={() => handleSelect(2)} class="btn join-item">{page}</button>
-						<button
-							disabled={page === events.length / 10}
-							on:click={handleIncrement}
-							class="btn join-item"
-						>
-							<svg
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="2"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								class="h-4 w-4 text-primary"
-							>
-								<circle cx="12" cy="12" r="10" />
-								<polyline points="12 16 16 12 12 8" />
-								<line x1="8" y1="12" x2="16" y2="12" />
-							</svg>
-						</button>
-					</div>
-				{:else}
-					<p class="text-xl">no activity</p>
-				{/if}
+				<PaginationActor {events} />
 			</div>
 		</div>
 	{:else}
