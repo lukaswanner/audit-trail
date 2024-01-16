@@ -37,7 +37,6 @@
 			class={` rounded-xl border-2 border-neutral 
 ${index !== 0 && index % 5 === 0 ? "col-span-2" : "col-span-1"}
 ${index === 0 || index % 9 === 0 ? "col-span-2 row-span-2" : "row-span-1"}
-
 `}
 		>
 			<Card title={insight.title} value={insight.value} icon={insight.icon} />
