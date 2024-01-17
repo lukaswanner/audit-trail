@@ -1,10 +1,11 @@
 use crate::{session_state::UserSession, AppState};
 use axum::{
-    extract::State,
+    extract::{Path, State},
     http::StatusCode,
     response::{IntoResponse, Response},
     Extension, Json,
 };
+use chrono::{DateTime, Utc};
 use rand::{distributions::Alphanumeric, Rng};
 use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
@@ -31,16 +32,19 @@ impl ApiToken {
 
 #[derive(FromRow, Serialize, Deserialize)]
 pub struct ApiTokenResponse {
+    id: i32,
     token: String,
     #[serde(rename = "projectTitle")]
     title: String,
+    #[serde(rename = "createdAt")]
+    created_at: DateTime<Utc>,
 }
 
 pub async fn read_api_tokens(
     State(state): State<AppState>,
     Extension(session): Extension<UserSession>,
 ) -> Json<Vec<ApiTokenResponse>> {
-    let res = sqlx::query_as::<_,ApiTokenResponse>("SELECT a.token, p.title FROM api_token a JOIN project p on a.project_id = p.id WHERE p.account_id = $1")
+    let res = sqlx::query_as::<_,ApiTokenResponse>("SELECT a.id, a.token, p.title, a.created_at FROM api_token a JOIN project p on a.project_id = p.id WHERE p.account_id = $1")
         .bind(session.account_id)
         .fetch_all(&state.pool)
         .await
@@ -66,19 +70,13 @@ pub async fn create_api_token(
     Json(api_token.0).into_response()
 }
 
-#[derive(Debug, FromRow, Serialize, Deserialize)]
-pub struct ApiTokenDeletePayload {
-    #[serde(rename = "apiToken")]
-    pub token: String,
-}
-
 pub async fn delete_api_token(
     State(state): State<AppState>,
     Extension(session): Extension<UserSession>,
-    Json(payload): Json<ApiTokenDeletePayload>,
+    Path(id): Path<i32>,
 ) -> Response {
-    let res = sqlx::query("DELETE FROM api_token WHERE EXISTS (SELECT 1 from project WHERE account_id = $2) AND token = $1")
-        .bind(payload.token)
+    let res = sqlx::query("DELETE FROM api_token WHERE EXISTS (SELECT 1 from project WHERE account_id = $2) AND id = $1")
+        .bind(id)
         .bind(session.account_id)
         .execute(&state.pool)
         .await

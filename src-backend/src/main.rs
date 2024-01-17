@@ -86,7 +86,7 @@ async fn main() {
         .route("/project", patch(project::update_project))
         .route("/actor", patch(actor::update_actor))
         // delete
-        .route("/api-token", delete(api_token::delete_api_token))
+        .route("/api-token/:id", delete(api_token::delete_api_token))
         .route("/actor/:id", delete(actor::delete_actor))
         .route("/channel/:id", delete(channel::delete_channel))
         .route("/project/:id", delete(project::delete_project))

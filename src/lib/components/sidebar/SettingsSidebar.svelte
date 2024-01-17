@@ -41,7 +41,7 @@
 	</a>
 	<a
 		href="/settings/actors"
-		data-active={$page.url.pathname === "/settings/actors"}
+		data-active={$page.url.pathname.includes("/settings/actors")}
 		class="btn btn-ghost flex w-full flex-row items-center justify-start gap-2 text-base-content transition-colors data-[active=true]:bg-base-content/20 data-[active=true]:text-accent"
 	>
 		<svg
@@ -58,6 +58,27 @@
 		>
 		<p>actors</p>
 	</a>
+	<a
+		href="/settings/api"
+		data-active={$page.url.pathname.includes("/settings/api")}
+		class="btn btn-ghost flex w-full flex-row items-center justify-start gap-2 text-base-content transition-colors data-[active=true]:bg-base-content/20 data-[active=true]:text-accent"
+	>
+		<svg
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="currentColor"
+			stroke-width="2"
+			stroke-linecap="round"
+			stroke-linejoin="round"
+			class="h-4 w-4"
+		>
+			<path
+				d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"
+			/>
+		</svg>
+		<p>api</p>
+	</a>
+
 	<h2 class="text-lg brightness-150">danger zone</h2>
 	<a
 		href="/settings/delete"
