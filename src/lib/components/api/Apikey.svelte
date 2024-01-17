@@ -21,8 +21,10 @@
 <div
 	class="min-h-16 flex w-full max-w-2xl flex-shrink-0 flex-row flex-wrap items-center justify-between overflow-hidden rounded-xl border border-neutral pl-4 pr-2 transition-colors hover:border-neutral-600"
 >
-	<p class="group overflow-hidden text-ellipsis whitespace-nowrap">
-		<span class="transition-all group-hover:blur-none md:blur-sm"> {apikey.token}</span>
+	<p class="group overflow-hidden text-ellipsis whitespace-nowrap rounded px-1">
+		<span class=" font-mono transition-all group-hover:blur-none md:blur-sm">
+			{apikey.token}</span
+		>
 	</p>
 	<div class="flex flex-row items-center gap-2">
 		<button
