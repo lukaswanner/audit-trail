@@ -39,7 +39,6 @@ ${index !== 0 && index % 7 === 0 ? "col-span-2" : "col-span-1"}
 ${index === 0 || index % 9 === 0 ? "col-span-2 row-span-2" : "row-span-1"}
 `}
 		>
-			{index}
 			<Card title={insight.title} value={insight.value} icon={insight.icon} />
 		</div>
 	{/each}

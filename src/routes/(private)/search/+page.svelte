@@ -106,10 +106,11 @@
 {/if}
 
 {#if !loading && filteredEvents.length > 0}
-	<div class="flex h-full flex-col gap-4 overflow-auto p-4">
+	<div class="flex h-full flex-col items-center gap-4 overflow-auto p-4">
 		{#each [...filteredEvents] as event, index}
 			{#key event.id}
 				<div
+					class="flex w-full flex-col items-center"
 					in:fly|global={{
 						y: 100,
 						delay: 100 * index,

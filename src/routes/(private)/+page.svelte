@@ -23,12 +23,24 @@
 	<h1 class="text-3xl font-bold brightness-150">feed</h1>
 </div>
 
-<div class="flex flex-col gap-4 overflow-auto p-4">
+<div class="flex flex-col items-center gap-4 overflow-auto p-4">
 	{#each [...$events] as event, index}
 		{#key event.id}
-			<div in:fade|global={{ delay: 75 * (index + 1) }}>
+			<div
+				class="flex w-full flex-col items-center"
+				in:fade|global={{ delay: 75 * (index + 1) }}
+			>
 				<Event {event} />
 			</div>
 		{/key}
 	{/each}
 </div>
+
+{#if $events.length === 0}
+	<div class="flex h-full w-full flex-col items-center justify-center">
+		<h1 class="text-3xl font-bold">
+			No events in
+			<span class="text-primary">#{$channel.title} </span>
+		</h1>
+	</div>
+{/if}

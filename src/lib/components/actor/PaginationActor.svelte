@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { actor } from "$lib/stores/actor";
 	import type { Event } from "$lib/types/event/EventTypes";
 	import ActivityEvent from "./ActivityEvent.svelte";
 
@@ -16,7 +17,7 @@
 </script>
 
 <div class="flex flex-row items-center gap-4">
-	<div class="w-fit rounded bg-base-100 p-4">
+	<div class="w-fit rounded bg-base-300 p-4">
 		<svg
 			viewBox="0 0 24 24"
 			fill="none"
@@ -37,7 +38,12 @@
 		<ActivityEvent {event} />
 	{/each}
 {:else}
-	<p class="text-xl">no activity</p>
+	<p>
+		no activity
+		{#if $actor}for
+			<span class="text-primary">{$actor.name} </span>
+		{/if}
+	</p>
 {/if}
 <div class="flex flex-row justify-between gap-4">
 	<button

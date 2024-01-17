@@ -42,7 +42,7 @@ async fn main() {
     let api_routes = Router::new()
         .route("/event", post(event::create_event))
         .route("/channel", post(channel::create_channel_api))
-        .route("/actor", post(actor::create_actor))
+        .route("/actor", post(actor::create_actor_api))
         .route("/project", post(project::create_project_api))
         .route("/insight", post(insight::create_insight))
         .route_layer(middleware::from_fn_with_state(
@@ -80,6 +80,7 @@ async fn main() {
         .route("/search", get(event::read_events_from_tag))
         // post
         .route("/project", post(project::create_project))
+        .route("/actor", post(actor::create_actor))
         .route("/api-token", post(api_token::create_api_token))
         // patch
         .route("/project", patch(project::update_project))

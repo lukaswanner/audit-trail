@@ -9,7 +9,7 @@
 	let events: PseudoEvent[] = [];
 </script>
 
-<div class="grid h-full w-full grid-cols-1 grid-rows-[1fr] lg:grid-cols-[2fr_4fr]">
+<div class="grid h-full w-full grid-cols-1 grid-rows-[1fr] lg:grid-cols-[3fr_4fr]">
 	<LoginCard
 		addToEventLog={(msg) => {
 			events = addToEventLog(events, msg);
@@ -20,7 +20,7 @@
 			<div
 				animate:flip
 				transition:slide|local
-				class="grid w-full max-w-md grid-cols-[auto_1fr] gap-4 rounded-3xl border-2 border-secondary p-4"
+				class="grid w-full max-w-md grid-cols-[auto_1fr] gap-4 rounded-3xl border-2 border-primary p-4"
 			>
 				<div
 					class="flex aspect-square w-16 flex-col items-center justify-center rounded-3xl bg-primary/30"

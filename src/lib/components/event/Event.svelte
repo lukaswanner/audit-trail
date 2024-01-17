@@ -7,7 +7,7 @@
 	export let enableTags = true;
 </script>
 
-<a href="/event/{event.id}" class="block max-w-5xl cursor-pointer">
+<a href="/event/{event.id}" class="block w-full max-w-5xl cursor-pointer">
 	<div class="grid grid-cols-[auto,1fr,auto] gap-4 rounded-md border border-neutral p-4">
 		<div
 			class="flex aspect-square flex-col items-center justify-center rounded-3xl bg-primary/10 p-2"

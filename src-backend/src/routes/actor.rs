@@ -79,15 +79,15 @@ pub async fn read_actors_for_project(
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct CreateActor {
+pub struct CreateActorApi {
     name: String,
     properties: HashMap<String, Value>,
 }
 
-pub async fn create_actor(
+pub async fn create_actor_api(
     State(state): State<AppState>,
     Extension(session): Extension<ApiSession>,
-    Json(payload): Json<CreateActor>,
+    Json(payload): Json<CreateActorApi>,
 ) -> StatusCode {
     let pool = &state.pool;
 
@@ -99,6 +99,40 @@ WHERE EXISTS (SELECT 1 FROM project WHERE account_id = $4 and id = $2)",
     )
     .bind(payload.name)
     .bind(session.project_id)
+    .bind(props)
+    .bind(session.account_id)
+    .execute(pool)
+    .await;
+
+    match res {
+        Ok(_) => StatusCode::CREATED,
+        Err(_) => StatusCode::CONFLICT,
+    }
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct CreateActor {
+    name: String,
+    #[serde(rename = "projectId")]
+    project_id: i32,
+    properties: HashMap<String, Value>,
+}
+
+pub async fn create_actor(
+    State(state): State<AppState>,
+    Extension(session): Extension<UserSession>,
+    Json(payload): Json<CreateActor>,
+) -> StatusCode {
+    let pool = &state.pool;
+
+    let props = json!(payload.properties);
+    let res = sqlx::query(
+        "INSERT INTO actor (name,project_id, properties) 
+SELECT $1 AS name, $2 AS project_id, $3 as properties
+WHERE EXISTS (SELECT 1 FROM project WHERE account_id = $4 and id = $2)",
+    )
+    .bind(payload.name)
+    .bind(payload.project_id)
     .bind(props)
     .bind(session.account_id)
     .execute(pool)

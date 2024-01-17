@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { createActor, readActorListForProject } from "$lib/api/actor";
 	import { project } from "$lib/stores/project";
-	import { actors } from "$lib/stores/actor";
+	import { actor, actors } from "$lib/stores/actor";
 	import type { ActorPayload } from "$lib/types/actor/ActorTypes";
 	import { page } from "$app/stores";
 
@@ -57,10 +57,11 @@
 		>
 	</button>
 </div>
-{#each $actors as actor}
+{#each $actors as singleActor}
 	<a
-		data-active={actor.id.toString() === $page.url.pathname.split("/")[2]}
-		href={`/actor/${actor.id}`}
+		data-active={singleActor.id.toString() === $page.url.pathname.split("/")[2]}
+		on:click={actor.set(singleActor)}
+		href={`/actor/${singleActor.id}`}
 		class="btn btn-ghost flex w-full flex-grow flex-row flex-nowrap items-center justify-start gap-2 data-[active=true]:bg-base-content/20 data-[active=true]:text-primary"
 	>
 		<svg
@@ -77,7 +78,7 @@
 		</svg>
 
 		<p class="h-12 overflow-hidden text-ellipsis whitespace-nowrap font-bold leading-[3rem]">
-			{actor.name}
+			{singleActor.name}
 		</p>
 	</a>
 {/each}
