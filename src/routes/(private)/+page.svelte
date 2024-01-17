@@ -3,6 +3,7 @@
 	import Event from "$lib/components/event/Event.svelte";
 	import { channel } from "$lib/stores/channel";
 	import { events } from "$lib/stores/event";
+	import { project } from "$lib/stores/project";
 	import { fade } from "svelte/transition";
 
 	async function readEvents(channelTitle: string) {
@@ -36,11 +37,26 @@
 	{/each}
 </div>
 
-{#if $events.length === 0}
+{#if $channel && $events.length === 0}
 	<div class="flex h-full w-full flex-col items-center justify-center">
 		<h1 class="text-3xl font-bold">
 			No events in
 			<span class="text-primary">#{$channel.title} </span>
+		</h1>
+	</div>
+{/if}
+
+{#if !$project && !$channel && $events.length === 0}
+	<div class="flex h-full w-full flex-col items-center justify-center">
+		<h1 class="text-3xl font-bold">No project selected</h1>
+	</div>
+{/if}
+
+{#if $project && !$channel && $events.length === 0}
+	<div class="flex h-full w-full flex-col items-center justify-center">
+		<h1 class="text-3xl font-bold">
+			No channel selected in
+			<span class="text-primary">#{$project.title} </span>
 		</h1>
 	</div>
 {/if}

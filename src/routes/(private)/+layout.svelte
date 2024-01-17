@@ -66,6 +66,7 @@
 
 	$: if ($project) {
 		readChannels($project.id);
+		readActors($project.id);
 	}
 
 	$: settingsActive = $page.url.pathname.includes("/settings");

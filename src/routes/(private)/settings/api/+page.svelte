@@ -43,23 +43,34 @@
 	<h1 class="text-3xl font-bold brightness-150">api</h1>
 </div>
 
-<div class="flex flex-col items-center gap-4 overflow-auto p-4">
-	<div class="flex flex-col items-center">
-		<h2 class="text-2xl brightness-150">api keys</h2>
-		<p>API keys are required for publishing data to your project.</p>
+<div class="flex h-full flex-col items-start gap-4 overflow-auto p-4 mb-8">
+	<div class="flex h-full flex-col items-start gap-4">
+		{#if $apikeys.length > 0}
+			<div>
+				<h2 class="mb-2 text-lg font-bold brightness-150">your api keys</h2>
+				<p>API keys are required for publishing data to your project.</p>
+			</div>
+			<div class="my-8 mb-4 flex flex-col gap-4">
+				{#each $apikeys as apikey}
+					<Apikey {apikey} />
+				{/each}
+			</div>
+		{/if}
+		{#if !$project}
+			<div class="my-auto">
+				<h2 class="text-xl font-bold">No project selected</h2>
+			</div>
+		{/if}
+		{#if $project && $apikeys.length === 0}
+			<h2 class="text-xl font-bold">
+				No api keys in
+				<span class="text-primary">#{$project.title} </span>
+			</h2>
+		{/if}
+		<button on:click={createNewApikey} class="btn btn-primary"> + create key</button>
 	</div>
 
 	{#if loading}
 		<Loading />
 	{/if}
-	{#each $apikeys as apikey}
-		<Apikey {apikey} />
-	{/each}
-	{#if $apikeys.length === 0}
-		<h2 class="text-3xl font-bold">
-			No api keys in
-			<span class="text-primary">#{$channel.title} </span>
-		</h2>
-	{/if}
-	<button on:click={createNewApikey} class="btn btn-primary"> + create key</button>
 </div>

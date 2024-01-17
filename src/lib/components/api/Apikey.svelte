@@ -11,20 +11,24 @@
 			apikeys.update((apikeys) => apikeys.filter((a) => a.id !== apikey.id));
 		}
 	}
+
+	function handleCopy() {
+		navigator.clipboard.writeText(apikey.token);
+	}
 </script>
 
+<span>{apikey.projectTitle} - {new Date(apikey.createdAt).toLocaleDateString()}</span>
 <div
-	class="flex h-16 w-full max-w-2xl flex-shrink-0 flex-row items-center justify-between overflow-hidden rounded-xl border border-neutral pl-8 pr-2"
+	class="min-h-16 flex w-full max-w-2xl flex-shrink-0 flex-row flex-wrap items-center justify-between overflow-hidden rounded-xl border border-neutral pl-4 pr-2 transition-colors hover:border-neutral-600"
 >
-	<p
-		class="overflow-hidden text-ellipsis whitespace-nowrap blur-sm transition-all hover:blur-none"
-	>
-		<span>{apikey.projectTitle} - </span>
-		{apikey.token}
+	<p class="group overflow-hidden text-ellipsis whitespace-nowrap">
+		<span class="transition-all group-hover:blur-none md:blur-sm"> {apikey.token}</span>
 	</p>
-	<p></p>
 	<div class="flex flex-row items-center gap-2">
-		<button class="btn btn-circle btn-ghost transition-colors hover:text-primary">
+		<button
+			on:click={handleCopy}
+			class="btn btn-circle btn-ghost transition-colors hover:text-accent"
+		>
 			<svg
 				viewBox="0 0 24 24"
 				fill="none"
