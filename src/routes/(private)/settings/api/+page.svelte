@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { channel } from "$lib/stores/channel";
 	import { createApikey, readApikeyList } from "$lib/api/apikey";
 	import { onMount } from "svelte";
 	import Loading from "$lib/layout/loading/Loading.svelte";
@@ -43,14 +42,14 @@
 	<h1 class="text-3xl font-bold brightness-150">api</h1>
 </div>
 
-<div class="flex h-full flex-col items-start gap-4 overflow-auto p-4 mb-8">
-	<div class="flex h-full flex-col items-start gap-4">
+<div class="mb-8 flex h-full flex-col items-start gap-4 overflow-auto p-4">
+	<div class="flex h-full w-full flex-col items-start gap-4">
 		{#if $apikeys.length > 0}
 			<div>
 				<h2 class="mb-2 text-lg font-bold brightness-150">your api keys</h2>
 				<p>API keys are required for publishing data to your project.</p>
 			</div>
-			<div class="my-8 mb-4 flex flex-col gap-4">
+			<div class="my-8 mb-4 flex w-full flex-col gap-4">
 				{#each $apikeys as apikey}
 					<Apikey {apikey} />
 				{/each}

@@ -81,6 +81,10 @@ pub async fn login(
     generate_token(account, &credentials)
 }
 
+pub async fn logout() -> Response<Body> {
+    remove_token()
+}
+
 fn generate_token(account: Option<Account>, credentials: &Credentials) -> Response<Body> {
     account
         .map(|acc| {
@@ -93,7 +97,6 @@ fn generate_token(account: Option<Account>, credentials: &Credentials) -> Respon
 
             let my_claims = Claims {
                 account_id: acc.id,
-
                 exp: (chrono::Utc::now() + Duration::days(1)).timestamp() as usize,
             };
 
@@ -104,9 +107,10 @@ fn generate_token(account: Option<Account>, credentials: &Credentials) -> Respon
             )
             .unwrap();
 
-            let mut cookie = Cookie::new("__audit", token);
-
-            cookie.set_path("/");
+            let cookie = Cookie::build(("__audit", token))
+                .path("/")
+                .secure(true)
+                .build();
 
             Response::builder()
                 .header("Set-Cookie", cookie.to_string())
@@ -120,6 +124,16 @@ fn generate_token(account: Option<Account>, credentials: &Credentials) -> Respon
                 .body(Body::empty())
                 .unwrap()
         })
+}
+
+fn remove_token() -> Response<Body> {
+    let cookie = Cookie::build(("__audit", "")).path("/").build();
+
+    Response::builder()
+        .header("Set-Cookie", cookie.to_string())
+        .status(StatusCode::OK)
+        .body(Body::empty())
+        .unwrap()
 }
 
 pub fn verify_password_hash(

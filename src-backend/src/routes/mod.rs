@@ -6,3 +6,4 @@ pub mod event;
 pub mod insight;
 pub mod project;
 pub mod websocket;
+pub mod user;

@@ -19,18 +19,6 @@ export async function createActor(actor: ActorPayload): Promise<Response> {
 	return res;
 }
 
-export async function updateActor(actor: UpdateActorPayload): Promise<Response> {
-	const res = await fetch(`${actorBase}/actor`, {
-		method: "PATCH",
-		credentials: "include",
-		headers: {
-			"Content-Type": "application/json"
-		},
-		body: JSON.stringify(actor)
-	});
-	return res;
-}
-
 export async function readActorList(): Promise<Response> {
 	const res = await fetch(`${actorBase}/actors`, {
 		method: "GET",
@@ -60,6 +48,18 @@ export async function readActor(actorName: string): Promise<Response> {
 		headers: {
 			"Content-Type": "application/json"
 		}
+	});
+	return res;
+}
+
+export async function updateActor(actor: UpdateActorPayload): Promise<Response> {
+	const res = await fetch(`${actorBase}/actor`, {
+		method: "PATCH",
+		credentials: "include",
+		headers: {
+			"Content-Type": "application/json"
+		},
+		body: JSON.stringify(actor)
 	});
 	return res;
 }

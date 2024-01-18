@@ -16,7 +16,7 @@ use axum::{
 
 use middlewares::auth;
 use rand::rngs::OsRng;
-use routes::{actor, api_token, authorize, channel, event, insight, project, websocket};
+use routes::{actor, api_token, authorize, channel, event, insight, project, user, websocket};
 
 use sqlx::PgPool;
 use tower_http::cors::CorsLayer;
@@ -53,12 +53,12 @@ async fn main() {
     let app_routes = Router::new()
         // get
         .route("/channels", get(channel::read_channels))
+        .route("/user", get(user::read_user))
         .route(
             "/channels/:project_id",
             get(channel::read_channels_for_project),
         )
         .route("/channel/:id", get(channel::read_channel))
-        .route("/channel", post(channel::create_channel))
         .route("/actors", get(actor::read_actors))
         .route("/actors/:project_id", get(actor::read_actors_for_project))
         .route("/actor/:id", get(actor::read_actor))
@@ -79,16 +79,19 @@ async fn main() {
         .route("/api-tokens", get(api_token::read_api_tokens))
         .route("/search", get(event::read_events_from_tag))
         // post
-        .route("/project", post(project::create_project))
         .route("/actor", post(actor::create_actor))
         .route("/api-token", post(api_token::create_api_token))
+        .route("/channel", post(channel::create_channel))
+        .route("/project", post(project::create_project))
         // patch
         .route("/project", patch(project::update_project))
         .route("/actor", patch(actor::update_actor))
+        .route("/channel", patch(channel::update_channel))
         // delete
         .route("/api-token/:id", delete(api_token::delete_api_token))
         .route("/actor/:id", delete(actor::delete_actor))
         .route("/channel/:id", delete(channel::delete_channel))
+        .route("/user", delete(user::delete_user))
         .route("/project/:id", delete(project::delete_project))
         .route_layer(middleware::from_fn_with_state(
             shared_state.clone(),
@@ -111,6 +114,7 @@ async fn main() {
 
     let login_routes = Router::new()
         .route("/login", post(authorize::login))
+        .route("/logout", post(authorize::logout))
         .route("/register", post(authorize::register));
 
     let app = Router::new()

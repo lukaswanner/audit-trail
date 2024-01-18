@@ -4,6 +4,12 @@ export type ChannelPayload = {
 	projectId: number;
 };
 
+export type UpdateChannelPayload = {
+	id: number;
+	title: string;
+	projectId: number;
+};
+
 export type Channel = {
 	id: number;
 	title: string;

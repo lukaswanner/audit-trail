@@ -21,6 +21,14 @@ pub struct Insight {
     project_title: String,
 }
 
+#[derive(Serialize, Deserialize)]
+pub struct CreateInsight {
+    icon: String,
+    title: String,
+    value: String,
+}
+
+
 pub async fn read_insight(
     State(state): State<AppState>,
     Path((project_title, name)): Path<(String, String)>,
@@ -50,13 +58,6 @@ pub async fn read_insights(
         .unwrap();
 
     Json(result)
-}
-
-#[derive(Serialize, Deserialize)]
-pub struct CreateInsight {
-    icon: String,
-    title: String,
-    value: String,
 }
 
 pub async fn create_insight(

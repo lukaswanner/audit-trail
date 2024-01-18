@@ -19,6 +19,26 @@ pub struct Channel {
     project_title: String,
 }
 
+#[derive(Deserialize)]
+pub struct CreateChannelApi {
+    title: String,
+}
+
+#[derive(Deserialize)]
+pub struct CreateChannelPayload {
+    title: String,
+    #[serde(rename = "projectId")]
+    project_id: i32,
+}
+
+#[derive(Deserialize)]
+pub struct UpdateChannelPayload {
+    id: i32,
+    title: String,
+    #[serde(rename = "projectId")]
+    project_id: i32,
+}
+
 pub async fn read_channel(
     State(state): State<AppState>,
     Path(id): Path<i32>,
@@ -71,13 +91,6 @@ pub async fn read_channels_for_project(
     Json(result)
 }
 
-#[derive(Deserialize)]
-pub struct CreateChannelPayload {
-    title: String,
-    #[serde(rename = "projectId")]
-    project_id: i32,
-}
-
 pub async fn create_channel(
     State(state): State<AppState>,
     Extension(session): Extension<UserSession>,
@@ -97,9 +110,39 @@ pub async fn create_channel(
     }
 }
 
-#[derive(Deserialize)]
-pub struct CreateChannelApi {
-    title: String,
+pub async fn update_channel(
+    State(state): State<AppState>,
+    Extension(session): Extension<UserSession>,
+    Json(payload): Json<UpdateChannelPayload>,
+) -> StatusCode {
+    let pool = &state.pool;
+    let query = r#"
+    UPDATE channel 
+        SET title = $1, project_id = $2  
+    WHERE 
+        id = $3 AND 
+    EXISTS (
+        SELECT 1 FROM project p
+        WHERE 
+            p.account_id = $4 and p.id = $2
+        )"#;
+    let res = sqlx::query(query)
+        .bind(payload.title)
+        .bind(payload.project_id)
+        .bind(payload.id)
+        .bind(session.account_id)
+        .execute(pool)
+        .await;
+
+    match res {
+        Ok(row) => {
+            if row.rows_affected() == 0 {
+                return StatusCode::NOT_MODIFIED;
+            }
+            StatusCode::OK
+        }
+        Err(_) => StatusCode::NOT_MODIFIED,
+    }
 }
 
 pub async fn create_channel_api(

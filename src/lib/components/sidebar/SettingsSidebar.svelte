@@ -79,6 +79,28 @@
 		<p>api</p>
 	</a>
 
+	<h2 class="text-lg brightness-150">profile settings</h2>
+	<a
+		href="/settings/profile"
+		data-active={$page.url.pathname === "/settings/profile"}
+		class="btn btn-ghost flex w-full flex-row items-center justify-start gap-2 text-base-content transition-colors data-[active=true]:bg-base-content/20 data-[active=true]:text-accent"
+	>
+		<svg
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="currentColor"
+			stroke-width="2"
+			stroke-linecap="round"
+			stroke-linejoin="round"
+			class="h-4 w-4"
+		>
+			<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+			<circle cx="12" cy="7" r="4" />
+		</svg>
+
+		<p>profile</p>
+	</a>
+
 	<h2 class="text-lg brightness-150">danger zone</h2>
 	<a
 		href="/settings/delete"

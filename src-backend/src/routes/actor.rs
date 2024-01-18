@@ -23,6 +23,29 @@ pub struct Actor {
     properties: sqlx::types::Json<HashMap<String, Value>>,
 }
 
+#[derive(Serialize, Deserialize)]
+pub struct CreateActorApi {
+    name: String,
+    properties: HashMap<String, Value>,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct CreateActor {
+    name: String,
+    #[serde(rename = "projectId")]
+    project_id: i32,
+    properties: HashMap<String, Value>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct UpdateActor {
+    id: i32,
+    #[serde(rename = "projectId")]
+    project_id: i32,
+    name: String,
+    properties: HashMap<String, Value>,
+}
+
 pub async fn read_actor(
     State(state): State<AppState>,
     Path(id): Path<i32>,
@@ -78,12 +101,6 @@ pub async fn read_actors_for_project(
     Json(result)
 }
 
-#[derive(Serialize, Deserialize)]
-pub struct CreateActorApi {
-    name: String,
-    properties: HashMap<String, Value>,
-}
-
 pub async fn create_actor_api(
     State(state): State<AppState>,
     Extension(session): Extension<ApiSession>,
@@ -110,14 +127,6 @@ WHERE EXISTS (SELECT 1 FROM project WHERE account_id = $4 and id = $2)",
     }
 }
 
-#[derive(Serialize, Deserialize)]
-pub struct CreateActor {
-    name: String,
-    #[serde(rename = "projectId")]
-    project_id: i32,
-    properties: HashMap<String, Value>,
-}
-
 pub async fn create_actor(
     State(state): State<AppState>,
     Extension(session): Extension<UserSession>,
@@ -142,15 +151,6 @@ WHERE EXISTS (SELECT 1 FROM project WHERE account_id = $4 and id = $2)",
         Ok(_) => StatusCode::CREATED,
         Err(_) => StatusCode::CONFLICT,
     }
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct UpdateActor {
-    id: i32,
-    #[serde(rename = "projectId")]
-    project_id: i32,
-    name: String,
-    properties: HashMap<String, Value>,
 }
 
 pub async fn update_actor(

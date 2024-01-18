@@ -20,6 +20,17 @@ struct Claims {
     exp: usize,
 }
 
+#[derive(Debug, FromRow, Serialize, Deserialize)]
+struct ApiToken {
+    account_id: i32,
+    project_id: i32,
+}
+
+#[derive(Debug, FromRow, Deserialize)]
+struct Account {
+    id: i32,
+}
+
 fn extract_jwt_token(jar: &CookieJar) -> Option<&str> {
     match jar.get("__audit") {
         Some(cookie) => Some(cookie.value()),
@@ -34,12 +45,6 @@ fn extract_api_token(headers: &HeaderMap) -> Option<&str> {
     }
 }
 
-#[derive(Debug, FromRow, Serialize, Deserialize)]
-struct ApiToken {
-    account_id: i32,
-    project_id: i32,
-}
-
 // check if the token is in db
 // return true if we have a valid token that matches
 async fn key_is_valid(token: &str, state: AppState) -> Option<ApiToken> {
@@ -50,11 +55,6 @@ async fn key_is_valid(token: &str, state: AppState) -> Option<ApiToken> {
         .fetch_optional(&state.pool)
         .await
         .unwrap()
-}
-
-#[derive(Debug, FromRow, Deserialize)]
-struct Account {
-    id: i32,
 }
 
 async fn token_is_valid(token: &str, state: AppState) -> Option<Account> {

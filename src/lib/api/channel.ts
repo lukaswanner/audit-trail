@@ -1,4 +1,4 @@
-import type { ChannelPayload } from "$lib/types/channel/ChannelTypes";
+import type { ChannelPayload, UpdateChannelPayload } from "$lib/types/channel/ChannelTypes";
 
 const channelBase = "http://localhost:3000/app";
 
@@ -52,6 +52,19 @@ export async function readChannel(channelId: number): Promise<Response> {
 			"Content-Type": "application/json"
 		}
 	});
+	return res;
+}
+
+export async function updateChannel(channel: UpdateChannelPayload): Promise<Response> {
+	const res = await fetch(`${channelBase}/channel`, {
+		method: "PATCH",
+		credentials: "include",
+		headers: {
+			"Content-Type": "application/json"
+		},
+		body: JSON.stringify(channel)
+	});
+
 	return res;
 }
 
