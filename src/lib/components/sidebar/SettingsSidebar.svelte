@@ -1,5 +1,7 @@
 <script lang="ts">
+	import { goto } from "$app/navigation";
 	import { page } from "$app/stores";
+	import { logout } from "$lib/api/auth";
 </script>
 
 <h1 class="break-word h-16 text-2xl font-bold brightness-150">settings</h1>
@@ -102,6 +104,31 @@
 	</a>
 
 	<h2 class="text-lg brightness-150">danger zone</h2>
+	<button
+		on:click={async () => {
+			const res = await logout();
+			if (res.status === 200) {
+				goto("/login");
+			}
+		}}
+		class="btn btn-ghost flex w-full flex-row items-center justify-start gap-2 text-base-content transition-colors"
+	>
+		<svg
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="currentColor"
+			stroke-width="2"
+			stroke-linecap="round"
+			stroke-linejoin="round"
+			class="h-4 w-4"
+		>
+			<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+			<polyline points="16 17 21 12 16 7" />
+			<line x1="21" y1="12" x2="9" y2="12" />
+		</svg>
+
+		<p>logout</p>
+	</button>
 	<a
 		href="/settings/delete"
 		data-active={$page.url.pathname === "/settings/delete"}
@@ -115,9 +142,11 @@
 			stroke-linecap="round"
 			stroke-linejoin="round"
 			class="h-4 w-4"
-			><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"
-			></line><line x1="9" y1="9" x2="15" y2="15"></line></svg
 		>
+			<circle cx="12" cy="12" r="10" />
+			<line x1="15" y1="9" x2="9" y2="15" />
+			<line x1="9" y1="9" x2="15" y2="15" />
+		</svg>
 		<p>delete project</p>
 	</a>
 </div>

@@ -127,7 +127,9 @@ fn generate_token(account: Option<Account>, credentials: &Credentials) -> Respon
 }
 
 fn remove_token() -> Response<Body> {
-    let cookie = Cookie::build(("__audit", "")).path("/").build();
+    let expire_time = chrono::Utc::now();
+    let cookie_str = format!("name=__audit; Expires={}", expire_time);
+    let cookie = Cookie::parse(cookie_str).unwrap();
 
     Response::builder()
         .header("Set-Cookie", cookie.to_string())
