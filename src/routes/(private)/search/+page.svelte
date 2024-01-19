@@ -75,8 +75,6 @@
 	});
 
 	$: $project, readEvents();
-
-	console.log($project);
 </script>
 
 <div class="flex flex-row items-center gap-4 border-b border-b-base-content/10 p-4">

@@ -44,7 +44,7 @@
 	{#if $actor}
 		<div class="m-4">
 			<div class="flex w-full flex-row items-center gap-4 border-b-2 border-neutral p-4">
-				<div class="rounded bg-base-300 p-4">
+				<div class="flex items-center justify-center rounded-lg bg-primary/10 p-4">
 					<svg
 						viewBox="0 0 24 24"
 						fill="none"
@@ -62,7 +62,7 @@
 			</div>
 			<div class="border-b-2 border-neutral p-4">
 				<div class="mb-4 flex flex-row items-center gap-4">
-					<div class="w-fit rounded bg-base-300 p-4">
+					<div class="flex items-center justify-center rounded-lg bg-primary/10 p-4">
 						<svg
 							viewBox="0 0 24 24"
 							fill="none"

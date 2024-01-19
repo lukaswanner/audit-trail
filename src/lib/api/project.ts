@@ -21,7 +21,6 @@ export async function createProject(projectTitle: ProjectPayload): Promise<Respo
 }
 
 export async function updateProject(updatedProject: UpdateProjectPayload): Promise<Response> {
-	console.log(updatedProject);
 	const res = await fetch(`${projectBase}/project`, {
 		method: "PATCH",
 		credentials: "include",

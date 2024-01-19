@@ -17,7 +17,7 @@
 </script>
 
 <div class="flex flex-row items-center gap-4">
-	<div class="w-fit rounded bg-base-300 p-4">
+	<div class="flex items-center justify-center rounded-lg bg-primary/10 p-4">
 		<svg
 			viewBox="0 0 24 24"
 			fill="none"

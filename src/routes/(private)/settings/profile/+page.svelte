@@ -47,7 +47,7 @@
 				class="rounded-tr-mid flex w-full max-w-xl flex-col items-start justify-center gap-4 rounded-tl-md border-l-2 border-r-2 border-t-2 border-neutral bg-base-300 p-4"
 			>
 				<div class="flex flex-row items-center gap-4">
-					<div class="flex items-center justify-center rounded bg-base-100 p-2">
+					<div class="flex items-center justify-center rounded-lg bg-primary/10 p-4">
 						<svg
 							viewBox="0 0 24 24"
 							fill="none"
@@ -55,7 +55,7 @@
 							stroke-width="2"
 							stroke-linecap="round"
 							stroke-linejoin="round"
-							class="h-4 w-4 brightness-150"
+							class="h-4 w-4 text-primary"
 						>
 							<path
 								d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
@@ -80,7 +80,7 @@
 				class="rounded-tr-mid flex w-full max-w-xl flex-col items-start justify-center gap-4 rounded-tl-md border-l-2 border-r-2 border-t-2 border-neutral bg-base-300 p-4"
 			>
 				<div class="flex flex-row items-center gap-4">
-					<div class="flex items-center justify-center rounded bg-base-100 p-2">
+					<div class="flex items-center justify-center rounded-lg bg-primary/10 p-4">
 						<svg
 							viewBox="0 0 24 24"
 							fill="none"
@@ -88,7 +88,7 @@
 							stroke-width="2"
 							stroke-linecap="round"
 							stroke-linejoin="round"
-							class="h-4 w-4 brightness-150"
+							class="h-4 w-4 text-primary"
 						>
 							<path
 								d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
@@ -114,7 +114,7 @@
 				class="rounded-tr-mid flex w-full max-w-xl flex-col items-start justify-center gap-4 rounded-tl-md border-l-2 border-r-2 border-t-2 border-neutral bg-base-300 p-4"
 			>
 				<div class="flex flex-row items-center gap-4">
-					<div class="flex items-center justify-center rounded bg-base-100 p-2">
+					<div class="flex items-center justify-center rounded-lg bg-primary/10 p-4">
 						<svg
 							viewBox="0 0 24 24"
 							fill="none"
@@ -122,7 +122,7 @@
 							stroke-width="2"
 							stroke-linecap="round"
 							stroke-linejoin="round"
-							class="h-4 w-4 brightness-150"
+							class="h-4 w-4 text-primary"
 						>
 							<circle cx="12" cy="12" r="10" />
 							<line x1="15" y1="9" x2="9" y2="15" />

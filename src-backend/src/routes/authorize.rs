@@ -33,6 +33,8 @@ struct Account {
 pub struct Credentials {
     email: String,
     password: String,
+    #[serde(rename = "rememberMe")]
+    remember_me: bool,
 }
 
 pub async fn register(
@@ -107,10 +109,21 @@ fn generate_token(account: Option<Account>, credentials: &Credentials) -> Respon
             )
             .unwrap();
 
-            let cookie = Cookie::build(("__audit", token))
-                .path("/")
-                .secure(true)
-                .build();
+            // cant be bothered with that anyoing expiration time
+            let expire_time = if !credentials.remember_me {
+                "".to_owned()
+            } else {
+                (chrono::Utc::now() + Duration::days(1))
+                    .format("%a, %d %b %Y %H:%M:%S GMT")
+                    .to_string()
+            };
+
+            let cookie_str = format!(
+                "__audit={}; Expires={};Path=/;Secure=true",
+                token, expire_time
+            );
+
+            let cookie = Cookie::parse(cookie_str).unwrap();
 
             Response::builder()
                 .header("Set-Cookie", cookie.to_string())
@@ -127,8 +140,8 @@ fn generate_token(account: Option<Account>, credentials: &Credentials) -> Respon
 }
 
 fn remove_token() -> Response<Body> {
-    let expire_time = chrono::Utc::now();
-    let cookie_str = format!("name=__audit; Expires={}", expire_time);
+    let expire_time = chrono::Utc::now().to_rfc3339();
+    let cookie_str = format!("__audit=; Expires={};Path=/;Secure=true", expire_time);
     let cookie = Cookie::parse(cookie_str).unwrap();
 
     Response::builder()

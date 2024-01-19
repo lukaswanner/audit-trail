@@ -41,7 +41,7 @@
 	<div
 		class="flex w-full flex-row items-center justify-start gap-4 rounded-tl-md rounded-tr-md border-l-2 border-r-2 border-t-2 border-neutral bg-base-300 p-4"
 	>
-		<div class="flex items-center justify-center rounded bg-base-100 p-2">
+		<div class="flex items-center justify-center rounded-lg bg-primary/10 p-4">
 			<svg
 				viewBox="0 0 24 24"
 				fill="none"
@@ -49,7 +49,7 @@
 				stroke-width="2"
 				stroke-linecap="round"
 				stroke-linejoin="round"
-				class="h-4 w-4 text-base-content brightness-150"
+				class="h-4 w-4 text-primary"
 				><circle cx="12" cy="12" r="4"></circle><path
 					d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"
 				></path></svg

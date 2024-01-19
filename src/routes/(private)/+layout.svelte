@@ -76,7 +76,7 @@
 	<Loading />
 {:else}
 	<div
-		class="grid h-screen grid-rows-[auto_200px_1fr] md:grid-cols-[125px_250px_6fr] md:grid-rows-none"
+		class="grid h-screen grid-rows-[auto_200px_1fr] md:grid-cols-[85px_225px_6fr] md:grid-rows-none"
 	>
 		<div class="overflow-auto p-4 md:border-r md:border-r-base-content/10">
 			<Sidebar />
