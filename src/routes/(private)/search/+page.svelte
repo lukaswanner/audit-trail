@@ -45,9 +45,10 @@
 		const key = searchQuery.get("key");
 		const value = searchQuery.get("value");
 		const searchTitle = searchQuery.get("title");
-		if (key && value) {
+		if (searchQuery.has("key") && searchQuery.has("value")) {
 			try {
-				const res = await readEventListWithMatchingTags(key, value);
+				// should be of value since we have key
+				const res = await readEventListWithMatchingTags(key!, value!);
 				events = await res.json();
 				filteredEvents = events;
 				loading = false;
