@@ -6,7 +6,7 @@
 	import { project } from "$lib/stores/project";
 
 	let error: string;
-	let actorName = decodeURIComponent($page.url.pathname.split("/")[3]);
+	let actorId = decodeURIComponent($page.url.pathname.split("/")[3]);
 
 	let inputName = "";
 
@@ -25,8 +25,12 @@
 
 	async function handleNameChange() {
 		// make sure we have the latest actor list
+		if (Number.isNaN(Number(actorId))) {
+			error = "invalid actor id";
+			return;
+		}
 		await updateActorsList();
-		const currentActor = $actors.find((actor) => actor.name === actorName);
+		const currentActor = $actors.find((actor) => actor.id === Number(actorId));
 		if (!$project || !$project.id) {
 			error = "no project selected";
 			return;

@@ -4,8 +4,13 @@
 	import { actor, actors } from "$lib/stores/actor";
 	import type { ActorPayload } from "$lib/types/actor/ActorTypes";
 	import { page } from "$app/stores";
+	import Properties from "$lib/components/actor/Properties.svelte";
+
+	type Property = Map<string, string>;
 
 	let actorName = "";
+	let properties: Property = new Map();
+
 	let modalRef: HTMLDialogElement;
 	let error: string;
 
@@ -17,6 +22,20 @@
 		}
 	}
 
+	function add(key: string, value: string) {
+		properties.set(key, value);
+		properties = properties;
+	}
+	function remove(key: string) {
+		properties.delete(key);
+		properties = properties;
+	}
+	function reset() {
+		actorName = "";
+		properties = new Map();
+		error = "";
+	}
+
 	async function handleNewActor(e: Event) {
 		const form = e.target as HTMLFormElement;
 		const formData = new FormData(form);
@@ -26,14 +45,22 @@
 			error = "Select a project first";
 			return;
 		}
+
+		if (!data.name) {
+			error = "Name is required";
+			return;
+		}
+
 		const payload: ActorPayload = {
 			projectId: $project.id,
 			name: data.name as string,
-			properties: {}
+			properties: properties
 		};
+		console.log(payload);
 		const res = await createActor(payload);
 		if (res.status === 201) {
 			await fetchActors();
+			reset();
 			modalRef.close();
 		} else if (res.status === 409) {
 			error = "Actor already exists";
@@ -60,7 +87,7 @@
 {#each $actors as singleActor}
 	<a
 		data-active={singleActor.id.toString() === $page.url.pathname.split("/")[2]}
-		on:click={actor.set(singleActor)}
+		on:click={() => actor.set(singleActor)}
 		href={`/actor/${singleActor.id}`}
 		class="btn btn-ghost flex w-full flex-grow flex-row flex-nowrap items-center justify-start gap-2 data-[active=true]:bg-base-content/20 data-[active=true]:text-primary"
 	>
@@ -87,16 +114,24 @@
 	<form class="modal-box" on:submit|preventDefault={handleNewActor}>
 		<h3 class="text-lg font-bold">Create new actor</h3>
 		<p class="py-4">Create a new actor bind events to it.</p>
-		<input
-			name="name"
-			type="text"
-			placeholder="Actor name"
-			class="input input-bordered w-full"
-			bind:value={actorName}
-		/>
-		{#if error}
-			<p class="text-error">{error}</p>
-		{/if}
+		<div class="flex flex-col gap-4">
+			<div>
+				<input
+					name="name"
+					type="text"
+					placeholder="Actor name"
+					class="input input-bordered w-full"
+					bind:value={actorName}
+				/>
+				{#if error}
+					<p class="text-sm text-error">{error}</p>
+				{/if}
+			</div>
+			<h4 class="text-lg">Properties</h4>
+		</div>
+
+		<Properties {properties} {add} {remove} />
+
 		<div class="modal-action justify-start">
 			<button disabled={actorName.length === 0} class="btn btn-success" type="submit"
 				>Create</button

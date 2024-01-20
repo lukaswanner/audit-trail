@@ -73,7 +73,7 @@
 				<p class="text-base-content">{actor.name}</p>
 				<div class="flex flex-row items-center gap-2">
 					<a
-						href={`/settings/actors/${actor.name}`}
+						href={`/settings/actors/${actor.id}`}
 						class="transition-colors hover:text-secondary"
 					>
 						<svg
@@ -91,7 +91,7 @@
 						>
 					</a>
 					<a
-						href={`/settings/actors/${actor.name}/danger`}
+						href={`/settings/actors/${actor.id}/danger`}
 						class="transition-colors hover:text-secondary"
 					>
 						<svg

@@ -135,6 +135,7 @@ pub async fn create_actor(
     let pool = &state.pool;
 
     let props = json!(payload.properties);
+    println!("props: {:?}", props);
     let res = sqlx::query(
         "INSERT INTO actor (name,project_id, properties) 
 SELECT $1 AS name, $2 AS project_id, $3 as properties

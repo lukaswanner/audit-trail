@@ -2,7 +2,7 @@
 export type ActorPayload = {
 	name: string;
 	projectId: number;
-	properties: Record<string, unknown>;
+	properties: Map<string, string>;
 };
 
 export type UpdateActorPayload = {

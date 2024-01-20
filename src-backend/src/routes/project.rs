@@ -16,6 +16,17 @@ pub struct Project {
     title: String,
 }
 
+#[derive(Deserialize)]
+pub struct UpdateProject {
+    id: i32,
+    title: String,
+}
+
+#[derive(Deserialize)]
+pub struct CreateProject {
+    title: String,
+}
+
 pub async fn read_project(
     State(state): State<AppState>,
     Path(id): Path<i32>,
@@ -46,12 +57,6 @@ pub async fn read_projects(
     Json(result)
 }
 
-#[derive(Deserialize)]
-pub struct UpdateProject {
-    id: i32,
-    title: String,
-}
-
 pub async fn update_project(
     State(state): State<AppState>,
     Extension(session): Extension<UserSession>,
@@ -71,11 +76,6 @@ pub async fn update_project(
         Ok(_) => StatusCode::OK,
         Err(_) => StatusCode::NOT_MODIFIED,
     }
-}
-
-#[derive(Deserialize)]
-pub struct CreateProject {
-    title: String,
 }
 
 pub async fn create_project(

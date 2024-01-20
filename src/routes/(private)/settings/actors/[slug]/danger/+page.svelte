@@ -6,16 +6,16 @@
 	import { project } from "$lib/stores/project";
 
 	let error: string;
-	let actorName = decodeURIComponent($page.url.pathname.split("/")[3]);
+	let id = decodeURIComponent($page.url.pathname.split("/")[3]);
+	let actorName = $actors.find((actor) => actor.id === Number(id))?.name;
 
 	let inputName = "";
 
 	async function handleDelete() {
-		const id = $actors.find((actor) => actor.name === actorName)?.id;
-		if (!id) {
+		if (!id || Number.isNaN(Number(id))) {
 			return;
 		}
-		const res = await deleteActor(id);
+		const res = await deleteActor(Number(id));
 		if (res.status === 204) {
 			let res = await readActorListForProject($project!.id);
 			if (res.status === 200) {
