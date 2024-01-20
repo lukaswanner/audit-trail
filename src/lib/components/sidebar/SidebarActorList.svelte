@@ -54,9 +54,8 @@
 		const payload: ActorPayload = {
 			projectId: $project.id,
 			name: data.name as string,
-			properties: properties
+			properties: Object.fromEntries(properties)
 		};
-		console.log(payload);
 		const res = await createActor(payload);
 		if (res.status === 201) {
 			await fetchActors();
