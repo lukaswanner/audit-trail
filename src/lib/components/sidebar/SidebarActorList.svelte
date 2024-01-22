@@ -56,6 +56,7 @@
 			name: data.name as string,
 			properties: Object.fromEntries(properties)
 		};
+
 		const res = await createActor(payload);
 		if (res.status === 201) {
 			await fetchActors();

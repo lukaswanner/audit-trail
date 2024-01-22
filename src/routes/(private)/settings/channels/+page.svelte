@@ -37,7 +37,7 @@
 		<Loading />
 	</div>
 {/if}
-<div class="flex max-w-xl flex-col items-start p-4">
+<div class="flex max-w-2xl w-full flex-col items-start p-4">
 	<div
 		class="flex w-full flex-row items-center justify-start gap-4 rounded-tl-md rounded-tr-md border-l-2 border-r-2 border-t-2 border-neutral bg-base-300 p-4"
 	>
@@ -50,10 +50,12 @@
 				stroke-linecap="round"
 				stroke-linejoin="round"
 				class="h-4 w-4 text-primary"
-				><circle cx="12" cy="12" r="4"></circle><path
-					d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"
-				></path></svg
 			>
+				<line x1="4" y1="9" x2="20" y2="9" />
+				<line x1="4" y1="15" x2="20" y2="15" />
+				<line x1="10" y1="3" x2="8" y2="21" />
+				<line x1="16" y1="3" x2="14" y2="21" />
+			</svg>
 		</div>
 		<h1 class="text-2xl brightness-150">channels for {$project?.title}</h1>
 	</div>

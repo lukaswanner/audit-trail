@@ -44,7 +44,7 @@
 	<div class="flex flex-col items-start gap-4 p-4">
 		<div class="flex w-full flex-col">
 			<div
-				class="rounded-tr-mid flex w-full max-w-xl flex-col items-start justify-center gap-4 rounded-tl-md border-l-2 border-r-2 border-t-2 border-neutral bg-base-300 p-4"
+				class="rounded-tr-mid flex w-full max-w-2xl flex-col items-start justify-center gap-4 rounded-tl-md border-l-2 border-r-2 border-t-2 border-neutral bg-base-300 p-4"
 			>
 				<div class="flex flex-row items-center gap-4">
 					<div class="flex items-center justify-center rounded-lg bg-primary/10 p-4">
@@ -68,7 +68,7 @@
 				</div>
 			</div>
 			<div
-				class="flex w-full max-w-xl flex-col items-start justify-center gap-4 rounded-bl-md rounded-br-md border-2 border-neutral bg-base-300 p-4"
+				class="flex w-full max-w-2xl flex-col items-start justify-center gap-4 rounded-bl-md rounded-br-md border-2 border-neutral bg-base-300 p-4"
 			>
 				<div class="flex flex-row items-center gap-4">
 					<p>email</p>
@@ -77,7 +77,7 @@
 		</div>
 		<div class="flex w-full flex-col">
 			<div
-				class="rounded-tr-mid flex w-full max-w-xl flex-col items-start justify-center gap-4 rounded-tl-md border-l-2 border-r-2 border-t-2 border-neutral bg-base-300 p-4"
+				class="rounded-tr-mid flex w-full max-w-2xl flex-col items-start justify-center gap-4 rounded-tl-md border-l-2 border-r-2 border-t-2 border-neutral bg-base-300 p-4"
 			>
 				<div class="flex flex-row items-center gap-4">
 					<div class="flex items-center justify-center rounded-lg bg-primary/10 p-4">
@@ -91,9 +91,8 @@
 							class="h-4 w-4 text-primary"
 						>
 							<path
-								d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
+								d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
 							/>
-							<polyline points="22,6 12,13 2,6" />
 						</svg>
 					</div>
 
@@ -103,7 +102,7 @@
 			{#each $projects as project, index}
 				<div
 					data-last={index === $projects.length - 1}
-					class="flex w-full max-w-xl flex-col items-start justify-center gap-4 border-l-2 border-r-2 border-t-2 border-neutral bg-base-300 p-4 data-[last=true]:rounded-bl-md data-[last=true]:rounded-br-md data-[last=true]:border-b-2"
+					class="flex w-full max-w-2xl flex-col items-start justify-center gap-4 border-l-2 border-r-2 border-t-2 border-neutral bg-base-300 p-4 data-[last=true]:rounded-bl-md data-[last=true]:rounded-br-md data-[last=true]:border-b-2"
 				>
 					<p>{project.title}</p>
 				</div>
@@ -111,7 +110,7 @@
 		</div>
 		<div class="flex w-full flex-col">
 			<div
-				class="rounded-tr-mid flex w-full max-w-xl flex-col items-start justify-center gap-4 rounded-tl-md border-l-2 border-r-2 border-t-2 border-neutral bg-base-300 p-4"
+				class="rounded-tr-mid flex w-full max-w-2xl flex-col items-start justify-center gap-4 rounded-tl-md border-l-2 border-r-2 border-t-2 border-neutral bg-base-300 p-4"
 			>
 				<div class="flex flex-row items-center gap-4">
 					<div class="flex items-center justify-center rounded-lg bg-primary/10 p-4">
@@ -134,7 +133,7 @@
 				</div>
 			</div>
 			<div
-				class="flex w-full max-w-xl flex-col items-start justify-center gap-4 rounded-bl-md rounded-br-md border-2 border-neutral bg-base-300 p-4"
+				class="flex w-full max-w-2xl flex-col items-start justify-center gap-4 rounded-bl-md rounded-br-md border-2 border-neutral bg-base-300 p-4"
 			>
 				<button
 					on:click={() => modalRef.showModal()}

@@ -65,9 +65,46 @@
 	<h1 class="text-3xl font-bold brightness-150">update #{channelName}</h1>
 </div>
 
-<div class="flex flex-col items-start gap-4 p-4">
+<div class="w-full max-w-2xl p-4">
+	<div
+		class="flex w-full flex-row items-center justify-start gap-4 rounded-tl-md rounded-tr-md border-l-2 border-r-2 border-t-2 border-neutral bg-base-300 p-4"
+	>
+		<div class="flex items-center justify-center rounded-lg bg-primary/10 p-4">
+			<svg
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+				class="h-4 w-4 text-primary"
+			>
+				<line x1="4" y1="9" x2="20" y2="9" />
+				<line x1="4" y1="15" x2="20" y2="15" />
+				<line x1="10" y1="3" x2="8" y2="21" />
+				<line x1="16" y1="3" x2="14" y2="21" />
+			</svg>
+		</div>
+		<h1 class="text-2xl">
+			<span class="brightness-150"> settings for </span>
+			{#if channelName}
+				<span class="brightness-150">
+					#{channelName}
+				</span>
+			{:else}
+				<span class="text-error">channel not found</span>
+			{/if}
+		</h1>
+	</div>
+	<div
+		class="flex w-full flex-col items-start justify-center gap-4 rounded-bl-md rounded-br-md border-b-2 border-l-2 border-r-2 border-t-2 border-neutral bg-base-300 p-4"
+	>
+		<p class="text-base-content">change the name of this channel</p>
+	</div>
+</div>
+<div class="flex w-full max-w-2xl flex-col items-start gap-4 p-4">
 	<form
-		class="flex w-full max-w-md flex-col items-start justify-center gap-4 rounded-md border-2 border-neutral bg-base-300 p-4"
+		class="flex w-full flex-col items-start justify-center gap-4 rounded-md border-2 border-neutral bg-base-300 p-4"
 		on:submit|preventDefault={handleNameChange}
 	>
 		channel name
@@ -81,6 +118,6 @@
 		{#if error}
 			<p class="text-xs text-error">{error}</p>
 		{/if}
-		<button disabled={inputName.trim() === ""} class="btn btn-success w-24">update</button>
+		<button disabled={inputName.trim() === ""} class="btn btn-primary w-24">update</button>
 	</form>
 </div>

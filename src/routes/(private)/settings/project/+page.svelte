@@ -58,9 +58,32 @@
 	<h1 class="text-3xl font-bold brightness-150">project settings</h1>
 </div>
 
-<div class="flex flex-col items-start gap-4 p-4">
+<div class="flex w-full max-w-2xl flex-col items-start p-4">
+	<div
+		class="flex w-full flex-row items-center justify-start gap-4 rounded-tl-md rounded-tr-md border-l-2 border-r-2 border-t-2 border-neutral bg-base-300 p-4"
+	>
+		<div class="flex items-center justify-center rounded-lg bg-primary/10 p-4">
+			<svg
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+				class="h-4 w-4 text-primary"
+			>
+				<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+			</svg>
+		</div>
+		<h1 class="text-2xl brightness-150">config for {$project?.title}</h1>
+	</div>
+	<div
+		class="flex w-full flex-col items-start justify-center gap-4 rounded-bl-md rounded-br-md border-b-2 border-l-2 border-r-2 border-t-2 border-neutral bg-base-300 p-4"
+	>
+		<p class="text-base-content">change the name of your project</p>
+	</div>
 	<form
-		class="flex w-full max-w-xl flex-col items-start justify-center gap-4 rounded-md border-2 border-neutral bg-base-300 p-4"
+		class="mt-4 flex w-full max-w-2xl flex-col items-start justify-center gap-4 rounded-md border-2 border-neutral bg-base-300 p-4"
 		on:submit|preventDefault={handleTitleChange}
 	>
 		<p>project name</p>
@@ -74,6 +97,9 @@
 		{#if error}
 			<p class="text-xs text-error">{error}</p>
 		{/if}
-		<button class="btn btn-primary w-24">save</button>
+		<button
+			disabled={projectTitle === "" || projectTitle === $project?.title}
+			class="btn btn-primary w-24">update</button
+		>
 	</form>
 </div>

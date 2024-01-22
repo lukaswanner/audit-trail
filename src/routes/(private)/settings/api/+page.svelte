@@ -42,32 +42,60 @@
 	<h1 class="text-3xl font-bold brightness-150">api</h1>
 </div>
 
-<div class="mb-8 flex h-full flex-col items-start gap-4 overflow-auto p-4">
-	<div class="flex h-full w-full flex-col items-start gap-4">
-		{#if $apikeys.length > 0}
-			<div>
-				<h2 class="mb-2 text-lg font-bold brightness-150">your api keys</h2>
-				<p>API keys are required for publishing data to your project.</p>
+<div class="mb-8 flex h-full max-w-2xl flex-col items-start gap-4 overflow-auto p-4">
+	<div class="w-full">
+		<div
+			class="flex w-full flex-row items-center justify-start gap-4 rounded-tl-md rounded-tr-md border-l-2 border-r-2 border-t-2 border-neutral bg-base-300 p-4"
+		>
+			<div class="flex items-center justify-center rounded-lg bg-primary/10 p-4">
+				<svg
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					class="h-4 w-4 text-primary"
+				>
+					<polygon points="12 2 2 7 12 12 22 7 12 2" />
+					<polyline points="2 17 12 22 22 17" />
+					<polyline points="2 12 12 17 22 12" />
+				</svg>
 			</div>
-			<div class="my-8 mb-4 flex w-full flex-col gap-4">
-				{#each $apikeys as apikey}
-					<Apikey {apikey} />
-				{/each}
-			</div>
-		{/if}
-		{#if !$project}
-			<div class="my-auto">
-				<h2 class="text-xl font-bold">No project selected</h2>
-			</div>
-		{/if}
-		{#if $project && $apikeys.length === 0}
-			<h2 class="text-xl font-bold">
-				No api keys in
-				<span class="text-primary">#{$project.title} </span>
-			</h2>
-		{/if}
-		<button on:click={createNewApikey} class="btn btn-primary"> + create key</button>
+			<h1 class="text-2xl brightness-150">your api keys</h1>
+		</div>
+		<div
+			class="flex w-full flex-col items-start justify-center gap-4 rounded-bl-md rounded-br-md border-b-2 border-l-2 border-r-2 border-t-2 border-neutral bg-base-300 p-4"
+		>
+			{#if !$project}
+				<div class="my-auto">
+					<h2 class="text-xl font-bold">No project selected</h2>
+				</div>
+			{/if}
+			{#if $project && $apikeys.length === 0}
+				<h2 class="text-xl font-bold">
+					No api keys in
+					<span class="text-primary">#{$project.title} </span>
+				</h2>
+			{/if}
+			{#if $project && $apikeys.length > 0}
+				<h2 class="text-xl font-bold">
+					{$apikeys.length} api keys in
+					<span class="text-primary">#{$project.title} </span>
+				</h2>
+			{/if}
+		</div>
 	</div>
+
+	{#each $apikeys as apikey, index}
+		<div
+			data-last={index === $apikeys.length - 1}
+			class="flex w-full flex-col items-start justify-center gap-4 border-l-2 border-r-2 border-t-2 border-neutral bg-base-300 p-4 data-[last=true]:rounded-bl-md data-[last=true]:rounded-br-md data-[last=true]:border-b-2"
+		>
+			<Apikey {apikey} />
+		</div>
+	{/each}
+	<button on:click={createNewApikey} class="btn btn-primary"> + create key</button>
 
 	{#if loading}
 		<Loading />

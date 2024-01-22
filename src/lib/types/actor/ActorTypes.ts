@@ -16,5 +16,5 @@ export type Actor = {
 	id: number;
 	name: string;
 	projectTitle: string;
-	properties: Record<string, unknown>;
+	properties: Map<string, string>;
 };

@@ -37,7 +37,7 @@
 		<Loading />
 	</div>
 {/if}
-<div class="flex max-w-xl flex-col items-start p-4">
+<div class="flex max-w-2xl w-full flex-col items-start p-4">
 	<div
 		class="flex w-full flex-row items-center justify-start gap-4 rounded-tl-md rounded-tr-md border-l-2 border-r-2 border-t-2 border-neutral bg-base-300 p-4"
 	>

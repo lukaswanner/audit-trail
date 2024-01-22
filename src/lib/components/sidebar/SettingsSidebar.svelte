@@ -20,8 +20,9 @@
 			stroke-linecap="round"
 			stroke-linejoin="round"
 			class="h-4 w-4"
-			><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg
 		>
+			<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+		</svg>
 		<p>project</p>
 	</a>
 	<a
@@ -37,8 +38,12 @@
 			stroke-linecap="round"
 			stroke-linejoin="round"
 			class="h-4 w-4"
-			><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg
 		>
+			<line x1="4" y1="9" x2="20" y2="9" />
+			<line x1="4" y1="15" x2="20" y2="15" />
+			<line x1="10" y1="3" x2="8" y2="21" />
+			<line x1="16" y1="3" x2="14" y2="21" />
+		</svg>
 		<p>channels</p>
 	</a>
 	<a
@@ -74,9 +79,9 @@
 			stroke-linejoin="round"
 			class="h-4 w-4"
 		>
-			<path
-				d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"
-			/>
+			<polygon points="12 2 2 7 12 12 22 7 12 2" />
+			<polyline points="2 17 12 22 22 17" />
+			<polyline points="2 12 12 17 22 12" />
 		</svg>
 		<p>api</p>
 	</a>
