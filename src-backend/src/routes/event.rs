@@ -107,7 +107,9 @@ pub async fn read_events(
     where 
         p.account_id = $1 
     GROUP BY
-        e.id, c.title, a.name,p.id"#,
+        e.id, c.title, a.name,p.id
+    ORDER BY 
+        e.ts DESC"#,
     )
     .bind(session.account_id)
     .fetch_all(pool)
@@ -166,7 +168,7 @@ pub async fn read_events_from_tag(
 
 pub async fn read_events_from_channel(
     State(state): State<AppState>,
-    Path(channel_title): Path<String>,
+    Path(channel_id): Path<i32>,
     Extension(session): Extension<UserSession>,
 ) -> Json<Vec<Event>> {
     let pool = &state.pool;
@@ -197,11 +199,14 @@ pub async fn read_events_from_channel(
     JOIN project p ON c.project_id = p.id
     WHERE 
         p.account_id = $1
-        AND c.title = $2
-    GROUP BY e.id, c.title, a.name, p.id"#,
+        AND c.id = $2
+    GROUP BY e.id, c.title, a.name, p.id
+    ORDER BY 
+            e.ts DESC
+    "#,
     )
     .bind(session.account_id)
-    .bind(channel_title)
+    .bind(channel_id)
     .fetch_all(pool)
     .await
     .unwrap();

@@ -6,8 +6,8 @@
 	import { project } from "$lib/stores/project";
 	import { fade } from "svelte/transition";
 
-	async function readEvents(channelTitle: string) {
-		const eventRes = await readEventListForChannel(channelTitle);
+	async function readEvents(channelId: number) {
+		const eventRes = await readEventListForChannel(channelId);
 		if (eventRes.status === 200) {
 			events.set(await eventRes.json());
 		} else {
@@ -16,7 +16,7 @@
 	}
 
 	$: if ($channel) {
-		readEvents($channel.title);
+		readEvents($channel.id);
 	}
 </script>
 
@@ -25,7 +25,7 @@
 	<button
 		on:click={() => {
 			if ($channel) {
-				readEvents($channel.title);
+				readEvents($channel.id);
 			}
 		}}
 		class="pr-4 hover:text-primary"
