@@ -96,7 +96,7 @@
 					</p>
 				{/if}
 			</div>
-			<div class="flex flex-col gap-4 p-4">
+			<div class="flex flex-col p-4">
 				<PaginationActor {events} />
 			</div>
 		</div>

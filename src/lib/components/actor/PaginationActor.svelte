@@ -16,7 +16,7 @@
 	}
 </script>
 
-<div class="flex flex-row items-center gap-4">
+<div class="mb-4 flex flex-row items-center gap-4">
 	<div class="flex items-center justify-center rounded-lg bg-primary/10 p-4">
 		<svg
 			viewBox="0 0 24 24"
@@ -30,12 +30,12 @@
 			<polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
 		</svg>
 	</div>
-	<p class="text-xl">recent activity</p>
+	<p class="text-xl">timeline</p>
 </div>
 
 {#if events && events.length > 0}
-	{#each events.slice(0, 10 * pageIndex) as event}
-		<ActivityEvent {event} />
+	{#each events.slice(0, 10 * pageIndex) as event, index}
+		<ActivityEvent {event} last={index + 1 === 10 * pageIndex}/>
 	{/each}
 {:else}
 	<p>
