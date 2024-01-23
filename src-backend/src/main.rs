@@ -98,7 +98,12 @@ async fn main() {
             auth::check_request_with_jwt_token,
         ));
 
-    let websocket_routes = Router::new().route("/events", get(websocket::handler));
+    let websocket_routes = Router::new()
+        .route("/events", get(websocket::handler))
+        .route_layer(middleware::from_fn_with_state(
+            shared_state.clone(),
+            auth::check_request_with_jwt_token,
+        ));
 
     let cors = CorsLayer::new()
         .allow_methods(vec![

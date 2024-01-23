@@ -19,15 +19,14 @@
 13. - [x] Add endpoint to get events for specific channel
 14. - [x] Add tags to events
 15. - [x] fix api key for different projects
-
-16. - [ ] Fix auth problem with websockets
-
+16. - [x] Fix auth problem with websockets
 17. - [x] Fix the tooltip, i hate css sometimes
 18. - [x] Implement basic search to filter for events
 19. - [x] Swap design to bento grid for insights
 20. - [x] Add refresh page as a bandaid fix until i get around to do websockets
 21. - [x] finish up single channel page in settings
-22. - [ ] clean up actor page
+22. - [x] clean up actor page
+    -   - [ ] fix hover for mobile view 
 23. - [ ] notification
     -   - [ ] create notification frontend
     -   - [ ] create notification backend

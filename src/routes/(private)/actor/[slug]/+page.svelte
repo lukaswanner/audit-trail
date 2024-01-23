@@ -36,7 +36,13 @@
 			const actorId = Number(location.pathname.split("/")[2]);
 			const actorRes = await readActor(actorId);
 			if (actorRes.ok) {
-				actor.set(await actorRes.json());
+				try {
+					const newActor = await actorRes.json();
+					actor.set(newActor);
+				} catch (e) {
+					error = "Something went wrong";
+					return;
+				}
 			} else {
 				error = "Something went wrong";
 				return;

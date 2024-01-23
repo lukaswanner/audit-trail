@@ -4,8 +4,10 @@
 	import { channel } from "$lib/stores/channel";
 	import { events } from "$lib/stores/event";
 	import { project } from "$lib/stores/project";
+	import { onMount } from "svelte";
 	import { fade } from "svelte/transition";
 
+	let socket: WebSocket;
 	async function readEvents(channelId: number) {
 		const eventRes = await readEventListForChannel(channelId);
 		if (eventRes.status === 200) {
@@ -18,6 +20,28 @@
 	$: if ($channel) {
 		readEvents($channel.id);
 	}
+
+	function connectToWs(id: number) {
+		socket = new WebSocket("ws://localhost:3000/ws/events");
+
+		socket.addEventListener("open", () => {
+			socket.send(`channelId:${id}`);
+		});
+		socket.addEventListener("message", (event) => {
+			const data = JSON.parse(event.data);
+			console.log(data);
+		});
+	}
+
+	onMount(() => {
+		if (!$channel) {
+			return;
+		}
+	});
+
+	$: if ($channel) {
+		connectToWs($channel.id);
+	}
 </script>
 
 <div class="flex flex-row items-center justify-between border-b border-b-base-content/10 p-4">
@@ -25,6 +49,9 @@
 	<button
 		on:click={() => {
 			if ($channel) {
+				if (socket) {
+					socket.send(`channelId:${$channel.id}`);
+				}
 				readEvents($channel.id);
 			}
 		}}
