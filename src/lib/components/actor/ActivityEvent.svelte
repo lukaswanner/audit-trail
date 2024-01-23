@@ -12,7 +12,7 @@
 	class="grid h-20 grid-cols-[5%_75%_20%] gap-4 transition-all hover:h-36"
 >
 	<div class:column={!last} class="relative flex flex-col justify-self-center">
-		<div class="flex h-10 w-10 items-center justify-center rounded-full bg-primary">
+		<div class="flex h-10 w-10 items-center justify-center rounded-full bg-primary/20">
 			<p class="text-xl">
 				{event.icon}
 			</p>
