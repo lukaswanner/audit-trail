@@ -1,8 +1,10 @@
 <script lang="ts">
+	import { readActor } from "$lib/api/actor";
 	import { readEventListForActor } from "$lib/api/event";
 	import PaginationActor from "$lib/components/actor/PaginationActor.svelte";
 	import { actor } from "$lib/stores/actor";
 	import type { Event } from "$lib/types/event/EventTypes";
+	import { onMount } from "svelte";
 
 	let error = "";
 	let events: Event[] = [];
@@ -26,6 +28,21 @@
 	$: if ($actor) {
 		readEvents($actor.id);
 	}
+
+	onMount(async () => {
+		if ($actor) {
+			await readEvents($actor.id);
+		} else {
+			const actorId = Number(location.pathname.split("/")[2]);
+			const actorRes = await readActor(actorId);
+			if (actorRes.ok) {
+				actor.set(await actorRes.json());
+			} else {
+				error = "Something went wrong";
+				return;
+			}
+		}
+	});
 </script>
 
 <div class="flex flex-row border-b border-b-base-content/10 p-4">
