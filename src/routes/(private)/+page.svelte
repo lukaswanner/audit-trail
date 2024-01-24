@@ -35,6 +35,7 @@
 
 	$: if ($channel) {
 		readEvents($channel.id);
+		updateCount = 0;
 	}
 
 	$: if ($events) {
@@ -53,14 +54,11 @@
 	<h1 class="text-3xl font-bold brightness-150">feed</h1>
 	<div class="indicator">
 		{#if updateCount > 0}
-			<span class="badge indicator-item badge-secondary indicator-start">{updateCount}</span>
+			<span class="badge indicator-item badge-accent indicator-start">{updateCount}</span>
 		{/if}
 		<button
 			on:click={() => {
 				if ($channel) {
-					if (socket) {
-						socket.send(`${$channel.id}:${lastEventId}`);
-					}
 					updateCount = 0;
 					readEvents($channel.id);
 				}
