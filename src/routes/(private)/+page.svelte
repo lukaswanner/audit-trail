@@ -8,10 +8,13 @@
 	import { fade } from "svelte/transition";
 
 	let socket: WebSocket;
+	let updateCount = 0;
+
 	async function readEvents(channelId: number) {
 		const eventRes = await readEventListForChannel(channelId);
 		if (eventRes.status === 200) {
 			events.set(await eventRes.json());
+			console.log("events", $events);
 		} else {
 			events.set([]);
 		}
@@ -25,11 +28,15 @@
 		socket = new WebSocket("ws://localhost:3000/ws/events");
 
 		socket.addEventListener("open", () => {
-			socket.send(`channelId:${id}`);
+			socket.send(`${id}:${lastEventId}`);
 		});
 		socket.addEventListener("message", (event) => {
 			const data = JSON.parse(event.data);
-			console.log(data);
+			// check if data is a number
+
+			if (data && !isNaN(parseInt(data))) {
+				updateCount = parseInt(data);
+			}
 		});
 	}
 
@@ -42,35 +49,51 @@
 	$: if ($channel) {
 		connectToWs($channel.id);
 	}
+	// this does not work right now
+	$: lastEventId = $events.length > 0 ? $events[0].id : 0;
+
+	$: lastEventId,
+		() => {
+			console.log("lastEventId", lastEventId);
+			if ($channel) {
+				socket.send(`${$channel.id}:${lastEventId}`);
+			}
+		};
 </script>
 
 <div class="flex flex-row items-center justify-between border-b border-b-base-content/10 p-4">
 	<h1 class="text-3xl font-bold brightness-150">feed</h1>
-	<button
-		on:click={() => {
-			if ($channel) {
-				if (socket) {
-					socket.send(`channelId:${$channel.id}`);
+	<div class="indicator">
+		{#if updateCount > 0}
+			<span class="badge indicator-item badge-secondary indicator-start">{updateCount}</span>
+		{/if}
+		<button
+			on:click={() => {
+				if ($channel) {
+					if (socket) {
+						socket.send(`${$channel.id}:${lastEventId}`);
+					}
+					updateCount = 0;
+					readEvents($channel.id);
 				}
-				readEvents($channel.id);
-			}
-		}}
-		class="pr-4 hover:text-primary"
-	>
-		<svg
-			viewBox="0 0 24 24"
-			fill="none"
-			stroke="currentColor"
-			stroke-width="2"
-			stroke-linecap="round"
-			stroke-linejoin="round"
-			class="h-4 w-4"
+			}}
+			class="pr-4 hover:text-primary"
 		>
-			<polyline points="23 4 23 10 17 10" />
-			<polyline points="1 20 1 14 7 14" />
-			<path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
-		</svg>
-	</button>
+			<svg
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+				class="h-6 w-6 place-items-center"
+			>
+				<polyline points="23 4 23 10 17 10" />
+				<polyline points="1 20 1 14 7 14" />
+				<path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+			</svg>
+		</button>
+	</div>
 </div>
 
 <div class="flex flex-col items-center gap-4 overflow-auto p-4">
