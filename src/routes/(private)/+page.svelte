@@ -9,27 +9,20 @@
 
 	let socket: WebSocket;
 	let updateCount = 0;
+	let lastEventId = -1;
 
 	async function readEvents(channelId: number) {
 		const eventRes = await readEventListForChannel(channelId);
 		if (eventRes.status === 200) {
 			events.set(await eventRes.json());
-			console.log("events", $events);
 		} else {
 			events.set([]);
 		}
 	}
 
-	$: if ($channel) {
-		readEvents($channel.id);
-	}
-
-	function connectToWs(id: number) {
+	function connectToWs() {
 		socket = new WebSocket("ws://localhost:3000/ws/events");
 
-		socket.addEventListener("open", () => {
-			socket.send(`${id}:${lastEventId}`);
-		});
 		socket.addEventListener("message", (event) => {
 			const data = JSON.parse(event.data);
 			// check if data is a number
@@ -40,25 +33,20 @@
 		});
 	}
 
-	onMount(() => {
-		if (!$channel) {
-			return;
-		}
-	});
-
 	$: if ($channel) {
-		connectToWs($channel.id);
+		readEvents($channel.id);
 	}
-	// this does not work right now
-	$: lastEventId = $events.length > 0 ? $events[0].id : 0;
 
-	$: lastEventId,
-		() => {
-			console.log("lastEventId", lastEventId);
-			if ($channel) {
-				socket.send(`${$channel.id}:${lastEventId}`);
-			}
-		};
+	$: if ($events) {
+		lastEventId = $events[0]?.id || -1;
+		if ($channel && socket?.readyState === WebSocket.OPEN) {
+			socket.send(`${$channel.id}:${lastEventId}`);
+		}
+	}
+
+	onMount(() => {
+		connectToWs();
+	});
 </script>
 
 <div class="flex flex-row items-center justify-between border-b border-b-base-content/10 p-4">
