@@ -109,7 +109,9 @@ pub async fn read_events(
     GROUP BY
         e.id, c.title, a.name,p.id
     ORDER BY 
-        e.ts DESC"#,
+        e.ts DESC,
+        e.id DESC
+    "#,
     )
     .bind(session.account_id)
     .fetch_all(pool)
@@ -202,7 +204,8 @@ pub async fn read_events_from_channel(
         AND c.id = $2
     GROUP BY e.id, c.title, a.name, p.id
     ORDER BY 
-            e.ts DESC
+            e.ts DESC,
+            e.id DESC
     "#,
     )
     .bind(session.account_id)

@@ -14,7 +14,12 @@
 	async function readEvents(channelId: number) {
 		const eventRes = await readEventListForChannel(channelId);
 		if (eventRes.status === 200) {
-			events.set(await eventRes.json());
+			try {
+				const data = await eventRes.json();
+				events.set(data);
+			} catch (error) {
+				console.error(error);
+			}
 		} else {
 			events.set([]);
 		}
