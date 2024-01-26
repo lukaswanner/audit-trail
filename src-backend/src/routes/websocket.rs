@@ -109,6 +109,7 @@ async fn read(
     event_arc: Arc<Mutex<i32>>,
 ) {
     while let Some(message) = receiver.next().await {
+        println!("Message: {:?}", message);
         let message = match message {
             Ok(message) => message,
             Err(_) => return,

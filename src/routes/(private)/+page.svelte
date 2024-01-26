@@ -4,7 +4,7 @@
 	import { channel } from "$lib/stores/channel";
 	import { events } from "$lib/stores/event";
 	import { project } from "$lib/stores/project";
-	import { onMount } from "svelte";
+	import { onDestroy, onMount } from "svelte";
 	import { fade } from "svelte/transition";
 
 	let socket: WebSocket;
@@ -52,6 +52,10 @@
 
 	onMount(() => {
 		connectToWs();
+	});
+
+	onDestroy(() => {
+		socket.close();
 	});
 </script>
 

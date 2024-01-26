@@ -85,6 +85,26 @@
 		</svg>
 		<p>api</p>
 	</a>
+	<a
+		href="/settings/notification"
+		data-active={$page.url.pathname.includes("/settings/notification")}
+		class="btn btn-ghost flex w-full flex-row items-center justify-start gap-2 text-base-content transition-colors data-[active=true]:bg-base-content/20 data-[active=true]:text-accent"
+	>
+		<svg
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="currentColor"
+			stroke-width="2"
+			stroke-linecap="round"
+			stroke-linejoin="round"
+			class="h-4 w-4"
+		>
+			<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+			<path d="M13.73 21a2 2 0 0 1-3.46 0" />
+		</svg>
+
+		<p>notification</p>
+	</a>
 
 	<h2 class="text-lg brightness-150">profile settings</h2>
 	<a
