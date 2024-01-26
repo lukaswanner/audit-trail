@@ -138,3 +138,21 @@ async fn main() {
     let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
     axum::serve(listener, app).await.unwrap();
 }
+
+/* channel,
+telefonnummer,
+time window, day window
+
+8 - 18 uhr, mo - fr
+
+notify flag,
+
+table notification_user
+channel_id
+mobile_number
+weekdays: 7 bit
+start_time
+end_time
+
+table notification_queue <--- kafka queue?
+event_id, notification_user */
