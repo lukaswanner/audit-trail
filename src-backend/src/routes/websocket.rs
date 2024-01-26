@@ -114,7 +114,6 @@ async fn read(
             Err(_) => return,
         };
 
-        println!("raw message: {:?}", message);
         match message {
             Message::Text(text) => {
                 let channel_message = match text.parse::<ChannelMessage>() {
@@ -122,7 +121,6 @@ async fn read(
                     Err(_) => return,
                 };
 
-                println!("Channel message: {:?}", channel_message);
                 let mut current_id = channel_arc.lock().await;
                 if *current_id != channel_message.channel_id {
                     *current_id = channel_message.channel_id;

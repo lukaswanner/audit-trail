@@ -1,8 +1,15 @@
-use axum::{extract::State, http::StatusCode, Extension, Json};
+use axum::{
+    body::Body,
+    extract::State,
+    http::{Response, StatusCode},
+    Extension, Json,
+};
 use serde::Serialize;
 use sqlx::prelude::FromRow;
 
 use crate::{session_state::UserSession, AppState};
+
+use super::authorize::remove_token;
 
 #[derive(FromRow, Serialize)]
 pub struct User {
@@ -36,7 +43,7 @@ pub async fn read_user(
 pub async fn delete_user(
     State(state): State<AppState>,
     Extension(session): Extension<UserSession>,
-) -> StatusCode {
+) -> Response<Body> {
     let query = r#"
         DELETE FROM 
             account a
@@ -50,7 +57,10 @@ pub async fn delete_user(
         .await;
 
     match result {
-        Ok(_) => StatusCode::NO_CONTENT,
-        Err(_) => StatusCode::INTERNAL_SERVER_ERROR,
+        Ok(_) => remove_token(),
+        Err(_) => Response::builder()
+            .status(StatusCode::INTERNAL_SERVER_ERROR)
+            .body(Body::empty())
+            .unwrap(),
     }
 }

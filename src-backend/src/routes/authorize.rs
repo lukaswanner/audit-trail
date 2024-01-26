@@ -139,7 +139,7 @@ fn generate_token(account: Option<Account>, credentials: &Credentials) -> Respon
         })
 }
 
-fn remove_token() -> Response<Body> {
+pub fn remove_token() -> Response<Body> {
     let expire_time = chrono::Utc::now().to_rfc3339();
     let cookie_str = format!("__audit=; Expires={};Path=/;Secure=true", expire_time);
     let cookie = Cookie::parse(cookie_str).unwrap();

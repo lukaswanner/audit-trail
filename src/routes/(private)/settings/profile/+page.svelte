@@ -14,7 +14,7 @@
 
 	async function deleteUserAndRedirect() {
 		const res = await deleteUser();
-		if (res.status === 204) {
+		if (res.status === 200) {
 			goto("/login");
 		} else {
 			error = "something went wrong";
@@ -156,7 +156,7 @@
 <dialog bind:this={modalRef} class="modal modal-bottom sm:modal-middle">
 	<form class="modal-box" on:submit|preventDefault={deleteUserAndRedirect}>
 		<h3 class="text-lg font-bold">Delete account</h3>
-		<p class="py-2">Are you sure you want to delete this channel?</p>
+		<p class="py-2">Are you sure you want to delete this account?</p>
 		<p class="pb-4">
 			To confirm, please type <span class="text-error">{user?.email} </span> in the field below.
 		</p>
