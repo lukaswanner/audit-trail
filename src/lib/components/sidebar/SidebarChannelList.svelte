@@ -92,7 +92,7 @@
 			<p class="text-error">{error}</p>
 		{/if}
 		<div class="modal-action justify-start">
-			<button disabled={channelTitle.length === 0} class="btn btn-success" type="submit"
+			<button disabled={channelTitle.length === 0} class="btn btn-primary" type="submit"
 				>Create</button
 			>
 			<form method="dialog">

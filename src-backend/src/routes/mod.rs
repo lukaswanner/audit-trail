@@ -7,3 +7,4 @@ pub mod insight;
 pub mod project;
 pub mod websocket;
 pub mod user;
+pub mod notification;

@@ -16,7 +16,9 @@ use axum::{
 
 use middlewares::auth;
 use rand::rngs::OsRng;
-use routes::{actor, api_token, authorize, channel, event, insight, project, user, websocket};
+use routes::{
+    actor, api_token, authorize, channel, event, insight, notification, project, user, websocket,
+};
 
 use sqlx::PgPool;
 use tower_http::cors::CorsLayer;
@@ -78,11 +80,24 @@ async fn main() {
         .route("/projects", get(project::read_projects))
         .route("/api-tokens", get(api_token::read_api_tokens))
         .route("/search", get(event::read_events_from_tag))
+        .route(
+            "/notification/:id",
+            get(notification::read_notification_user),
+        )
+        .route("/notifications", get(notification::read_notification_users))
+        .route(
+            "/notifications/:channel_id",
+            get(notification::read_notification_users_for_channel),
+        )
         // post
         .route("/actor", post(actor::create_actor))
         .route("/api-token", post(api_token::create_api_token))
         .route("/channel", post(channel::create_channel))
         .route("/project", post(project::create_project))
+        .route(
+            "/notification",
+            post(notification::create_new_notification_user),
+        )
         // patch
         .route("/project", patch(project::update_project))
         .route("/actor", patch(actor::update_actor))

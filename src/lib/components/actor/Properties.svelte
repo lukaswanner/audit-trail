@@ -28,7 +28,7 @@
 	{/if}
 	{#each properties.keys() as mapKey}
 		<div
-			class="flex max-w-md flex-row items-center justify-between rounded-lg border border-base-content/20 bg-base-100 outline-base-content/20"
+			class="flex min-w-full max-w-md flex-row items-center justify-between rounded-lg border border-base-content/20 bg-base-100 outline-base-content/20"
 		>
 			<div class="flex flex-row gap-2 px-4">
 				<p>{mapKey}:</p>
@@ -64,11 +64,11 @@
 <div class="w-full">
 	{#if step === "key"}
 		<div
-			class="input-wrapper flex max-w-md flex-row rounded-lg border border-base-content/20 bg-base-100 outline-base-content/20"
+			class="input-wrapper flex min-w-full max-w-md flex-row rounded-lg border border-base-content/20 bg-base-100 outline-base-content/20"
 		>
 			<input
 				type="text"
-				placeholder="actor properties"
+				placeholder="Actor properties"
 				class="input w-full rounded-br-none rounded-tr-none focus-within:border-none focus:border-none focus:outline-none focus:focus-within:outline-none"
 				bind:value={key}
 			/>
@@ -94,7 +94,7 @@
 		</div>
 	{:else}
 		<div
-			class="input-wrapper flex max-w-md flex-row rounded-lg border border-base-content/20 bg-base-100 outline-base-content/20"
+			class="input-wrapper flex min-w-full max-w-md flex-row rounded-lg border border-base-content/20 bg-base-100 outline-base-content/20"
 		>
 			<div class="flex flex-row items-center pl-4 pr-2">
 				<p class="whitespace-nowrap text-accent">{key}:</p>
