@@ -130,9 +130,7 @@
 			<h4 class="text-lg">Properties</h4>
 		</div>
 
-		<div class="flex flex-col gap-4">
-			<Properties {properties} {add} {remove} />
-		</div>
+		<Properties {properties} {add} {remove} />
 
 		<div class="modal-action justify-start">
 			<button disabled={actorName.length === 0} class="btn btn-primary" type="submit"
