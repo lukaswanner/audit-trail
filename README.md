@@ -27,6 +27,7 @@
 21. - [x] finish up single channel page in settings
 22. - [x] clean up actor page
     -   - [ ] fix hover for mobile view 
-23. - [ ] notification
+23. - [x] notification
     -   - [ ] create notification frontend
-    -   - [ ] create notification backend
+    -   - [x] create notification backend
+    -   - [ ] handle notifications via event driven design
