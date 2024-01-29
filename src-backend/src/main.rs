@@ -1,7 +1,10 @@
 mod database;
 mod middlewares;
+mod notification_handler;
 mod routes;
 mod session_state;
+
+use std::sync::Arc;
 
 use argon2::password_hash::SaltString;
 use axum::{
@@ -13,7 +16,9 @@ use axum::{
     routing::{delete, get, patch, post},
     Router,
 };
+use dotenv::dotenv;
 
+use futures::lock::Mutex;
 use middlewares::auth;
 use rand::rngs::OsRng;
 use routes::{
@@ -27,16 +32,22 @@ use tower_http::cors::CorsLayer;
 pub struct AppState {
     pub pool: PgPool,
     pub salt: SaltString,
+    pub sms: Arc<Mutex<notification_handler::sms::Sms>>,
 }
 
 #[tokio::main]
 async fn main() {
+    // load env variables first
+    dotenv().ok();
+
     let db = database::db::Database::new_localhost();
+    let sms = notification_handler::sms::Sms::new();
     let salt = SaltString::generate(&mut OsRng);
 
     let shared_state = AppState {
         pool: db.pool,
         salt,
+        sms: Arc::new(Mutex::new(sms)),
     };
 
     // we have 2 routes, one for our website, one for our api

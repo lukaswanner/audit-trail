@@ -27,6 +27,48 @@ pub struct Event {
     tags: Value,
 }
 
+#[derive(Deserialize, Debug)]
+pub struct TagSearch {
+    key: String,
+    value: String,
+}
+
+#[derive(Deserialize)]
+pub struct CreateTag {
+    key: String,
+    value: String,
+}
+
+#[derive(Deserialize)]
+pub struct CreateEvent {
+    icon: String,
+    title: String,
+    #[serde(rename = "channelId")]
+    pub channel_id: i32,
+    #[serde(rename = "actorId")]
+    pub actor_id: i32,
+    tags: Vec<CreateTag>,
+    notify: Option<bool>,
+}
+
+#[derive(FromRow, Serialize, Deserialize)]
+pub struct CreateEventResponse {
+    id: i32,
+}
+
+#[derive(FromRow, Serialize, Deserialize)]
+pub struct TagResponse {
+    id: i32,
+}
+
+#[derive(FromRow, Serialize, Deserialize)]
+pub struct Notification {
+    user_name: String,
+    phone_number: String,
+    channel_title: String,
+    actor_name: String,
+}
+
 pub async fn read_event(
     State(state): State<AppState>,
     Path(id): Path<i32>,
@@ -119,12 +161,6 @@ pub async fn read_events(
     .unwrap();
 
     Json(result)
-}
-
-#[derive(Deserialize, Debug)]
-pub struct TagSearch {
-    key: String,
-    value: String,
 }
 
 pub async fn read_events_from_tag(
@@ -262,33 +298,6 @@ pub async fn read_events_from_actor(
     Json(result)
 }
 
-#[derive(Deserialize)]
-pub struct CreateTag {
-    key: String,
-    value: String,
-}
-
-#[derive(Deserialize)]
-pub struct CreateEvent {
-    icon: String,
-    title: String,
-    #[serde(rename = "channelId")]
-    pub channel_id: i32,
-    #[serde(rename = "actorId")]
-    pub actor_id: i32,
-    tags: Vec<CreateTag>,
-}
-
-#[derive(FromRow, Serialize, Deserialize)]
-pub struct CreateEventResponse {
-    id: i32,
-}
-
-#[derive(FromRow, Serialize, Deserialize)]
-pub struct TagResponse {
-    id: i32,
-}
-
 async fn payload_is_valid(session: &ApiSession, payload: &CreateEvent, state: &AppState) -> bool {
     let query = r#"
     SELECT 
@@ -343,7 +352,7 @@ pub async fn create_event(
 
     let event_res = sqlx::query_as::<_, CreateEventResponse>(event_query)
         .bind(payload.icon)
-        .bind(payload.title)
+        .bind(&payload.title)
         .bind(payload.channel_id)
         .bind(payload.actor_id)
         .bind(session.account_id)
@@ -392,6 +401,44 @@ pub async fn create_event(
             .execute(pool)
             .await
             .unwrap();
+    }
+
+    if let Some(true) = payload.notify {
+        let query = r#"
+        SELECT 
+            n.name as user_name,
+            n.phone_number,
+            ch.title as channel_title,
+            a.name as actor_name
+        FROM
+            notification_user n
+        JOIN channel ch on n.channel_id = ch.id
+        JOIN actor a on ch.project_id = a.project_id
+        WHERE
+            n.channel_id = $1
+        "#;
+
+        let notifications = sqlx::query_as::<_, Notification>(query)
+            .bind(payload.channel_id)
+            .fetch_all(pool)
+            .await
+            .unwrap();
+
+        for notification in notifications {
+            let mut sms = state.sms.lock().await;
+            sms.set_params(
+                notification.phone_number,
+                format!(
+                    "Hey {}\nNew event in channel {} from actor {}\nEvent title: {}",
+                    notification.user_name,
+                    notification.channel_title,
+                    notification.actor_name,
+                    payload.title
+                ),
+            )
+            .send()
+            .await;
+        }
     }
 
     StatusCode::CREATED

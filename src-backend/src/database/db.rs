@@ -50,8 +50,4 @@ impl Database {
         let pool = settings.create_pool();
         Database { pool }
     }
-
-    pub fn _generate_api_token(&self) -> String {
-        String::from("token")
-    }
 }
