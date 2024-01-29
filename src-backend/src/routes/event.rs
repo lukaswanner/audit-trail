@@ -277,7 +277,6 @@ pub struct CreateEvent {
     #[serde(rename = "actorId")]
     pub actor_id: i32,
     tags: Vec<CreateTag>,
-    notify: bool,
 }
 
 #[derive(FromRow, Serialize, Deserialize)]
@@ -290,12 +289,39 @@ pub struct TagResponse {
     id: i32,
 }
 
+async fn payload_is_valid(session: &ApiSession, payload: &CreateEvent, state: &AppState) -> bool {
+    let query = r#"
+    SELECT 
+        a.id as actor_id,
+        ch.id as channel_id 
+    FROM 
+        project p 
+    JOIN channel ch on p.id = ch.project_id 
+    JOIN actor a on p.id = a.project_id 
+    WHERE 
+        p.id = $1 and a.id = $2 and ch.id = $3
+    "#;
+
+    let valid = sqlx::query(query)
+        .bind(session.project_id)
+        .bind(payload.actor_id)
+        .bind(payload.channel_id)
+        .fetch_optional(&state.pool)
+        .await;
+
+    matches!(valid, Ok(Some(_)))
+}
+
 pub async fn create_event(
     State(state): State<AppState>,
     Extension(session): Extension<ApiSession>,
     Json(payload): Json<CreateEvent>,
 ) -> StatusCode {
     let pool = &state.pool;
+
+    if !payload_is_valid(&session, &payload, &state).await {
+        return StatusCode::UNAUTHORIZED;
+    }
 
     let event_query = r#"
     INSERT 
@@ -310,9 +336,8 @@ pub async fn create_event(
             1 
         FROM 
             project p 
-        JOIN channel ch on p.id = ch.project_id
         WHERE 
-            ch.id = $3 and p.account_id = $5 and p.id = $6)
+            p.account_id = $5 and p.id = $6)
         returning id
     "#;
 
@@ -367,10 +392,6 @@ pub async fn create_event(
             .execute(pool)
             .await
             .unwrap();
-    }
-
-    if payload.notify {
-        println!("notify!"); 
     }
 
     StatusCode::CREATED
