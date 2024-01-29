@@ -88,3 +88,38 @@ pub async fn delete_api_token(
 
     StatusCode::NO_CONTENT.into_response()
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_token_length() {
+        let token = ApiToken::generate_new(32);
+        assert_eq!(token.0.len(), 32);
+    }
+
+    #[test]
+    fn test_token_uniqueness() {
+        let token1 = ApiToken::generate_new(32);
+        let token2 = ApiToken::generate_new(32);
+        assert_ne!(token1.0, token2.0);
+    }
+
+    #[test]
+    fn test_token_alphanumeric() {
+        let token = ApiToken::generate_new(32);
+        assert!(token.0.chars().all(|c| c.is_ascii_alphanumeric()));
+    }
+
+    #[test]
+    fn test_token_randomness() {
+        let length = 10;
+        let mut tokens = std::collections::HashSet::new();
+        for _ in 0..10 {
+            let token = ApiToken::generate_new(length);
+            tokens.insert(token.0);
+        }
+        assert_eq!(tokens.len(), 10); // Expecting 10 unique tokens
+    }
+}

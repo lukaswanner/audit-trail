@@ -37,10 +37,25 @@ impl FromStr for ChannelMessage {
         let raw_message = s.split_once(":");
 
         match raw_message {
-            Some((channel_id, event_id)) => Ok(ChannelMessage {
-                channel_id: channel_id.parse().unwrap(),
-                event_id: event_id.parse().unwrap(),
-            }),
+            Some((channel_id, event_id)) => {
+                let channel_id = channel_id.parse::<i32>();
+                let event_id = event_id.parse::<i32>();
+                if channel_id.is_err() || event_id.is_err() {
+                    return Err(());
+                }
+
+                let channel_id = channel_id.unwrap();
+                let event_id = event_id.unwrap();
+
+                if channel_id <= 0 || event_id <= 0 {
+                    return Err(());
+                }
+
+                Ok(ChannelMessage {
+                    channel_id,
+                    event_id,
+                })
+            }
             None => Err(()),
         }
     }
@@ -158,5 +173,55 @@ async fn handle_socket(socket: WebSocket, session: UserSession, state: AppState)
     tokio::select! {
         _ = &mut write_task => read_task.abort(),
         _ = &mut read_task => write_task.abort(),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_valid_channel_message() {
+        let input = "123:456";
+        let channel_message = ChannelMessage::from_str(input);
+        assert!(channel_message.is_ok());
+        let msg = channel_message.unwrap();
+        assert_eq!(msg.channel_id, 123);
+        assert_eq!(msg.event_id, 456);
+    }
+
+    #[test]
+    fn test_invalid_channel_message() {
+        let input = "abc:def";
+        let channel_message = ChannelMessage::from_str(input);
+        assert!(channel_message.is_err());
+    }
+
+    #[test]
+    fn test_incomplete_channel_message() {
+        let input = "123:";
+        let channel_message = ChannelMessage::from_str(input);
+        assert!(channel_message.is_err());
+    }
+
+    #[test]
+    fn test_extra_colon_channel_message() {
+        let input = "123:456:789";
+        let channel_message = ChannelMessage::from_str(input);
+        assert!(channel_message.is_err());
+    }
+
+    #[test]
+    fn test_negative_channel_message() {
+        let input = "-123:-456";
+        let channel_message = ChannelMessage::from_str(input);
+        assert!(channel_message.is_err());
+    }
+
+    #[test]
+    fn test_empty_channel_message() {
+        let input = "";
+        let channel_message = ChannelMessage::from_str(input);
+        assert!(channel_message.is_err());
     }
 }
