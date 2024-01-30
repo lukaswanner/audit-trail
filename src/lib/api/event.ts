@@ -1,5 +1,3 @@
-import type { EventPayload } from "$lib/types/event/EventTypes";
-
 const eventBase = "http://localhost:3000/app";
 
 // crud for api naming convention
@@ -7,18 +5,6 @@ const eventBase = "http://localhost:3000/app";
 // r - read
 // u - update
 // d - delete
-
-export async function createEvent(eventId: EventPayload): Promise<Response> {
-	const res = await fetch(`${eventBase}/event/`, {
-		method: "POST",
-		credentials: "include",
-		headers: {
-			"Content-Type": "application/json"
-		},
-		body: JSON.stringify({ eventId })
-	});
-	return res;
-}
 
 export async function readEventList(): Promise<Response> {
 	const res = await fetch(`${eventBase}/events`, {

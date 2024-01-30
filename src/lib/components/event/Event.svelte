@@ -16,9 +16,14 @@
 		</div>
 		<div class="flex flex-col justify-center">
 			<div class="text-2xl font-bold">{event.title}</div>
-			<p class="text-base-content">
-				{event.actorName} | <span>{formatRelative(new Date(event.ts), new Date())}</span>
-			</p>
+			<div class="mb-2 text-lg">{event.description}</div>
+			<div class="flex flex-row items-center gap-2">
+				<p class="text-sm">
+					{event.actorName}
+				</p>
+				<div class="h-1 w-1 rounded-full bg-accent" />
+				<p>{formatRelative(new Date(event.ts), new Date())}</p>
+			</div>
 		</div>
 		{#if enableTags}
 			<Tags tags={event.tags} />

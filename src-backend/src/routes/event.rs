@@ -17,6 +17,7 @@ pub struct Event {
     id: i32,
     icon: String,
     title: String,
+    description: String,
     #[serde(rename = "channelTitle")]
     channel_title: String,
     #[serde(rename = "actorName")]
@@ -43,6 +44,7 @@ pub struct CreateTag {
 pub struct CreateEvent {
     icon: String,
     title: String,
+    description: String,
     #[serde(rename = "channelId")]
     pub channel_id: i32,
     #[serde(rename = "actorId")]
@@ -81,6 +83,7 @@ pub async fn read_event(
         e.id,
         e.icon,
         e.title,
+        e.description,
         c.title as channel_title,
         a.name as actor_name,
         p.id as project_id,
@@ -126,6 +129,7 @@ pub async fn read_events(
         e.id,
         e.icon,
         e.title,
+        e.description,
         c.title as channel_title,
         a.name as actor_name,
         p.id as project_id,
@@ -175,6 +179,7 @@ pub async fn read_events_from_tag(
         e.id,
         e.icon,
         e.title,
+        e.description,
         c.title AS channel_title,
         a.name AS actor_name,
         p.id as project_id,
@@ -216,6 +221,7 @@ pub async fn read_events_from_channel(
         e.id,
         e.icon,
         e.title,
+        e.description,
         c.title AS channel_title,
         a.name AS actor_name,
         p.id as project_id,
@@ -265,6 +271,7 @@ pub async fn read_events_from_actor(
         e.id,
         e.icon,
         e.title,
+        e.description,
         c.title AS channel_title,
         a.name AS actor_name,
         p.id as project_id,
@@ -334,25 +341,27 @@ pub async fn create_event(
 
     let event_query = r#"
     INSERT 
-        INTO event (icon, title, channel_id, actor_id)
+        INTO event (icon, title, description, channel_id, actor_id)
     SELECT 
         $1 AS title,
-        $2 AS icon, 
-        $3 as channel_id,
-        $4 as actor_id
+        $2 AS title,
+        $3 AS icon, 
+        $4 as channel_id,
+        $5 as actor_id
     WHERE EXISTS
         (SELECT 
             1 
         FROM 
             project p 
         WHERE 
-            p.account_id = $5 and p.id = $6)
+            p.account_id = $6 and p.id = $7)
         returning id
     "#;
 
     let event_res = sqlx::query_as::<_, CreateEventResponse>(event_query)
         .bind(payload.icon)
         .bind(&payload.title)
+        .bind(&payload.description)
         .bind(payload.channel_id)
         .bind(payload.actor_id)
         .bind(session.account_id)
@@ -429,11 +438,12 @@ pub async fn create_event(
             sms.set_params(
                 notification.phone_number,
                 format!(
-                    "Hey {}\nNew event in channel {} from actor {}\nEvent title: {}",
+                    "Hey {}\nNew event in channel {} from actor {}\nEvent title: {}\nDetails: {}",
                     notification.user_name,
                     notification.channel_title,
                     notification.actor_name,
-                    payload.title
+                    payload.title,
+                    payload.description
                 ),
             )
             .send()
