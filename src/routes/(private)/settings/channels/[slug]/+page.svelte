@@ -6,7 +6,8 @@
 	import { project } from "$lib/stores/project";
 
 	let error: string;
-	let channelName = decodeURIComponent($page.url.pathname.split("/")[3]);
+	let channelId = decodeURIComponent($page.url.pathname.split("/")[3]);
+	let channelName = $channels.find((channel) => channel.id === Number(channelId))?.title;
 
 	let inputName = "";
 

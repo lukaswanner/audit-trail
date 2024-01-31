@@ -1,4 +1,5 @@
-import type { NotificationPayload, UpdateActorPayload } from "$lib/types/notification/NotificationTypes";
+import type { NotificationPayload, UpdateNotificationPayload } from "$lib/types/notification/notificationTypes";
+
 const notificationBase = "http://localhost:3000/app";
 
 // crud for api naming convention
@@ -41,7 +42,7 @@ export async function readNotificationList(): Promise<Response> {
 	});
 }
 
-export async function updateNotification(id: number, payload: UpdateActorPayload): Promise<Response> {
+export async function updateNotification(id: number, payload: UpdateNotificationPayload): Promise<Response> {
 	return await fetch(`${notificationBase}/notification/${id}`, {
 		method: "PUT",
 		credentials: "include",

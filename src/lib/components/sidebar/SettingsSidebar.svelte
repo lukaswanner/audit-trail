@@ -86,8 +86,8 @@
 		<p>api</p>
 	</a>
 	<a
-		href="/settings/notification"
-		data-active={$page.url.pathname.includes("/settings/notification")}
+		href="/settings/notifications"
+		data-active={$page.url.pathname.includes("/settings/notifications")}
 		class="btn btn-ghost flex w-full flex-row items-center justify-start gap-2 text-base-content transition-colors data-[active=true]:bg-base-content/20 data-[active=true]:text-accent"
 	>
 		<svg

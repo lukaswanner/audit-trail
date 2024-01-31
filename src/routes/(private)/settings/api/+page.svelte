@@ -87,16 +87,18 @@
 		</div>
 	</div>
 
-	{#each $apikeys as apikey, index}
-		<div
-			data-last={index === $apikeys.length - 1}
-			class="flex w-full flex-col items-start justify-center gap-4 border-l-2 border-r-2 border-t-2 border-neutral bg-base-300 p-4 data-[last=true]:rounded-bl-md data-[last=true]:rounded-br-md data-[last=true]:border-b-2"
-		>
-			<Apikey {apikey} />
-		</div>
-	{/each}
+	<div class="w-full">
+		{#each $apikeys as apikey, index}
+			<div
+				data-last={index === $apikeys.length - 1}
+				data-first={index === 0}
+				class="flex w-full flex-col items-start justify-center gap-4 border-l-2 border-r-2 border-t-2 border-neutral bg-base-300 p-4 data-[first=true]:rounded-tl-md data-[first=true]:rounded-tr-md data-[last=true]:rounded-bl-md data-[last=true]:rounded-br-md data-[last=true]:border-b-2"
+			>
+				<Apikey {apikey} />
+			</div>
+		{/each}
+	</div>
 	<button on:click={createNewApikey} class="btn btn-primary"> + create key</button>
-
 	{#if loading}
 		<Loading />
 	{/if}

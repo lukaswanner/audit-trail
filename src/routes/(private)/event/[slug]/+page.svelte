@@ -4,7 +4,6 @@
 	import { onMount } from "svelte";
 	import type { Event as EventType } from "$lib/types/event/EventTypes";
 	import type { PageData } from "./$types";
-	import { formatRelative } from "date-fns";
 	import Tag from "$lib/components/event/Tag.svelte";
 	import Event from "$lib/components/event/Event.svelte";
 
