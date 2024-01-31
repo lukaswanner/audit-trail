@@ -6,6 +6,7 @@
 	import type { PageData } from "./$types";
 	import { formatRelative } from "date-fns";
 	import Tag from "$lib/components/event/Tag.svelte";
+	import Event from "$lib/components/event/Event.svelte";
 
 	let loading = true;
 	let error: boolean;
@@ -62,20 +63,15 @@
 	</p>
 {:else}
 	<div class="p-4">
-		<div class="grid grid-cols-[auto,1fr,auto] gap-4 rounded-md border border-neutral p-4">
-			<div
-				class="flex aspect-square flex-col items-center justify-center rounded-3xl bg-primary/10 p-2"
-			>
-				<div class="text-4xl">{event.icon}</div>
-			</div>
-			<div class="flex flex-col justify-center">
-				<div class="text-2xl font-bold">{event.title}</div>
-				<p class="text-base-content">
-					{event.actorName} |
-					<span>{formatRelative(new Date(event.ts), new Date())}</span>
-				</p>
-			</div>
-		</div>
+		<Event {event} enableTags={false} />
+	</div>
+	<div class="divider my-0" />
+	<div class="p-4">
+		<h2 class="text-2xl font-bold">Used tags</h2>
+		<p>
+			These tags were used in this event. Click on them to search for other events with the
+			same tag.
+		</p>
 	</div>
 	<div class="flex flex-row flex-wrap items-center gap-4 p-4">
 		{#each event.tags as tag}
