@@ -4,66 +4,43 @@
 
 	export let event: Event;
 	export let last: boolean;
+	export let tabIndex: number;
 </script>
 
-<div
-	id="wrapper"
-	class:mb-4={last}
-	class="grid h-20 grid-cols-[5%_75%_20%] gap-4 transition-all hover:h-36"
->
-	<div class:column={!last} class="relative flex flex-col justify-self-center">
-		<div class="flex h-10 w-10 items-center justify-center rounded-full bg-primary/20">
-			<p class="text-xl">
-				{event.icon}
-			</p>
+<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+<div tabindex={tabIndex} class="collapse mb-4 border border-neutral p-4">
+	<div class="collapse-title flex flex-row flex-wrap gap-4">
+		<div class:column={!last} class="relative flex flex-col justify-self-center">
+			<div class="flex h-16 w-16 items-center justify-center rounded-full bg-primary/20">
+				<p class="text-4xl">
+					{event.icon}
+				</p>
+			</div>
 		</div>
-	</div>
-	<div class="flex w-full flex-col justify-self-start">
-		<div class="h-14">
-			<p class="text-xl brightness-150">
-				{new Date(event.ts).toLocaleDateString()}
-				{new Date(event.ts).toLocaleTimeString()}
-			</p>
-
-			<p class="text-xl brightness-150">
-				{event.title}
-			</p>
+		<div class="flex flex-col justify-self-start">
+			<div>
+				<p class="text-xl brightness-150">
+					#{event.channelTitle}: {event.title}
+				</p>
+				<p class="text-sm">
+					{new Date(event.ts).toLocaleDateString()}
+					{new Date(event.ts).toLocaleTimeString()}
+				</p>
+			</div>
 		</div>
-		<div class="actions mt-4 hidden transition-all">
+		<div class="flex flex-row items-center justify-center sm:ml-auto">
 			<Tags tags={event.tags} />
 		</div>
 	</div>
-	<div class="flex flex-col justify-self-end pr-8">
-		<div class="h-14">
-			<p class="text-xl">
-				#{event.channelTitle}
-			</p>
-		</div>
-		<div class="actions mt-4 hidden transition-all">
-			<a href={`/event/${event.id}`} class="btn btn-outline btn-secondary h-8 min-h-[2rem]">
-				go to event
-			</a>
-		</div>
+	<div class="collapse-content flex flex-col gap-4">
+		<p>
+			{event.description}
+		</p>
+		<a
+			href={`/event/${event.id}`}
+			class="btn btn-outline btn-secondary h-8 min-h-[2rem] max-w-fit"
+		>
+			go to event
+		</a>
 	</div>
 </div>
-
-<style>
-	.column::after {
-		content: "";
-		position: absolute;
-		top: 2.5rem;
-		bottom: 4px;
-		left: calc(50% - 1px);
-		display: block;
-		width: 2px;
-		background-color: theme("colors.secondary");
-	}
-
-	#wrapper:hover .actions {
-		display: flex;
-		flex-direction: row;
-		width: 100%;
-		justify-content: space-between;
-		gap: 1rem;
-	}
-</style>

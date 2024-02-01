@@ -35,7 +35,7 @@
 
 {#if events && events.length > 0}
 	{#each events.slice(0, 10 * pageIndex) as event, index}
-		<ActivityEvent {event} last={index + 1 === 10 * pageIndex}/>
+		<ActivityEvent {event} tabIndex={index} last={index + 1 === 10 * pageIndex} />
 	{/each}
 {:else}
 	<p>

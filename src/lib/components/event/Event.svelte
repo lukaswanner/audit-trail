@@ -8,11 +8,11 @@
 </script>
 
 <a href="/event/{event.id}" class="block w-full max-w-5xl cursor-pointer">
-	<div class="grid grid-cols-[auto,1fr,auto] gap-4 rounded-md border border-neutral p-4">
+	<div class="grid grid-cols-[auto,1fr,auto] gap-4 rounded-box border border-neutral p-4">
 		<div
-			class="flex aspect-square flex-col items-center justify-center rounded-3xl bg-primary/20 p-2"
+			class="flex h-16 w-16 items-center justify-center self-center rounded-full bg-primary/20"
 		>
-			<div class="text-4xl">{event.icon}</div>
+			<p class="text-4xl">{event.icon}</p>
 		</div>
 		<div class="flex flex-col justify-center">
 			<div class="text-2xl font-bold">{event.title}</div>

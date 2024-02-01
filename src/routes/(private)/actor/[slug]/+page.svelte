@@ -62,7 +62,6 @@
 		</p>
 	</div>
 {/if}
-
 <div class="h-full overflow-auto">
 	{#if $actor}
 		<div class="m-4">

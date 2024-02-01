@@ -8,14 +8,14 @@
 			<div
 				class="flex h-8 items-center justify-center rounded-md border border-primary bg-primary/50 px-2"
 			>
-				<p>No tags</p>
+				<p class="whitespace-nowrap">No tags</p>
 			</div>
 		{/if}
 		{#if tags.length > 0}
 			<div
 				class="flex h-8 items-center justify-center rounded-md border border-primary bg-primary/50 px-2"
 			>
-				<p>
+				<p class="whitespace-nowrap">
 					{Object.keys(tags[0])[0]}:
 					<span class="brightness-150">
 						{Object.values(tags[0])[0]}
