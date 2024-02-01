@@ -11,8 +11,14 @@ export type NotificationPayload = {
 	channelId: number;
 };
 
-export type UpdateNotificationPayload = {
+export type CreateNotificationPayload = {
 	name: string;
-	phoneNumber: string;
+  phoneNumber: string;
+	channelId: number;
+};
+
+export type UpdateNotificationPayload = {
+  id: number;
+	name: string;
 	channelId: number;
 };

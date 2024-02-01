@@ -38,12 +38,12 @@
 			return;
 		}
 		const payload: UpdateNotificationPayload = {
+			id: notification.id,
 			name: inputName,
-			phoneNumber: notification.phoneNumber,
 			channelId: notification.channelId
 		};
 
-		const res = await updateNotification(parseInt(id), payload);
+		const res = await updateNotification(payload);
 		if (res.status === 200) {
 			goto("/settings/notifications");
 		}
@@ -58,7 +58,7 @@
 	<Loading />
 {:else}
 	<div class="flex flex-row items-center gap-4 border-b border-b-base-content/10 p-4">
-		<a href="/settings/channels">
+		<a href="/settings/notifications">
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
 				class="h-4 w-4 text-3xl font-bold brightness-150"
@@ -113,7 +113,7 @@
 				type="text"
 				name="name"
 				class="input input-bordered w-full max-w-md"
-				placeholder="channel title"
+				placeholder="username"
 				bind:value={inputName}
 			/>
 			{#if error}

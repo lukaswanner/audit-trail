@@ -7,7 +7,7 @@
 	import { project } from "$lib/stores/project";
 	import type {
 		Notification,
-		UpdateNotificationPayload
+		CreateNotificationPayload
 	} from "$lib/types/notification/notificationTypes";
 	import { onMount } from "svelte";
 
@@ -41,7 +41,7 @@
 			return;
 		}
 
-		const payload: UpdateNotificationPayload = {
+		const payload: CreateNotificationPayload = {
 			channelId: parseInt(id as string),
 			name,
 			phoneNumber
@@ -100,7 +100,7 @@
 						stroke-width="2"
 						stroke-linecap="round"
 						stroke-linejoin="round"
-						class="h-4 w-4"
+						class="h-4 w-4 text-primary"
 					>
 						<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
 						<path d="M13.73 21a2 2 0 0 1-3.46 0" />
@@ -113,7 +113,7 @@
 			>
 				<p>notifications help you stay on top of your project</p>
 				<p>you can create notifications for any channel in your project</p>
-				<button class="btn btn-primary mt-8" on:click={() => modalRef.showModal()}>
+				<button class="btn btn-primary mt-4" on:click={() => modalRef.showModal()}>
 					+ create notification</button
 				>
 			</div>
@@ -124,13 +124,13 @@
 				<div
 					class="flex w-full flex-col items-start justify-center gap-4 border-l-2 border-r-2 border-t-2 border-neutral bg-base-300 p-4 data-[last=true]:rounded-bl-md data-[last=true]:rounded-br-md data-[last=true]:border-b-2"
 				>
-					<p class="text-xl text-secondary">#{channel.title}</p>
+					<p class="text-xl">#{channel.title}</p>
 				</div>
 				{#if notifications.filter((notification) => notification.channelId === channel.id).length === 0}
 					<div
 						class="flex w-full flex-col items-start justify-center rounded-bl-md rounded-br-md border-2 border-neutral bg-base-300 p-4"
 					>
-						<h2 class="text-lg">
+						<h2 class="text-md">
 							No notification in {channel.title}
 						</h2>
 					</div>

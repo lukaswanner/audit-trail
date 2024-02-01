@@ -84,6 +84,7 @@
 					<span class="text-primary">#{$project.title} </span>
 				</h2>
 			{/if}
+			<button on:click={createNewApikey} class="btn btn-primary"> + create key</button>
 		</div>
 	</div>
 
@@ -98,7 +99,6 @@
 			</div>
 		{/each}
 	</div>
-	<button on:click={createNewApikey} class="btn btn-primary"> + create key</button>
 	{#if loading}
 		<Loading />
 	{/if}

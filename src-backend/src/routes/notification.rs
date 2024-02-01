@@ -31,11 +31,10 @@ pub struct CreateNotificationUser {
 
 #[derive(Serialize, Deserialize)]
 pub struct UpdateNotificationUser {
+    id: i32,
     name: String,
     #[serde(rename = "channelId")]
     channel_id: i32,
-    #[serde(rename = "phoneNumber")]
-    phone_number: String,
 }
 
 pub async fn read_notification_user(
@@ -45,17 +44,17 @@ pub async fn read_notification_user(
 ) -> Json<Option<NotificationUser>> {
     let result = sqlx::query_as::<_, NotificationUser>(
         r#"
-    SELECT 
+    SELECT
         n.id,
         n.name,
         n.channel_id,
         c.title as channel_title,
         n.phone_number
-    FROM 
-        notification_user n 
+    FROM
+        notification_user n
     JOIN channel c on n.channel_id = c.id
-    JOIN project p on c.project_id = p.id 
-    WHERE 
+    JOIN project p on c.project_id = p.id
+    WHERE
         p.account_id = $1 and n.id = $2"#,
     )
     .bind(session.account_id)
@@ -73,17 +72,17 @@ pub async fn read_notification_users(
 ) -> Json<Vec<NotificationUser>> {
     let result = sqlx::query_as::<_, NotificationUser>(
         r#"
-    SELECT 
+    SELECT
         n.id,
         n.name,
         n.channel_id,
         c.title as channel_title,
         n.phone_number
-    FROM 
-        notification_user n 
+    FROM
+        notification_user n
     JOIN channel c on n.channel_id = c.id
-    JOIN project p on c.project_id = p.id 
-    WHERE 
+    JOIN project p on c.project_id = p.id
+    WHERE
         p.account_id = $1"#,
     )
     .bind(session.account_id)
@@ -101,17 +100,17 @@ pub async fn read_notification_users_for_channel(
 ) -> Json<Vec<NotificationUser>> {
     let result = sqlx::query_as::<_, NotificationUser>(
         r#"
-    SELECT 
+    SELECT
         n.id,
         n.name,
         n.channel_id,
         c.title as channel_title,
         n.phone_number
-    FROM 
-        notification_user n 
+    FROM
+        notification_user n
     JOIN channel c on n.channel_id = c.id
-    JOIN project p on c.project_id = p.id 
-    WHERE 
+    JOIN project p on c.project_id = p.id
+    WHERE
         p.account_id = $1
         AND n.channel_id = $2
         "#,
@@ -132,16 +131,16 @@ pub async fn create_new_notification_user(
 ) -> StatusCode {
     let result = sqlx::query_as::<_, NotificationUser>(
         r#"
-    INSERT INTO 
+    INSERT INTO
         notification_user (name,channel_id, phone_number)
     SELECT $1 AS name, $2 AS channel_id, $3 as phone_number
     WHERE EXISTS
     (
-        SELECT 1 
-            FROM channel c 
-        JOIN project p on c.project_id = p.id 
+        SELECT 1
+            FROM channel c
+        JOIN project p on c.project_id = p.id
         WHERE
-            p.account_id = $4 AND 
+            p.account_id = $4 AND
             c.id = $2
     )
             "#,
@@ -156,5 +155,41 @@ pub async fn create_new_notification_user(
     match result {
         Ok(_) => StatusCode::CREATED,
         Err(_) => StatusCode::BAD_REQUEST,
+    }
+}
+
+pub async fn update_notification_user(
+    State(state): State<AppState>,
+    Extension(session): Extension<UserSession>,
+    Json(payload): Json<UpdateNotificationUser>,
+) -> StatusCode {
+    let pool = &state.pool;
+    let query = r#"
+    UPDATE notification_user
+        SET name = $1
+    WHERE
+        id = $2 AND
+    EXISTS (
+        SELECT 1 FROM project p
+        JOIN channel c on p.id = c.project_id
+        WHERE
+            p.account_id = $3 and c.id = $4
+        )"#;
+    let res = sqlx::query(query)
+        .bind(payload.name)
+        .bind(payload.id)
+        .bind(session.account_id)
+        .bind(payload.channel_id)
+        .execute(pool)
+        .await;
+
+    match res {
+        Ok(row) => {
+            if row.rows_affected() == 0 {
+                return StatusCode::NOT_MODIFIED;
+            }
+            StatusCode::OK
+        }
+        Err(_) => StatusCode::NOT_MODIFIED,
     }
 }

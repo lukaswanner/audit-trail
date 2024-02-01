@@ -74,6 +74,10 @@ pub fn app_routes(shared_state: &AppState) -> Router<AppState> {
         .route("/project", patch(project::update_project))
         .route("/actor", patch(actor::update_actor))
         .route("/channel", patch(channel::update_channel))
+        .route(
+            "/notification",
+            patch(notification::update_notification_user),
+        )
         // delete
         .route("/api-token/:id", delete(api_token::delete_api_token))
         .route("/actor/:id", delete(actor::delete_actor))
