@@ -1,33 +1,16 @@
-# GOALS:
+# Audit Trail System
 
-1.  - [x] Create DB Container
-2.  - [x] Create Server
-3.  - [x] Create Endpoints
-    -   - [x] Create Project
-    -   - [x] Create Channel
-    -   - [x] Create User
-    -   - [x] Send Event
-4.  - [x] Create authentication work flow
-5.  - [x] Create websockets
-6.  - [x] finalize auth middleware
-7.  - [x] Create proper api token
-8.  - [x] Create account table
-9.  - [x] Create login
-10. - [x] Set up jwt auth work flow
-11. - [x] Create middleware to set if user is authorized
-12. - [x] Fix ws-event id bug
-13. - [x] Add endpoint to get events for specific channel
-14. - [x] Add tags to events
-15. - [x] fix api key for different projects
-16. - [x] Fix auth problem with websockets
-17. - [x] Fix the tooltip, i hate css sometimes
-18. - [x] Implement basic search to filter for events
-19. - [x] Swap design to bento grid for insights
-20. - [x] Add refresh page as a bandaid fix until i get around to do websockets
-21. - [x] finish up single channel page in settings
-22. - [x] clean up actor page
-    -   - [ ] fix hover for mobile view 
-23. - [x] notification
-    -   - [ ] create notification frontend
-    -   - [x] create notification backend
-    -   - [ ] handle notifications via event driven design
+The Audit Trail System is a comprehensive auditing solution designed to be seamlessly integrated into your existing infrastructure.
+With features inspired by Discord's user experience, it offers real-time updates, notifications, and a secure environment for managing audit trails.
+
+## Features
+
+- **User Accounts and Management**: Create and manage your own accounts with ease.
+- **Project and Channel Organization**: Organize your audit trails in a structured manner, similar to Discord channels.
+- **Real-Time Updates**: Stay informed with real-time notifications about new events in your channels.
+- **SMS Notifications**: Set up responsible persons for each channel to receive SMS notifications for critical events.
+- **API-Driven Event Logging**: Use generated API keys to send events through a simple HTTP request, making it incredibly easy to integrate with your existing codebase.
+- **Rust Backend**: Benefit from the safety and speed of a Rust-based backend.
+- **Svelte Frontend**: Enjoy a clean and straightforward user experience powered by Svelte.
+
+This project is open source and available under the MIT License.
